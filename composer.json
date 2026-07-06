@@ -1,0 +1,43 @@
+{
+  "name": "larapkgs/validation",
+  "description": "A fluent, object-oriented validation builder for Laravel.",
+  "keywords": ["Laravel", "validation", "validator", "LaraPkgs"],
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "LaraPkgs",
+      "email": "mail@larapkgs.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "illuminate/support": "^13.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^11.0",
+    "pestphp/pest": "^4.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "LaraPkgs\\Validation\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "LaraPkgs\\Validation\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "LaraPkgs\\Validation\\ValidationServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}

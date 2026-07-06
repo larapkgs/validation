@@ -1,0 +1,5 @@
+/vendor/
+/.phpunit.cache/
+/.idea/
+/.pesttracker/
+.DS_Store
