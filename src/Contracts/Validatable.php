@@ -5,7 +5,7 @@ namespace LaraPkgs\Validation\Contracts;
 use Illuminate\Contracts\Validation\Validator;
 use LaraPkgs\Validation\ValidationCollection;
 
-interface Validation
+interface Validatable
 {
     public function getValidationCollection(): ValidationCollection;
     public function makeValidator(array $data): Validator;

@@ -1,26 +1,24 @@
 <?php
 
-declare(strict_types=1);
-
-namespace LaraPkgs\Validation;
+namespace LaraPkgs\Validation\Concerns;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
-use LaraPkgs\Validation\Contracts\Validation as ValidationContract;
+use LaraPkgs\Validation\ValidationCollection;
 
-abstract class BaseValidation implements ValidationContract
+trait IsValidatable
 {
-    protected ValidationCollection $collection;
-
-    public function __construct()
-    {
-        $this->collection = $this->makeValidationCollection();
-    }
+    protected ?ValidationCollection $validationCollection = null;
 
     public function getValidationCollection(): ValidationCollection
     {
-        return clone $this->collection;
+        return clone $this->resolveValidationCollection();
+    }
+
+    protected function resolveValidationCollection(): ValidationCollection
+    {
+        return clone $this->validationCollection ??= $this->makeValidationCollection();
     }
 
     /**
@@ -28,7 +26,7 @@ abstract class BaseValidation implements ValidationContract
      */
     public function makeValidator(array $data): Validator
     {
-        return $this->collection->makeValidator($data);
+        return $this->resolveValidationCollection()->makeValidator($data);
     }
 
     /**
