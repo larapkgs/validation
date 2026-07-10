@@ -24,7 +24,7 @@ describe('ValidationItem::getKey()', function () {
 });
 
 describe('ValidationItem::prefix()', function () {
-    it('adds a prefix to the key of a new instance', function () {
+    it('applies a prefix to the key and returns a new instance', function () {
         $validation = new ValidationItem('property');
 
         $prefixed = $validation->prefix('collection.*.');
@@ -36,12 +36,14 @@ describe('ValidationItem::prefix()', function () {
 });
 
 describe('ValidationItem::addRules()', function () {
-    it('sets rules', function () {
-        $validation = new ValidationItem('property')
-            ->addRules('required')
-            ->addRules('min:10|max:100');
+    it('adds a variadic list of rules and returns a new instance', function () {
+        $validation = new ValidationItem('property');
 
-        expect($validation)->getRules()->toBe(['required', 'min:10', 'max:100']);
+        $updated = $validation->addRules('required', 'min:10|max:100');
+
+        expect($updated)
+            ->not->toBe($validation)
+            ->getRules()->toBe(['required', 'min:10', 'max:100']);
     });
 });
 
@@ -54,15 +56,20 @@ describe('ValidationItem::getRules()', function () {
 });
 
 describe('ValidationItem::addMessages()', function () {
-    it('sets messages', function () {
-        $validation = new ValidationItem('property')
-            ->addMessages(['required' => 'The :attribute field is required.'])
-            ->addMessages(['min:10' => 'The :attribute must be 10 characters minimum.']);
+    it('adds an of messages and returns a new instance', function () {
+        $validation = new ValidationItem('property');
 
-        expect($validation)->getMessages()->toBe([
+        $updated = $validation->addMessages([
             'required' => 'The :attribute field is required.',
             'min:10' => 'The :attribute must be 10 characters minimum.'
         ]);
+
+        expect($updated)
+            ->not->toBe($validation)
+            ->getMessages()->toBe([
+                'required' => 'The :attribute field is required.',
+                'min:10' => 'The :attribute must be 10 characters minimum.'
+            ]);
     });
 });
 
@@ -80,11 +87,14 @@ describe('ValidationItem::getMessages()', function () {
 });
 
 describe('ValidationItem::setCustomAttribute()', function () {
-    it('sets a custom attribute', function () {
-        $validation = new ValidationItem('property')
-            ->setCustomAttribute('customAttribute');
+    it('sets a custom attribute and returns a new instance', function () {
+        $validation = new ValidationItem('property');
 
-        expect($validation)->getCustomAttribute()->toBe('customAttribute');
+        $updated = $validation->setCustomAttribute('customAttribute');
+
+        expect($updated)
+            ->not->toBe($validation)
+            ->getCustomAttribute()->toBe('customAttribute');
     });
 });
 

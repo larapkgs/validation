@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaraPkgs\Validation;
 
+use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 
 final class ValidationItem implements Arrayable
@@ -31,6 +32,13 @@ final class ValidationItem implements Arrayable
         $this->rules = clone $this->rules;
     }
 
+    protected function newInstance(Closure $callback): self
+    {
+        $instance = clone $this;
+
+        return tap($instance, $callback);
+    }
+
     public function getKey(): string
     {
         return $this->key;
@@ -38,17 +46,16 @@ final class ValidationItem implements Arrayable
 
     public function prefix(string $prefix): self
     {
-        $cloned = clone $this;
-        $cloned->key = $prefix . $cloned->key;
-
-        return $cloned;
+        return $this->newInstance(function(self $instance) use ($prefix) {
+            $instance->key = $prefix . $instance->key;
+        });
     }
 
     public function addRules(mixed ...$rules): self
     {
-        $this->rules->add(...$rules);
-
-        return $this;
+        return $this->newInstance(function(self $instance) use ($rules) {
+            $instance->rules->add(...$rules);
+        });
     }
 
     /**
@@ -61,9 +68,9 @@ final class ValidationItem implements Arrayable
 
     public function addMessages(array $messages): self
     {
-        $this->messages = array_merge($this->messages, $messages);
-
-        return $this;
+        return $this->newInstance(function(self $instance) use ($messages) {
+            $instance->messages = array_merge($instance->messages, $messages);
+        });
     }
 
     /**
@@ -76,9 +83,9 @@ final class ValidationItem implements Arrayable
 
     public function setCustomAttribute(string $customAttribute): self
     {
-        $this->customAttribute = $customAttribute;
-
-        return $this;
+        return $this->newInstance(function(self $instance) use ($customAttribute) {
+            $instance->customAttribute = $customAttribute;
+        });
     }
 
     public function getCustomAttribute(): string
