@@ -26,9 +26,22 @@ final class ValidationItem implements Arrayable
         $this->rules = new RuleCollection(...$rules);
     }
 
+    public function __clone()
+    {
+        $this->rules = clone $this->rules;
+    }
+
     public function getKey(): string
     {
         return $this->key;
+    }
+
+    public function prefix(string $prefix): self
+    {
+        $cloned = clone $this;
+        $cloned->key = $prefix . $cloned->key;
+
+        return $cloned;
     }
 
     public function addRules(mixed ...$rules): self

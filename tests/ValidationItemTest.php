@@ -23,7 +23,19 @@ describe('ValidationItem::getKey()', function () {
     });
 });
 
-describe('ValidationItem::rules()', function () {
+describe('ValidationItem::prefix()', function () {
+    it('adds a prefix to the key of a new instance', function () {
+        $validation = new ValidationItem('property');
+
+        $prefixed = $validation->prefix('collection.*.');
+
+        expect($prefixed)
+            ->not->toBe($validation)
+            ->getKey()->toBe('collection.*.property');
+    });
+});
+
+describe('ValidationItem::addRules()', function () {
     it('sets rules', function () {
         $validation = new ValidationItem('property')
             ->addRules('required')
@@ -41,7 +53,7 @@ describe('ValidationItem::getRules()', function () {
     });
 });
 
-describe('ValidationItem::messages()', function () {
+describe('ValidationItem::addMessages()', function () {
     it('sets messages', function () {
         $validation = new ValidationItem('property')
             ->addMessages(['required' => 'The :attribute field is required.'])
@@ -67,7 +79,7 @@ describe('ValidationItem::getMessages()', function () {
     });
 });
 
-describe('ValidationItem::customAttribute()', function () {
+describe('ValidationItem::setCustomAttribute()', function () {
     it('sets a custom attribute', function () {
         $validation = new ValidationItem('property')
             ->setCustomAttribute('customAttribute');
