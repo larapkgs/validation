@@ -26,8 +26,8 @@ describe('ValidationItem::getKey()', function () {
 describe('ValidationItem::rules()', function () {
     it('sets rules', function () {
         $validation = new ValidationItem('property')
-            ->rules('required')
-            ->rules('min:10|max:100');
+            ->addRules('required')
+            ->addRules('min:10|max:100');
 
         expect($validation)->getRules()->toBe(['required', 'min:10', 'max:100']);
     });
@@ -44,8 +44,8 @@ describe('ValidationItem::getRules()', function () {
 describe('ValidationItem::messages()', function () {
     it('sets messages', function () {
         $validation = new ValidationItem('property')
-            ->messages(['required' => 'The :attribute field is required.'])
-            ->messages(['min:10' => 'The :attribute must be 10 characters minimum.']);
+            ->addMessages(['required' => 'The :attribute field is required.'])
+            ->addMessages(['min:10' => 'The :attribute must be 10 characters minimum.']);
 
         expect($validation)->getMessages()->toBe([
             'required' => 'The :attribute field is required.',
@@ -57,8 +57,8 @@ describe('ValidationItem::messages()', function () {
 describe('ValidationItem::getMessages()', function () {
     it('provides an array of messages compatible with Laravel validation', function () {
         $validation = new ValidationItem('property')
-            ->messages(['required' => 'The :attribute field is required.'])
-            ->messages(['min:10' => 'The :attribute must be 10 characters minimum.']);
+            ->addMessages(['required' => 'The :attribute field is required.'])
+            ->addMessages(['min:10' => 'The :attribute must be 10 characters minimum.']);
 
         expect($validation)->getMessages()->toBe([
             'required' => 'The :attribute field is required.',
@@ -70,7 +70,7 @@ describe('ValidationItem::getMessages()', function () {
 describe('ValidationItem::customAttribute()', function () {
     it('sets a custom attribute', function () {
         $validation = new ValidationItem('property')
-            ->customAttribute('customAttribute');
+            ->setCustomAttribute('customAttribute');
 
         expect($validation)->getCustomAttribute()->toBe('customAttribute');
     });
@@ -79,7 +79,7 @@ describe('ValidationItem::customAttribute()', function () {
 describe('ValidationItem::getCustomAttribute()', function () {
     it('provides the custom attribute', function () {
         $validation = new ValidationItem('property')
-            ->customAttribute('customAttribute');
+            ->setCustomAttribute('customAttribute');
 
         expect($validation)->getCustomAttribute()->toBe('customAttribute');
     });
@@ -94,9 +94,9 @@ describe('ValidationItem::getCustomAttribute()', function () {
 describe('ValidationItem::toArray()', function () {
     it('provides an array of rules, messages and attribute compatible with Laravel Validation', function () {
         $validation = new ValidationItem('property')
-            ->rules(['required', 'min:10', 'max:100'])
-            ->messages(['required' => 'The :attribute field is required.'])
-            ->customAttribute('custom');
+            ->addRules(['required', 'min:10', 'max:100'])
+            ->addMessages(['required' => 'The :attribute field is required.'])
+            ->setCustomAttribute('custom');
 
         expect($validation)->toBeInstanceOf(Arrayable::class)
             ->toArray()->toBe([

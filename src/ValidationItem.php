@@ -31,7 +31,7 @@ final class ValidationItem implements Arrayable
         return $this->key;
     }
 
-    public function rules(mixed ...$rules): self
+    public function addRules(mixed ...$rules): self
     {
         $this->rules->add(...$rules);
 
@@ -46,7 +46,7 @@ final class ValidationItem implements Arrayable
         return $this->rules->toArray();
     }
 
-    public function messages(array $messages): self
+    public function addMessages(array $messages): self
     {
         $this->messages = array_merge($this->messages, $messages);
 
@@ -61,7 +61,7 @@ final class ValidationItem implements Arrayable
         return $this->messages;
     }
 
-    public function customAttribute(string $customAttribute): self
+    public function setCustomAttribute(string $customAttribute): self
     {
         $this->customAttribute = $customAttribute;
 

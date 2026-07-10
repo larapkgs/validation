@@ -68,8 +68,8 @@ describe('ValidationCollection::makeValidator', function () {
     it('provides a factory method that creates a Laravel Validator for the given data', function () {
         $collection = ValidationCollection::make(
             new ValidationItem('property1', 'required')
-                ->messages(['required' => 'Custom :attribute required message.'])
-                ->customAttribute('customized'),
+                ->addMessages(['required' => 'Custom :attribute required message.'])
+                ->setCustomAttribute('customized'),
         );
 
         $validator = $collection->makeValidator([]);
@@ -84,9 +84,9 @@ describe('ValidationCollection::toArray', function () {
     it('implements Arrayable and provides an array of rules, messages and attributes compatible with Laravel Validation', function () {
         $collection = ValidationCollection::make(
             new ValidationItem('property1', 'required')
-                ->messages(['required' => 'The :attribute field is required.']),
+                ->addMessages(['required' => 'The :attribute field is required.']),
             new ValidationItem('property2', 'required', 'min:10', 'max:100')
-                ->customAttribute('custom2')
+                ->setCustomAttribute('custom2')
         );
 
         expect($collection)
