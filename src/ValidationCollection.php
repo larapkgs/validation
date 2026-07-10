@@ -16,9 +16,9 @@ final class ValidationCollection implements Arrayable, Countable
 
     protected ValidationFactoryContract $validationFactory;
 
-    public static function make(ValidationItem ...$items): static
+    public static function make(ValidationItem ...$items): self
     {
-        return new static(app(ValidationFactoryContract::class), ...$items);
+        return new self(app(ValidationFactoryContract::class), ...$items);
     }
 
     public function __construct(ValidationFactoryContract $validationFactory, ValidationItem ...$items)
@@ -64,7 +64,18 @@ final class ValidationCollection implements Arrayable, Countable
             ->map(fn(ValidationItem $item) => $item->prefix($prefix))
             ->values()->all();
 
-        return static::make(...$items);
+        return self::make(...$items);
+    }
+
+    public function merge(ValidationCollection ...$validationCollections): self
+    {
+        /** @var array<int, ValidationItem> $items */
+        $items = new Collection([$this, ...$validationCollections])
+            ->reduce(function(array $carry, ValidationCollection $collection) {
+                return array_merge($carry, $collection->getItems()->all());
+            }, []);
+
+        return self::make(...$items);
     }
 
     public function makeValidator(array $data): Validator

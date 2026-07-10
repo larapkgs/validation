@@ -7,12 +7,19 @@ use LaraPkgs\Validation\ValidationCollection;
 use LaraPkgs\Validation\ValidationItem;
 
 it('expects an instance of the Laravel Validation Factory contract on instantiation', function () {
-    expect(fn() => new ValidationCollection())
+    $newCollectionWithoutValidationFactory = function(string ...$rules) {
+        /**
+         * @noinspection PhpParamsInspection
+         * @noinspection RedundantSuppression
+         */
+        return new ValidationCollection(...$rules);
+    };
+
+    expect(fn() => $newCollectionWithoutValidationFactory())
         ->toThrow(ArgumentCountError::class);
 
-    expect(fn() => new ValidationCollection(
-        new ValidationItem('property', 'required', 'min:10|max:100')
-    ))->toThrow(TypeError::class);
+    expect(fn() => $newCollectionWithoutValidationFactory(...['property', 'required', 'min:10|max:100']))
+        ->toThrow(TypeError::class);
 
     $factory = app(Factory::class);
     expect(new ValidationCollection($factory))->toBeInstanceOf(ValidationCollection::class);
@@ -52,7 +59,7 @@ describe('ValidationCollection::add', function () {
 });
 
 describe('ValidationCollection::prefix', function () {
-    it('applies a prefix to the keys of all items as returns a new instance', function () {
+    it('applies a prefix to the keys of all items and returns a new instance', function () {
         $validation = ValidationCollection::make(
             new ValidationItem('property1', 'required'),
             new ValidationItem('property2', 'required'),
@@ -66,6 +73,36 @@ describe('ValidationCollection::prefix', function () {
                 'collection.*.property1',
                 'collection.*.property2',
             ]);
+    });
+});
+
+describe('ValidationCollection::merge', function () {
+    it('merges a variadic list of validation collections and returns a new instance', function () {
+        $getItem = function(ValidationCollection $collection, string $key) {
+            return (fn() => $this->items)->call($collection)->get($key);
+        };
+
+        $validation = ValidationCollection::make(
+            $item1 = new ValidationItem('property1', 'required'),
+        );
+
+        $mergeable1 = ValidationCollection::make(
+            $item2 = new ValidationItem('property2', 'required'),
+        );
+
+        $mergeable2 = ValidationCollection::make(
+            $item3 = new ValidationItem('property3', 'required'),
+        );
+
+        $merged = $validation->merge($mergeable1, $mergeable2);
+
+        expect($merged)
+            ->not->toBe($validation)
+            ->getItems()->keys()->all()->toBe(['property1', 'property2', 'property3']);
+
+        expect($item1)->not->toBe($getItem($merged, 'property1'))
+            ->and($item2)->not->toBe($getItem($merged, 'property2'))
+            ->and($item3)->not->toBe($getItem($merged, 'property3'));
     });
 });
 
