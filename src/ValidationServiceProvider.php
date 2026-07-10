@@ -1,18 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaraPkgs\Validation;
 
 use Illuminate\Support\ServiceProvider;
+use LaraPkgs\Validation\Commands\MakeValidationCommand;
 
-class ValidationServiceProvider extends ServiceProvider
+final class ValidationServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        // Keep it empty for now
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/validation.php', 'validation'
+        );
     }
 
     public function boot(): void
     {
-        // Keep it empty for now
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../config/validation.php' => config_path('validation.php'),
+            ], 'larapkgs-validation-config');
+
+
+            $this->publishes([
+                __DIR__ . '/../stubs' => base_path('stubs'),
+            ], 'larapkgs-validation-stubs');
+
+            $this->commands([
+                MakeValidationCommand::class,
+            ]);
+        }
     }
 }
