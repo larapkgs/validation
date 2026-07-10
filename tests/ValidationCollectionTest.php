@@ -51,6 +51,24 @@ describe('ValidationCollection::add', function () {
     });
 });
 
+describe('ValidationCollection::prefix', function () {
+    it('applies a prefix to the keys of all items as returns a new instance', function () {
+        $validation = ValidationCollection::make(
+            new ValidationItem('property1', 'required'),
+            new ValidationItem('property2', 'required'),
+        );
+
+        $prefixed = $validation->prefix('collection.*.');
+
+        expect($prefixed)
+            ->not->toBe($validation)
+            ->getItems()->keys()->all()->toBe([
+                'collection.*.property1',
+                'collection.*.property2',
+            ]);
+    });
+});
+
 describe('ValidationCollection::getItems', function () {
     it('provides ad instanceof the underlying items collection', function () {
         $collection = ValidationCollection::make(
@@ -119,9 +137,3 @@ describe('ValidationCollection::count', function () {
         expect($collection)->toHaveCount(2);
     });
 });
-
-
-
-
-
-

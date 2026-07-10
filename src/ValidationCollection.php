@@ -58,6 +58,15 @@ final class ValidationCollection implements Arrayable, Countable
         return (clone $this)->processItems(...$validationItems);
     }
 
+    public function prefix(string $prefix): self
+    {
+        $items = $this->items
+            ->map(fn(ValidationItem $item) => $item->prefix($prefix))
+            ->values()->all();
+
+        return static::make(...$items);
+    }
+
     public function makeValidator(array $data): Validator
     {
         return $this->validationFactory->make($data, ...$this->toArray());
