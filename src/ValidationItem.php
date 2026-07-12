@@ -24,7 +24,7 @@ final class ValidationItem implements Arrayable
     {
         $this->key = $key;
 
-        $this->rules = new RuleCollection(...$rules);
+        $this->rules = RuleCollection::make(...$rules);
     }
 
     public function __clone()

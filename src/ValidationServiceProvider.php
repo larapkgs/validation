@@ -6,11 +6,24 @@ namespace LaraPkgs\Validation;
 
 use Illuminate\Support\ServiceProvider;
 use LaraPkgs\Validation\Commands\MakeValidationCommand;
+use LaraPkgs\Validation\Rules\RuleFactory;
+use LaraPkgs\Validation\Rules\RuleStringParser;
 
 final class ValidationServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->singleton(RuleParser::class, function ($app) {
+            $parser  = $app->make(RuleStringParser::class);
+            $factory = $app->make(RuleFactory::class);
+            return new RuleParser($parser, $factory);
+        });
+
+        $this->app->singleton(RuleStringParser::class, function ($app) {
+            $factory = $app->make(RuleFactory::class);
+            return new RuleStringParser($factory);
+        });
+
         $this->mergeConfigFrom(
             __DIR__ . '/../config/validation.php', 'validation'
         );

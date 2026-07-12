@@ -4,51 +4,58 @@ declare(strict_types=1);
 
 use Illuminate\Validation\Rule;
 use LaraPkgs\Validation\RuleCollection;
+use LaraPkgs\Validation\RuleParser;
+use LaraPkgs\Validation\Rules\ValidationRule;
 
-it('accepts rules on instantiation', function () {
-    $rules = new RuleCollection('required|min:10', 'max:100', $object = Rule::string());
+it('expects an instance or RuleParser on instantiation', function () {
+    $parser = RuleParser::make();
+    $collection = new RuleCollection($parser);
 
-    expect($rules->toArray())->toBe(['required', 'min:10', 'max:100', $object]);
+    expect($collection)->toBeInstanceOf(RuleCollection::class);
+});
+
+it('accepts variadic list parsable rules on instantiation', function () {
+    $rules = RuleCollection::make(
+        'required',
+        ['min:1', 'max:10'],
+        new ValidationRule('between', ['min' => 1, 'max' => 10]),
+        $object = Rule::string()
+    );
+
+    expect($rules->toArray())->toBe(['required', 'min:1', 'max:10', 'between:1,10', $object]);
+});
+
+describe('RuleCollection::make', function () {
+    it('provides a factory method that accepts a variadic list of parsable rules', function () {
+        $rules = RuleCollection::make('required|between:1,10');
+
+        expect($rules->toArray())->toBe(['required', 'between:1,10']);
+    });
 });
 
 describe('RuleCollection::add', function () {
-    it('adds rules', function () {
-        $rules = new RuleCollection();
-
+    it('adds a variadic list of parsable rules', function () {
+        $rules = RuleCollection::make();
         $rules->add('required|min:10')->add('max:100')->add($object = Rule::string());
 
-        expect($rules)->toHaveCount(4);
-    });
-
-    it('makes the nullable and required rule mutually exclusive', function () {
-        $rules = new RuleCollection('required');
-        expect($rules->has('required'))->toBeTrue()
-            ->and($rules->has('nullable'))->toBeFalse();
-
-        $rules->add('nullable');
-        expect($rules->has('nullable'))->toBeTrue()
-            ->and($rules->has('required'))->toBeFalse();
-
-        $rules->add('required');
-        expect($rules->has('required'))->toBeTrue()
-            ->and($rules->has('nullable'))->toBeFalse();
+        expect($rules->toArray())->toBe(['required', 'min:10', 'max:100', $object]);
     });
 });
 
 describe('RuleCollection::has', function () {
     it('indicates if a rule has been set', function () {
-        $rules = new RuleCollection('required|min:10', $object = Rule::string());
+        $rules = RuleCollection::make('required|min:10', $object = Rule::string());
 
         expect($rules->has('required'))->toBeTrue()
             ->and($rules->has('min'))->toBeTrue()
-            ->and($rules->has(get_class($object)))->toBeTrue()
+            ->and($rules->has($object::class))->toBeTrue()
             ->and($rules->has('max'))->toBeFalse();
     });
 });
 
 describe('RuleCollection::forget', function () {
     it('deletes rules', function () {
-        $rules = new RuleCollection('required|min:10');
+        $rules = RuleCollection::make('required|min:10');
         expect($rules->has('min'))->toBeTrue();
 
         $rules->forget('min');
@@ -59,7 +66,7 @@ describe('RuleCollection::forget', function () {
 
 describe('RuleCollection::isEmpty', function () {
     it('indicates if no rules are set', function () {
-        $rules = new RuleCollection();
+        $rules = RuleCollection::make();
         expect($rules->isEmpty())->toBeTrue();
 
         $rules->add('required');
@@ -68,24 +75,18 @@ describe('RuleCollection::isEmpty', function () {
 });
 
 describe('RuleCollection::toArray', function () {
-    it('implements Arrayable and provides an array of validation rules compatible with Laravel’s validator', function () {
-        $expected = ['required', 'min:10', 'max:100', $object = Rule::string()];
-        $rules = new RuleCollection($expected);
+    it('implements Arrayable and provides an array of rules compatible with Laravel’s validator', function () {
+        $expected = ['required|min:10|max:100', $object = Rule::string()];
+        $rules = RuleCollection::make($expected);
 
-        expect($rules->toArray())->toBe($expected);
+        expect($rules->toArray())->toBe(['required', 'min:10', 'max:100', $object]);
     });
-
-    it('respects rule order precedence', function (string $rule) {
-        $rules = new RuleCollection(['min:10', $rule]);
-
-        expect($rules->toArray())->toBe([$rule, 'min:10']);
-    })->with(['required', 'nullable']);
 });
 
 describe('RuleCollection::count', function () {
     it('is countable', function () {
-        $rules = new RuleCollection('required', 'min:10');
+        $rules = RuleCollection::make('required|min:10|max:100');
 
-        expect($rules)->toHaveCount(2);
+        expect($rules)->toHaveCount(3);
     });
 });

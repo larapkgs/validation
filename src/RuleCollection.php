@@ -4,80 +4,63 @@ namespace LaraPkgs\Validation;
 
 use Countable;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
+use LaraPkgs\Validation\Contracts\ValidationRule;
 
 final class RuleCollection implements Arrayable, Countable
 {
     protected RuleParser $parser;
 
     /**
-     * @var array<string, mixed>
+     * @var Collection<string, ValidationRule>
      */
-    protected array $rules = [];
+    protected Collection $rules;
 
-    public function __construct(mixed ...$rules)
+    public static function make(mixed ...$rules): self
     {
-        $this->add(...$rules);
+        $parser = App::make(RuleParser::class);
+
+        return new self($parser, ...$rules);
     }
 
-    public function add(...$rules): self
+    public function __construct(RuleParser $parser, mixed ...$rules)
     {
-        foreach($rules as $rule) {
-            $parsed = $this->parse($rule);
+        $this->parser = $parser;
+        $this->rules = Collection::make();
 
-            $this->rules = [...$this->rules, ...$parsed];
+        $this->processRules(...$rules);
+    }
+
+    protected function processRules(mixed...$rules): self
+    {
+        foreach ($this->parser->parse($rules) as $rule) {
+            $this->rules->put($rule->getName(), $rule);
         }
 
         return $this;
     }
 
+    public function add(mixed ...$rules): self
+    {
+        return $this->processRules(...$rules);
+    }
+
     public function has(string $name): bool
     {
-        return Arr::has($this->rules, $name);
+        return $this->rules->has($name);
     }
 
     public function forget(string $name): self
     {
-        Arr::forget($this->rules, $name);
+        $this->rules->forget($name);
 
         return $this;
     }
 
     public function isEmpty(): bool
     {
-        return empty($this->rules);
-    }
-
-    // Parsing
-    protected function getParser(): RuleParser
-    {
-        return new RuleParser();
-    }
-
-    protected function parse(mixed $rule): array
-    {
-        return collect($this->getParser()->parse($rule))
-            ->each((fn(string $rule, string $name) => $this->fireParsedHook($rule, $name)))
-            ->all();
-    }
-
-    protected function fireParsedHook($rule, $name): void
-    {
-        match($name) {
-            'required' => $this->parsedRequired(),
-            'nullable' => $this->parsedNullable(),
-            default => null
-        };
-    }
-
-    protected function parsedRequired(): void
-    {
-        if($this->has('nullable')) $this->forget('nullable');
-    }
-
-    protected function parsedNullable(): void
-    {
-        if($this->has('required')) $this->forget('required');
+        return $this->rules->isEmpty();
     }
 
     /**
@@ -85,20 +68,14 @@ final class RuleCollection implements Arrayable, Countable
      */
     public function toArray(): array
     {
-        $rules = $this->rules;
-
-        foreach(['required', 'nullable'] as $name) {
-            if(!Arr::has($rules, $name)) continue;
-
-            Arr::forget($rules, $name);
-            $rules = Arr::prepend($rules, $name , $name);
-        }
-
-        return array_values($rules);
+        return $this->rules
+            ->sortBy(fn(ValidationRule $rule) => $rule->getPriority())
+            ->map(fn(ValidationRule $rule) => $rule->asValidatorRule())
+            ->values()->all();
     }
 
     public function count(): int
     {
-        return count($this->rules);
+        return $this->rules->count();
     }
 }
