@@ -6,10 +6,16 @@ use Countable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
+use LaraPkgs\Validation\Concerns\HasFluentRules;
 use LaraPkgs\Validation\Contracts\ValidationRule;
+use LaraPkgs\Validation\Rules\RuleFactory;
 
 final class RuleCollection implements Arrayable, Countable
 {
+    use HasFluentRules;
+
+    protected RuleFactory $factory;
+
     protected RuleParser $parser;
 
     /**
@@ -19,14 +25,16 @@ final class RuleCollection implements Arrayable, Countable
 
     public static function make(mixed ...$rules): self
     {
+        $factory = App::make(RuleFactory::class);
         $parser = App::make(RuleParser::class);
 
-        return new self($parser, ...$rules);
+        return new self($factory, $parser, ...$rules);
     }
 
-    public function __construct(RuleParser $parser, mixed ...$rules)
+    public function __construct(RuleFactory $factory, RuleParser $parser, mixed ...$rules)
     {
         $this->parser = $parser;
+        $this->factory = $factory;
         $this->rules = Collection::make();
 
         $this->processRules(...$rules);
@@ -44,6 +52,13 @@ final class RuleCollection implements Arrayable, Countable
     public function add(mixed ...$rules): self
     {
         return $this->processRules(...$rules);
+    }
+
+    protected function applyFluentRule(string $ruleName, array $arguments = []): self
+    {
+        $rule = $this->factory->make($ruleName, $arguments);
+
+        return $this->add($rule);
     }
 
     public function has(string $name): bool

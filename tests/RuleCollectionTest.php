@@ -5,11 +5,13 @@ declare(strict_types=1);
 use Illuminate\Validation\Rule;
 use LaraPkgs\Validation\RuleCollection;
 use LaraPkgs\Validation\RuleParser;
+use LaraPkgs\Validation\Rules\RuleFactory;
 use LaraPkgs\Validation\Rules\ValidationRule;
 
-it('expects an instance or RuleParser on instantiation', function () {
+it('expects an instance of the RuleFactory and RuleParser on instantiation', function () {
+    $factory = new RuleFactory();
     $parser = RuleParser::make();
-    $collection = new RuleCollection($parser);
+    $collection = new RuleCollection($factory, $parser);
 
     expect($collection)->toBeInstanceOf(RuleCollection::class);
 });
@@ -23,6 +25,48 @@ it('accepts variadic list parsable rules on instantiation', function () {
     );
 
     expect($rules->toArray())->toBe(['required', 'min:1', 'max:10', 'between:1,10', $object]);
+});
+
+describe('applies fluent rules', function () {
+    beforeEach(function () {
+       $this->collection = RuleCollection::make();
+    });
+
+    it('applies rules without any arguments', function () {
+        expect($this->collection)->required()
+            ->toBe($this->collection)
+            ->toArray()->toBe(['required']);
+    });
+
+    it('applies rules that only have a single argument', function () {
+        expect($this->collection)->min(1)
+            ->toBe($this->collection)
+            ->toArray()->toBe(['min:1']);
+    });
+
+    it('applies rules that have multiple arguments', function () {
+        expect($this->collection)->between(1,10)
+            ->toBe($this->collection)
+            ->toArray()->toBe(['between:1,10']);
+    });
+
+    it('applies rules that only have variadic arguments', function () {
+        expect($this->collection)->contains('category1', 'category2')
+            ->toBe($this->collection)
+            ->toArray()->toBe(['contains:category1,category2']);
+    });
+
+    it('applies rules that have positional and variadic arguments', function () {
+        expect($this->collection)->requiredIf('category', 'category1', 'category3')
+            ->toBe($this->collection)
+            ->toArray()->toBe(['required_if:category,category1,category3']);
+    });
+
+    it('allows chaining of fluent rules', function () {
+        expect($this->collection)->required()->min(10)
+            ->toBe($this->collection)
+            ->toArray()->toBe(['required', 'min:10']);
+    });
 });
 
 describe('RuleCollection::make', function () {
