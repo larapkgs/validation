@@ -36,9 +36,6 @@ final class FluentRuleDataset
 
             }
 
-            $methodName = $method->getName();
-            $ruleName = $this->resolveRuleName($methodName);
-
             $dataset[$method->getName()] = [
                 'method' => $methodName = $method->getName(),
                 'methodArguments' => $methodArguments,

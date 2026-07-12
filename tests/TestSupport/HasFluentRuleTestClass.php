@@ -15,9 +15,9 @@ class HasFluentRuleTestClass
         return $this->rules;
     }
 
-    protected function applyFluentRule(string $rule, array $arguments = []): self
+    protected function applyFluentRule(string $ruleName, array $arguments = []): self
     {
-        $this->rules[$rule] = $arguments;
+        $this->rules[$ruleName] = $arguments;
 
         return $this;
     }

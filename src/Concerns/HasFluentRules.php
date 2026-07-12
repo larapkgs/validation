@@ -6,7 +6,7 @@ namespace LaraPkgs\Validation\Concerns;
 
 trait HasFluentRules
 {
-    abstract protected function applyFluentRule(string $rule, array $arguments = []): self;
+    abstract protected function applyFluentRule(string $ruleName, array $arguments = []): self;
 
     public function accepted(): self
     {
@@ -238,7 +238,7 @@ trait HasFluentRules
         return $this->applyFluentRule('hex_color');
     }
 
-    public function in(string ...$values): self
+    public function in(mixed ...$values): self
     {
         return $this->applyFluentRule('in', compact('values'));
     }
@@ -363,7 +363,7 @@ trait HasFluentRules
         return $this->applyFluentRule('multiple_of', compact('value'));
     }
 
-    public function notIn(string ...$values): self
+    public function notIn(mixed ...$values): self
     {
         return $this->applyFluentRule('not_in', compact('values'));
     }
