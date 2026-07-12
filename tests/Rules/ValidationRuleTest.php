@@ -89,5 +89,12 @@ describe('ValidationRule::asValidatorRule', function () {
 
         $rule = new ValidationRule('dimensions', $arguments = ['min_ratio=1/2','max_ratio=3/2']);
         expect($rule)->asValidatorRule()->toBe($rule->getName() . ':' . Arr::join($arguments, ','));
+
+        $rule = new ValidationRule('accepted_if', $arguments = [
+            'anotherField' => 'category',
+            'values' => ['category1', 'category3', 'category5']
+        ]);
+        expect($rule)->asValidatorRule()->toBe('accepted_if:category,category1,category3,category5');
+
     });
 });

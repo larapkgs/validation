@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaraPkgs\Validation\Rules;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use LaraPkgs\Validation\Contracts\ValidationRule as ValidationRuleContract;
 
 final class ValidationRule implements ValidationRuleContract
@@ -48,10 +49,21 @@ final class ValidationRule implements ValidationRuleContract
     {
         $arguments = Collection::make($this->arguments);
 
-        return match (true) {
-            $arguments->count() === 0 => $this->getName(),
-            $arguments->count() === 1 && is_object($arguments->first()) => $arguments->first(),
-            default => $this->getName() . ':' . $arguments->join(',')
-        };
+        if($arguments->count() == 0) {
+            return $this->getName();
+        }
+
+        if($arguments->count() === 1 && is_object($arguments->first())) {
+            return $arguments->first();
+        }
+
+        $arguments = $arguments->reduce(function (Collection $arguments, mixed $argument) {
+            return is_array($argument) ? $arguments->merge($argument) : $arguments->push($argument);
+        }, Collection::make());
+
+        return Str::of($this->getName())
+            ->append(':')
+            ->append($arguments->join(','))
+            ->toString();
     }
 }
