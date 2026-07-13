@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use LaraPkgs\Validation\Rules\RuleFactory;
 use LaraPkgs\Validation\Rules\ValidationRule;
 

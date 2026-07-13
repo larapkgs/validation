@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaraPkgs\Validation\Concerns;
 
 use Illuminate\Contracts\Validation\Validator;

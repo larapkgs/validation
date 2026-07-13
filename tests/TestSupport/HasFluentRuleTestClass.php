@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaraPkgs\Validation\Tests\TestSupport;
 
 use LaraPkgs\Validation\Concerns\HasFluentRules;
 
-class HasFluentRuleTestClass
+final class HasFluentRuleTestClass
 {
     use HasFluentRules;
 

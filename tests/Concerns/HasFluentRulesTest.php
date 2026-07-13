@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use LaraPkgs\Validation\Tests\TestSupport\HasFluentRuleTestClass;
 use LaraPkgs\Validation\Tests\TestSupport\FluentRuleDataset;
 

@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaraPkgs\Validation\Rules;
 
 use Illuminate\Support\Facades\Config;
 use LaraPkgs\Validation\Contracts\RulePriorityResolver as RulePriorityResolverContract;
 use LaraPkgs\Validation\Contracts\RuleTypeResolver;
 
-class RulePriorityResolver implements RulePriorityResolverContract
+final class RulePriorityResolver implements RulePriorityResolverContract
 {
     protected RuleTypeResolver $ruleTypeResolver;
 

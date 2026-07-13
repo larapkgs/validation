@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use LaraPkgs\Validation\Contracts\RulePriorityResolver as RulePriorityResolverContract;
 use LaraPkgs\Validation\Contracts\RuleTypeResolver as RuleTypeResolverContract;
 use LaraPkgs\Validation\Rules\RulePriorityResolver;
