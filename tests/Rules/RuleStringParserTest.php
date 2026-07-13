@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use LaraPkgs\Validation\Rules\RuleFactory;
+use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\Rules\RuleStringParser;
 use LaraPkgs\Validation\Rules\ValidationRule;
 
 it('expects an instance of the RuleFactory class', function () {
-    $factory = new RuleFactory();
+    $factory = App::make(RuleFactory::class);
     $parser = new RuleStringParser($factory);
 
     expect($parser)->toBeInstanceOf(RuleStringParser::class);

@@ -6,10 +6,9 @@ namespace LaraPkgs\Validation;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Str;
+use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\Contracts\ValidationRule as ValidationRuleContract;
 use LaraPkgs\Validation\Exceptions\UnparsableRuleException;
-use LaraPkgs\Validation\Rules\RuleFactory;
 use LaraPkgs\Validation\Rules\RuleStringParser;
 
 final class RuleParser

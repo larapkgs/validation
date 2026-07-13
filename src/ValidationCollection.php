@@ -9,6 +9,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Validation\Factory as ValidationFactoryContract;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 
 final class ValidationCollection implements Arrayable, Countable
 {
@@ -18,7 +19,9 @@ final class ValidationCollection implements Arrayable, Countable
 
     public static function make(ValidationItem ...$items): self
     {
-        return new self(app(ValidationFactoryContract::class), ...$items);
+        $factory = App::make(ValidationFactoryContract::class);
+
+        return new self($factory, ...$items);
     }
 
     public function __construct(ValidationFactoryContract $validationFactory, ValidationItem ...$items)

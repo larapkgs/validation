@@ -9,8 +9,8 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use LaraPkgs\Validation\Concerns\HasFluentRules;
+use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\Contracts\ValidationRule;
-use LaraPkgs\Validation\Rules\RuleFactory;
 
 final class RuleCollection implements Arrayable, Countable
 {

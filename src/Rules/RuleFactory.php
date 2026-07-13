@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace LaraPkgs\Validation\Rules;
 
-final class RuleFactory
+use LaraPkgs\Validation\Contracts\RuleFactory as RuleFactoryContract;
+
+final class RuleFactory implements RuleFactoryContract
 {
     /**
      * @param array<array-key, mixed> $arguments

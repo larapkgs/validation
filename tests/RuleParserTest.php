@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
+use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\Exceptions\UnparsableRuleException;
 use LaraPkgs\Validation\RuleParser;
-use LaraPkgs\Validation\Rules\RuleFactory;
 use LaraPkgs\Validation\Rules\RuleStringParser;
 use LaraPkgs\Validation\Rules\ValidationRule;
 
 it('expects an instance of the RuleStringParser and the RuleFactory on instantiation', function () {
     $ruleStringParser = RuleStringParser::make();
-    $ruleFactory = new RuleFactory();
+    $ruleFactory = App::make(RuleFactory::class);
     $parser = new RuleParser($ruleStringParser, $ruleFactory);
 
    expect($parser)->toBeInstanceOf(RuleParser::class);

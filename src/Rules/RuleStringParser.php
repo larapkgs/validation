@@ -6,6 +6,7 @@ namespace LaraPkgs\Validation\Rules;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
+use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\Contracts\ValidationRule as ValidationRuleContract;
 
 final class RuleStringParser

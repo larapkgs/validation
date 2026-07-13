@@ -6,9 +6,9 @@ namespace LaraPkgs\Validation;
 
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\App;
 use LaraPkgs\Validation\Concerns\HasFluentRules;
-use LaraPkgs\Validation\Rules\RuleFactory;
+use LaraPkgs\Validation\Contracts\RuleFactory;
 
 final class ValidationItem implements Arrayable
 {
@@ -29,7 +29,7 @@ final class ValidationItem implements Arrayable
 
     public static function make(string $key, mixed ...$rules)
     {
-        $ruleFactory = app(RuleFactory::class);
+        $ruleFactory = App::make(RuleFactory::class);
 
         return new self($ruleFactory, $key, ...$rules);
     }

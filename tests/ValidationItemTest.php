@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 use Illuminate\Contracts\Support\Arrayable;
-use LaraPkgs\Validation\Rules\RuleFactory;
+use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\ValidationItem;
 
 it('expects an instance of the RuleFactory and a key on instantiation', function () {
-    $ruleFactory = new RuleFactory();
+    $ruleFactory = App::make(RuleFactory::class);
     $validation = new ValidationItem($ruleFactory, 'property');
 
     expect($validation->getKey())->toBe('property');
