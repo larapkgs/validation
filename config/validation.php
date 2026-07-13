@@ -27,5 +27,11 @@ return [
             'string', 'array', 'integer', 'numeric', 'boolean', 'json',
             'file', 'image', 'object', 'list'
         ],
+    ],
+    'typeToPriorityMap' => [
+        'modifier' => 1,
+        'circuit' => 2,
+        'presence' => 3,
+        'type' => 4
     ]
 ];
