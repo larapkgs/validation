@@ -5,7 +5,7 @@ declare(strict_types=1);
 use LaraPkgs\Validation\Contracts\RuleTypeResolver;
 use LaraPkgs\Validation\Rules\RulePriorityResolver;
 
-describe("RuleTypeResolver::resolve", function () {
+describe("RulePriorityResolver::resolve", function () {
     beforeEach(function () {
         $ruleTypeResolver = App::make(RuleTypeResolver::class);
         $this->resolver = new RulePriorityResolver($ruleTypeResolver);

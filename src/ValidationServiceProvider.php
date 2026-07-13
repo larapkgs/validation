@@ -39,7 +39,8 @@ final class ValidationServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(RuleFactoryContract::class, function ($app) {
-            return new RuleFactory();
+            $rulePriorityResolver = $app->make(RulePriorityResolverContract::class);
+            return new RuleFactory($rulePriorityResolver);
         });
 
         $this->mergeConfigFrom(

@@ -125,6 +125,14 @@ describe('RuleCollection::toArray', function () {
 
         expect($rules->toArray())->toBe(['required', 'min:10', 'max:100', $object]);
     });
+
+    it('respects rule precedence', function () {
+        $rules = RuleCollection::make()
+            ->between(1, 10)->bail()->nullable()
+            ->required()->integer();
+
+        expect($rules->toArray())->toBe(['nullable', 'bail', 'required', 'integer', 'between:1,10']);
+    });
 });
 
 describe('RuleCollection::count', function () {
