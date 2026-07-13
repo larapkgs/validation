@@ -19,8 +19,8 @@ beforeEach(function () {
         protected function makeValidationCollection(): ValidationCollection
         {
             return ValidationCollection::make(
-                new ValidationItem('property1', 'required'),
-                new ValidationItem('property2', 'nullable'),
+                ValidationItem::make('property1', 'required'),
+                ValidationItem::make('property2', 'nullable'),
             );
         }
     };

@@ -28,8 +28,8 @@ it('expects an instance of the Laravel Validation Factory contract on instantiat
 it('accepts a variadic list of items on instantiation', function () {
     $collection = new ValidationCollection(
         app(Factory::class),
-        new ValidationItem('property1', 'required'),
-        new ValidationItem('property2', 'required')
+        ValidationItem::make('property1', 'required'),
+        ValidationItem::make('property2', 'required')
     );
 
     expect($collection)->toHaveCount(2);
@@ -49,7 +49,7 @@ describe('ValidationCollection::add', function () {
         expect($collection)->toHaveCount(0);
 
         $mutated = $collection->add(
-            new ValidationItem('property1', 'required')
+            ValidationItem::make('property1', 'required')
         );
 
         expect($mutated)
@@ -61,8 +61,8 @@ describe('ValidationCollection::add', function () {
 describe('ValidationCollection::prefix', function () {
     it('applies a prefix to the keys of all items and returns a new instance', function () {
         $validation = ValidationCollection::make(
-            new ValidationItem('property1', 'required'),
-            new ValidationItem('property2', 'required'),
+            ValidationItem::make('property1', 'required'),
+            ValidationItem::make('property2', 'required'),
         );
 
         $prefixed = $validation->prefix('collection.*.');
@@ -83,15 +83,15 @@ describe('ValidationCollection::merge', function () {
         };
 
         $validation = ValidationCollection::make(
-            $item1 = new ValidationItem('property1', 'required'),
+            $item1 = ValidationItem::make('property1', 'required'),
         );
 
         $mergeable1 = ValidationCollection::make(
-            $item2 = new ValidationItem('property2', 'required'),
+            $item2 = ValidationItem::make('property2', 'required'),
         );
 
         $mergeable2 = ValidationCollection::make(
-            $item3 = new ValidationItem('property3', 'required'),
+            $item3 = ValidationItem::make('property3', 'required'),
         );
 
         $merged = $validation->merge($mergeable1, $mergeable2);
@@ -109,7 +109,7 @@ describe('ValidationCollection::merge', function () {
 describe('ValidationCollection::getItems', function () {
     it('provides ad instanceof the underlying items collection', function () {
         $collection = ValidationCollection::make(
-            new ValidationItem('property1', 'required'),
+            ValidationItem::make('property1', 'required'),
         );
 
         $items1 = $collection->getItems();
@@ -122,7 +122,7 @@ describe('ValidationCollection::getItems', function () {
 describe('ValidationCollection::makeValidator', function () {
     it('provides a factory method that creates a Laravel Validator for the given data', function () {
         $collection = ValidationCollection::make(
-            new ValidationItem('property1', 'required')
+            ValidationItem::make('property1', 'required')
                 ->addMessages(['required' => 'Custom :attribute required message.'])
                 ->setCustomAttribute('customized'),
         );
@@ -138,9 +138,9 @@ describe('ValidationCollection::makeValidator', function () {
 describe('ValidationCollection::toArray', function () {
     it('implements Arrayable and provides an array of rules, messages and attributes compatible with Laravel Validation', function () {
         $collection = ValidationCollection::make(
-            new ValidationItem('property1', 'required')
+            ValidationItem::make('property1', 'required')
                 ->addMessages(['required' => 'The :attribute field is required.']),
-            new ValidationItem('property2', 'required', 'min:10', 'max:100')
+            ValidationItem::make('property2', 'required', 'min:10', 'max:100')
                 ->setCustomAttribute('custom2')
         );
 
@@ -167,8 +167,8 @@ describe('ValidationCollection::toArray', function () {
 describe('ValidationCollection::count', function () {
     it('is countable', function () {
         $collection = ValidationCollection::make(
-            new ValidationItem('property1', 'required'),
-            new ValidationItem('property2', 'required', 'min:10', 'max:100')
+            ValidationItem::make('property1', 'required'),
+            ValidationItem::make('property2', 'required', 'min:10', 'max:100')
         );
 
         expect($collection)->toHaveCount(2);

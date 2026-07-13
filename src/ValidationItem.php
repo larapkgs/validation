@@ -6,10 +6,17 @@ namespace LaraPkgs\Validation;
 
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Str;
+use LaraPkgs\Validation\Concerns\HasFluentRules;
+use LaraPkgs\Validation\Rules\RuleFactory;
 
 final class ValidationItem implements Arrayable
 {
+    use HasFluentRules;
+
     protected string $key;
+
+    protected RuleFactory $ruleFactory;
 
     protected RuleCollection $rules;
 
@@ -20,10 +27,17 @@ final class ValidationItem implements Arrayable
 
     protected ?string $customAttribute = null;
 
-    public function __construct(string $key, mixed ...$rules)
+    public static function make(string $key, mixed ...$rules)
     {
-        $this->key = $key;
+        $ruleFactory = app(RuleFactory::class);
 
+        return new self($ruleFactory, $key, ...$rules);
+    }
+
+    public function __construct(RuleFactory $ruleFactory, string $key, mixed ...$rules)
+    {
+        $this->ruleFactory = $ruleFactory;
+        $this->key = $key;
         $this->rules = RuleCollection::make(...$rules);
     }
 
@@ -55,6 +69,15 @@ final class ValidationItem implements Arrayable
     {
         return $this->newInstance(function(self $instance) use ($rules) {
             $instance->rules->add(...$rules);
+        });
+    }
+
+    public function applyFluentRule(string $ruleName, array $arguments = []): self
+    {
+        return $this->newInstance(function(self $instance) use ($ruleName, $arguments) {
+            $rule = $this->ruleFactory->make($ruleName, $arguments);
+
+            $instance->rules->add($rule);
         });
     }
 
