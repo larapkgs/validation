@@ -6,8 +6,10 @@ namespace LaraPkgs\Validation;
 
 use Illuminate\Support\ServiceProvider;
 use LaraPkgs\Validation\Commands\MakeValidationCommand;
+use LaraPkgs\Validation\Contracts\RuleTypeResolver as RuleTypeResolverContract;
 use LaraPkgs\Validation\Rules\RuleFactory;
 use LaraPkgs\Validation\Rules\RuleStringParser;
+use LaraPkgs\Validation\Rules\RuleTypeResolver;
 
 final class ValidationServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,10 @@ final class ValidationServiceProvider extends ServiceProvider
         $this->app->singleton(RuleStringParser::class, function ($app) {
             $factory = $app->make(RuleFactory::class);
             return new RuleStringParser($factory);
+        });
+
+        $this->app->singleton(RuleTypeResolverContract::class, function ($app) {
+            return new RuleTypeResolver();
         });
 
         $this->mergeConfigFrom(

@@ -1,22 +1,31 @@
 <?php
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Package Generator Templates
-    |--------------------------------------------------------------------------
-    |
-    | This array controls the defaults for the different architectural blueprints
-    | your package can generate. Each blueprint can customize its own root path,
-    | namespace prefix, and target folder directory.
-    |
-    */
     'generators' => [
         'validation' => [
             'base_path' => app_path(),
             'base_namespace' => 'App\\',
             'directory' => 'Validation',
         ]
+    ],
+    'typeToRuleMap' => [
+        'modifier' => [
+            'sometimes', 'nullable', 'exclude', 'exclude_if', 'exclude_unless',
+            'exclude_with', 'exclude_without'
+        ],
+        'circuit' => [
+            'bail'
+        ],
+        'presence' => [
+            'required', 'required_if', 'required_unless', 'required_with',
+            'required_with_all', 'required_without', 'required_without_all',
+            'prohibited', 'prohibited_if', 'prohibited_unless', 'missing',
+            'missing_if', 'missing_unless', 'filled', 'accepted', 'accepted_if',
+            'declined', 'declined_if'
+        ],
+        'type' => [
+            'string', 'array', 'integer', 'numeric', 'boolean', 'json',
+            'file', 'image', 'object', 'list'
+        ],
     ]
 ];

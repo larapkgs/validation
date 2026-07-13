@@ -1,0 +1,43 @@
+<?php
+
+declare(strict_types=1);
+
+namespace LaraPkgs\Validation\Rules;
+
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Config;
+use LaraPkgs\Validation\Contracts\RuleTypeResolver as RuleTypeResolverContract;
+
+final class RuleTypeResolver implements RuleTypeResolverContract
+{
+    /**
+     * @var Collection<string, string>|null
+     */
+    protected ?Collection $ruleToTypeMap = null;
+
+    public function resolve(string $ruleName): string
+    {
+        return $this->getRuleToTypeMap()->has($ruleName)
+            ? $this->getRuleToTypeMap()->get($ruleName)
+            : 'constraint';
+    }
+
+    /**
+     * @return Collection<string, string>
+     */
+    protected function getRuleToTypeMap(): Collection
+    {
+        return $this->ruleToTypeMap ??= $this->resolveRuleToTypeMap();
+    }
+
+    /**
+     * @return Collection<string, string>
+     */
+    protected function resolveRuleToTypeMap(): Collection
+    {
+        return Collection::make(Config::get('validation.typeToRuleMap', []))
+            ->flatMap(function (array $rules, string $type) {
+                return Collection::make($rules)->mapWithKeys(fn (string $rule) => [$rule => $type]);
+            });
+    }
+}
