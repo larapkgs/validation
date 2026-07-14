@@ -13,9 +13,9 @@ trait HasFluentRules
         return $this->applyFluentRule('accepted');
     }
 
-    public function acceptedIf(string $anotherField, mixed ...$values): self
+    public function acceptedIf(string $field, mixed ...$values): self
     {
-        return $this->applyFluentRule('accepted_if', compact('anotherField', 'values'));
+        return $this->applyFluentRule('accepted_if', compact('field', 'values'));
     }
 
     public function activeUrl(): self
@@ -123,9 +123,9 @@ trait HasFluentRules
         return $this->applyFluentRule('declined');
     }
 
-    public function declinedIf(string $anotherField, mixed ...$values): self
+    public function declinedIf(string $field, mixed ...$values): self
     {
-        return $this->applyFluentRule('declined_if', compact('anotherField', 'values'));
+        return $this->applyFluentRule('declined_if', compact('field', 'values'));
     }
 
     public function different(string $field): self
@@ -183,14 +183,14 @@ trait HasFluentRules
         return $this->applyFluentRule('exclude');
     }
 
-    public function excludeIf(string $anotherField, mixed ...$values): self
+    public function excludeIf(string $field, mixed ...$values): self
     {
-        return $this->applyFluentRule('exclude_if', compact('anotherField', 'values'));
+        return $this->applyFluentRule('exclude_if', compact('field', 'values'));
     }
 
-    public function excludeUnless(string $anotherField, mixed ...$values): self
+    public function excludeUnless(string $field, mixed ...$values): self
     {
-        return $this->applyFluentRule('exclude_unless', compact('anotherField', 'values'));
+        return $this->applyFluentRule('exclude_unless', compact('field', 'values'));
     }
 
     public function excludeWith(string $field): self
@@ -243,9 +243,9 @@ trait HasFluentRules
         return $this->applyFluentRule('in', compact('values'));
     }
 
-    public function inArray(string $anotherField): self
+    public function inArray(string $field): self
     {
-        return $this->applyFluentRule('in_array', compact('anotherField'));
+        return $this->applyFluentRule('in_array', compact('field'));
     }
 
     public function image(): self
@@ -338,14 +338,14 @@ trait HasFluentRules
         return $this->applyFluentRule('missing');
     }
 
-    public function missingIf(string $anotherField, mixed ...$values): self
+    public function missingIf(string $field, mixed ...$values): self
     {
-        return $this->applyFluentRule('missing_if', compact('anotherField', 'values'));
+        return $this->applyFluentRule('missing_if', compact('field', 'values'));
     }
 
-    public function missingUnless(string $anotherField, mixed ...$values): self
+    public function missingUnless(string $field, mixed ...$values): self
     {
-        return $this->applyFluentRule('missing_unless', compact('anotherField', 'values'));
+        return $this->applyFluentRule('missing_unless', compact('field', 'values'));
     }
 
     public function missingWith(string ...$fields): self
@@ -393,14 +393,14 @@ trait HasFluentRules
         return $this->applyFluentRule('present');
     }
 
-    public function presentIf(string $anotherField, mixed ...$values): self
+    public function presentIf(string $field, mixed ...$values): self
     {
-        return $this->applyFluentRule('present_if', compact('anotherField', 'values'));
+        return $this->applyFluentRule('present_if', compact('field', 'values'));
     }
 
-    public function presentUnless(string $anotherField, mixed ...$values): self
+    public function presentUnless(string $field, mixed ...$values): self
     {
-        return $this->applyFluentRule('present_unless', compact('anotherField', 'values'));
+        return $this->applyFluentRule('present_unless', compact('field', 'values'));
     }
 
     public function presentWith(string ...$fields): self
@@ -418,19 +418,19 @@ trait HasFluentRules
         return $this->applyFluentRule('prohibited');
     }
 
-    public function prohibitedIf(string $anotherField, mixed ...$values): self
+    public function prohibitedIf(string $field, mixed ...$values): self
     {
-        return $this->applyFluentRule('prohibited_if', compact('anotherField', 'values'));
+        return $this->applyFluentRule('prohibited_if', compact('field', 'values'));
     }
 
-    public function prohibitedUnless(string $anotherField, mixed ...$values): self
+    public function prohibitedUnless(string $field, mixed ...$values): self
     {
-        return $this->applyFluentRule('prohibited_unless', compact('anotherField', 'values'));
+        return $this->applyFluentRule('prohibited_unless', compact('field', 'values'));
     }
 
-    public function prohibits(string ...$fields): self
+    public function prohibits(string ...$field): self
     {
-        return $this->applyFluentRule('prohibits', compact('fields'));
+        return $this->applyFluentRule('prohibits', compact('field'));
     }
 
     public function regex(string $pattern): self
@@ -448,19 +448,19 @@ trait HasFluentRules
         return $this->applyFluentRule('required_array_keys', compact('keys'));
     }
 
-    public function requiredIf(string $anotherField, mixed ...$values): self
+    public function requiredIf(string $field, mixed ...$values): self
     {
-        return $this->applyFluentRule('required_if', compact('anotherField', 'values'));
+        return $this->applyFluentRule('required_if', compact('field', 'values'));
     }
 
-    public function requiredIfAccepted(string $anotherField): self
+    public function requiredIfAccepted(string $field): self
     {
-        return $this->applyFluentRule('required_if_accepted', compact('anotherField'));
+        return $this->applyFluentRule('required_if_accepted', compact('field'));
     }
 
-    public function requiredUnless(string $anotherField, mixed ...$values): self
+    public function requiredUnless(string $field, mixed ...$values): self
     {
-        return $this->applyFluentRule('required_unless', compact('anotherField', 'values'));
+        return $this->applyFluentRule('required_unless', compact('field', 'values'));
     }
 
     public function requiredWith(string ...$fields): self
