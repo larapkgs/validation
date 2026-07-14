@@ -9,6 +9,11 @@ interface ValidationRule
     public function getName(): string;
 
     /**
+     * @param array<array-key, mixed> $arguments
+     */
+    public function withArguments(array $arguments): self;
+
+    /**
      * @return array<array-key, mixed>
      */
     public function getArguments(): array;

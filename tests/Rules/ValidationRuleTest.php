@@ -42,6 +42,17 @@ it('defaults the priority to 100', function () {
     expect($rule)->getPriority()->toBe(100);
 });
 
+it('deep clones the arguments', function () {
+    $rule = new ValidationRule('string_rule', $arguments = ['object' => Rule::string()]);
+
+    $cloned = clone $rule;
+    $clonedArguments = $cloned->getArguments();
+
+    expect($cloned)
+        ->not->toBe($rule)
+        ->and($clonedArguments['object'])->not->toBe($arguments['object']);
+});
+
 describe('ValidationRule::getName', function () {
     it('provides the name of the rule', function () {
         $rule = new ValidationRule('required');
@@ -50,7 +61,21 @@ describe('ValidationRule::getName', function () {
     });
 });
 
-describe('ValidationRule::getAttributes', function () {
+describe('ValidationRule::withArguments', function () {
+    it('merges the given arguments and returns a new instance', function () {
+        $rule = new ValidationRule('required_if', $arguments = ['field' => 'category', 'values' => ['category1', 'category3']]);
+        expect($rule)->getArguments()->toBe($arguments);
+
+        $arguments = ['field' => 'items.*.category', 'values' => ['category1', 'category3']];
+        $merged = $rule->withArguments($arguments);
+
+        expect($merged)
+            ->not->toBe($rule)
+            ->getArguments()->toBe($arguments);
+    });
+});
+
+describe('ValidationRule::getArguments', function () {
     it('provides the arguments for the rule', function () {
         $rule = new ValidationRule('between', $arguments = ['min' => 1, 'max' => 10]);
 

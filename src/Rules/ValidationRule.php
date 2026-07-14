@@ -27,9 +27,27 @@ final class ValidationRule implements ValidationRuleContract
         $this->priority = $priority;
     }
 
+    public function __clone()
+    {
+        $this->arguments = new Collection($this->arguments)
+            ->map(fn ($argument) => is_object($argument) ? clone $argument : $argument)
+            ->all();
+    }
+
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @param  array<array-key, mixed> $arguments
+     */
+    public function withArguments(array $arguments): self
+    {
+        $clone = clone $this;
+        $clone->arguments = array_merge($clone->arguments, $arguments);
+
+        return $clone;
     }
 
     /**
