@@ -6,10 +6,12 @@ namespace LaraPkgs\Validation;
 
 use Countable;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use LaraPkgs\Validation\Concerns\HasFluentRules;
 use LaraPkgs\Validation\Contracts\RuleFactory;
+use LaraPkgs\Validation\Contracts\RulePrefixer;
 use LaraPkgs\Validation\Contracts\ValidationRule;
 
 final class RuleCollection implements Arrayable, Countable
@@ -20,6 +22,8 @@ final class RuleCollection implements Arrayable, Countable
 
     protected RuleParser $parser;
 
+    protected RulePrefixer $prefixer;
+
     /**
      * @var Collection<string, ValidationRule>
      */
@@ -29,14 +33,16 @@ final class RuleCollection implements Arrayable, Countable
     {
         $factory = App::make(RuleFactory::class);
         $parser = App::make(RuleParser::class);
+        $prefixer = App::make(RulePrefixer::class);
 
-        return new self($factory, $parser, ...$rules);
+        return new self($factory, $parser, $prefixer, ...$rules);
     }
 
-    public function __construct(RuleFactory $factory, RuleParser $parser, mixed ...$rules)
+    public function __construct(RuleFactory $factory, RuleParser $parser, RulePrefixer $prefixer, mixed ...$rules)
     {
         $this->parser = $parser;
         $this->factory = $factory;
+        $this->prefixer = $prefixer;
         $this->rules = Collection::make();
 
         $this->processRules(...$rules);
@@ -61,6 +67,16 @@ final class RuleCollection implements Arrayable, Countable
         $rule = $this->factory->make($ruleName, $arguments);
 
         return $this->add($rule);
+    }
+
+    public function prefix(string $prefix): self
+    {
+        $this->rules = $this->rules
+            ->map(function(ValidationRule $rule) use ($prefix) {
+                return $this->prefixer->prefix($rule, $prefix);
+            });
+
+        return $this;
     }
 
     public function has(string $name): bool

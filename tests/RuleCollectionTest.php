@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Validation\Rule;
 use LaraPkgs\Validation\Contracts\RuleFactory;
+use LaraPkgs\Validation\Contracts\RulePrefixer;
 use LaraPkgs\Validation\RuleCollection;
 use LaraPkgs\Validation\RuleParser;
 use LaraPkgs\Validation\Rules\ValidationRule;
@@ -11,7 +12,8 @@ use LaraPkgs\Validation\Rules\ValidationRule;
 it('expects an instance of the RuleFactory and RuleParser on instantiation', function () {
     $factory = App::make(RuleFactory::class);
     $parser = RuleParser::make();
-    $collection = new RuleCollection($factory, $parser);
+    $prefixer = App::make(RulePrefixer::class);
+    $collection = new RuleCollection($factory, $parser, $prefixer);
 
     expect($collection)->toBeInstanceOf(RuleCollection::class);
 });
@@ -83,6 +85,53 @@ describe('RuleCollection::add', function () {
         $rules->add('required|min:10')->add('max:100')->add($object = Rule::string());
 
         expect($rules->toArray())->toBe(['required', 'min:10', 'max:100', $object]);
+    });
+});
+
+describe('RuleCollection::prefix', function () {
+
+    beforeEach(function () {
+        $this->rules = RuleCollection::make();
+    });
+
+    it('prefixes eligible rules with a singular "field" argument', function () {
+        $this->rules->requiredIf('category', 'category1', 'category3');
+        expect($this->rules->toArray())->toBe(['required_if:category,category1,category3']);
+
+        $prefixed = $this->rules->prefix('items.*.');
+
+        expect($prefixed)->toBe($this->rules)
+            ->toArray()->toBe(['required_if:items.*.category,category1,category3']);
+    });
+
+    it('prefixes eligible rules with a variadic/array "fields" argument', function () {
+        $this->rules->requiredWith('field1', 'field3');
+        expect($this->rules->toArray())->toBe(['required_with:field1,field3']);
+
+        $prefixed = $this->rules->prefix('items.*.');
+
+        expect($prefixed)->toBe($this->rules)
+            ->toArray()->toBe(['required_with:items.*.field1,items.*.field3']);
+    });
+
+    it('leaves rules without prefixable arguments untouched', function () {
+        $this->rules->between(1, 10);
+        expect($this->rules->toArray())->toBe(['between:1,10']);
+
+        $prefixed = $this->rules->prefix('items.*.');
+
+        expect($prefixed)->toBe($this->rules)
+            ->toArray()->toBe(['between:1,10']);
+    });
+
+    it('automatically appends a dot to the prefix if it is missing', function () {
+        $this->rules->requiredIf('category', 'category1', 'category3');
+        expect($this->rules->toArray())->toBe(['required_if:category,category1,category3']);
+
+        $prefixed = $this->rules->prefix('items.*');
+
+        expect($prefixed)->toBe($this->rules)
+            ->toArray()->toBe(['required_if:items.*.category,category1,category3']);
     });
 });
 
