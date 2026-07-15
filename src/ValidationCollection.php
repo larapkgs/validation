@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace LaraPkgs\Validation;
 
 use Countable;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Validation\Factory as ValidationFactoryContract;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
+use LaraPkgs\Validation\Concerns\IsValidatable;
 
 final class ValidationCollection implements Countable
 {
+    use IsValidatable;
+
     protected Collection $items;
 
     protected ValidationFactoryContract $validationFactory;

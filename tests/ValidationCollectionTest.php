@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
 use LaraPkgs\Validation\ValidationCollection;
 use LaraPkgs\Validation\ValidationItem;
 
@@ -121,19 +121,46 @@ describe('ValidationCollection::getItems', function () {
     });
 });
 
-describe('ValidationCollection::makeValidator', function () {
-    it('provides a factory method that creates a Laravel Validator for the given data', function () {
+describe('ValidationCollection::passes', function () {
+    it('indicates if the given data passes the constraints as set by the items', function () {
         $collection = ValidationCollection::make(
-            ValidationItem::make('property1', 'required')
-                ->addMessages(['required' => 'Custom :attribute required message.'])
-                ->setCustomAttribute('customized'),
+            ValidationItem::make('property1')->required(),
+            ValidationItem::make('property2')->required()
         );
 
-        $validator = $collection->makeValidator([]);
+        $data = ['property1' => 'value1', 'property2' => 'value2'];
 
-        expect($validator)
-            ->toBeInstanceOf(Validator::class)
-            ->errors()->first('property1')->toBe('Custom customized required message.');
+        expect($collection)->passes($data)->toBeTrue();
+    });
+});
+
+describe('ValidationCollection::fails', function () {
+    it('indicates if the given data fails the constraints as set by the rules', function () {
+        $collection = ValidationCollection::make(
+            ValidationItem::make('property1')->required(),
+            ValidationItem::make('property2')->required()
+        );
+
+        $data = ['property1' => 'value1'];
+
+        expect($collection)->fails($data)->toBeTrue();
+    });
+});
+
+describe('ValidationCollection::validate', function () {
+    it('tries to validate the given data', function () {
+        $collection = ValidationCollection::make(
+            ValidationItem::make('property1')->required(),
+            ValidationItem::make('property2')->required()
+        );
+        $data = ['property1' => 'value1', 'property2' => 'value2'];
+
+        expect($collection)->validate($data)->toBe($data);
+
+        $data = ['property1' => 'value1'];
+
+        expect(fn() => $collection->validate($data))
+            ->toThrow(ValidationException::class);
     });
 });
 
@@ -161,6 +188,22 @@ describe('ValidationCollection::toValidatorArguments', function () {
                     'property2' => 'custom2'
                 ]
             ]);
+    });
+});
+
+describe('ValidationCollection::makeValidator', function () {
+    it('provides a factory method that creates a Laravel Validator for the given data', function () {
+        $collection = ValidationCollection::make(
+            ValidationItem::make('property1', 'required')
+                ->addMessages(['required' => 'Custom :attribute required message.'])
+                ->setCustomAttribute('customized'),
+        );
+
+        $validator = $collection->makeValidator([]);
+
+        expect($validator)
+            ->toBeInstanceOf(Validator::class)
+            ->errors()->first('property1')->toBe('Custom customized required message.');
     });
 });
 
