@@ -11,24 +11,20 @@ use LaraPkgs\Validation\ValidationCollection;
 
 trait IsValidatable
 {
-    protected ?ValidationCollection $validationCollection = null;
-
-    public function getValidationCollection(): ValidationCollection
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function passes(array $data): bool
     {
-        return clone $this->resolveValidationCollection();
-    }
-
-    protected function resolveValidationCollection(): ValidationCollection
-    {
-        return clone $this->validationCollection ??= $this->makeValidationCollection();
+        return $this->makeValidator($data)->passes();
     }
 
     /**
      * @param array<string, mixed> $data
      */
-    public function makeValidator(array $data): Validator
+    public function fails(array $data): bool
     {
-        return $this->resolveValidationCollection()->makeValidator($data);
+        return $this->makeValidator($data)->fails();
     }
 
     /**
@@ -67,5 +63,5 @@ trait IsValidatable
             ->all();
     }
 
-    protected abstract function makeValidationCollection(): ValidationCollection;
+    abstract public function makeValidator(array $data): Validator;
 }

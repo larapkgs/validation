@@ -2,49 +2,42 @@
 
 declare(strict_types=1);
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 use Illuminate\Validation\ValidationException;
 use LaraPkgs\Validation\Concerns\IsValidatable;
 use LaraPkgs\Validation\ValidationCollection;
 use LaraPkgs\Validation\ValidationItem;
 
-function getValidationCollection(object $subject) {
-    return (fn() => $this->validationCollection)->call($subject);
-}
-
 beforeEach(function () {
     $this->validation = new class() {
         use IsValidatable;
 
-        protected function makeValidationCollection(): ValidationCollection
+        public function makeValidator(array $data): Validator
         {
             return ValidationCollection::make(
                 ValidationItem::make('property1', 'required'),
                 ValidationItem::make('property2', 'nullable'),
-            );
+            )->makeValidator($data);
         }
     };
 });
 
-it('lazily resolves the validationCollection using the abstract makeValidationCollection method', function () {
-    expect(getValidationCollection($this->validation))->toBeNull();
+describe('IsValidatable::passes', function () {
+    it('indicates if the given data passes the constraints as set by the rules', function () {
+        $validation = ValidationItem::make('property')->required();
+        $data = ['property' => 'value'];
 
-    expect($this->validation->getValidationCollection())->toBeInstanceOf(ValidationCollection::class);
-});
-
-describe('IsValidatable::getValidationCollection', function () {
-    it('provides a cloned instance of the underlying ValidationCollection', function () {
-        $collection = $this->validation->getValidationCollection();
-
-        expect($collection)
-            ->toBeInstanceOf(ValidationCollection::class)
-            ->not->toBe(getValidationCollection($this->validation));
+        expect($validation)->passes($data)->toBeTrue();
     });
 });
 
-describe('IsValidatable::makeValidator', function () {
-    it('provides a factory method that creates a Laravel Validator for the given data', function () {
-        expect($this->validation)->makeValidator([])->toBeInstanceOf(ValidatorContract::class);
+describe('IsValidatable::fails', function () {
+    it('indicates if the given data fails the constraints as set by the rules', function () {
+        $validation = ValidationItem::make('property')->required();
+        $data = [];
+
+        expect($validation)->fails($data)->toBeTrue();
     });
 });
 
@@ -69,5 +62,11 @@ describe('IsValidatable::validate', function () {
         expect($getValidationErrorKeys())->toBe(['property1']);
 
         expect($getValidationErrorKeys('data.'))->toBe(['data.property1']);
+    });
+});
+
+describe('IsValidatable::makeValidator', function () {
+    it('provides a factory method that creates a Laravel Validator for the given data', function () {
+        expect($this->validation)->makeValidator([])->toBeInstanceOf(ValidatorContract::class);
     });
 });

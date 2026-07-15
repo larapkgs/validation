@@ -10,6 +10,8 @@ use LaraPkgs\Validation\ValidationCollection;
 interface Validatable
 {
     public function getValidationCollection(): ValidationCollection;
-    public function makeValidator(array $data): Validator;
+    public function passes(array $data): bool;
+    public function fails(array $data): bool;
     public function validate(array $data, ?string $errorBagPrefix = null): array;
+    public function makeValidator(array $data): Validator;
 }
