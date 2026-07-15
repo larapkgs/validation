@@ -83,7 +83,20 @@ final class ValidationCollection implements Arrayable, Countable
 
     public function makeValidator(array $data): Validator
     {
-        return $this->validationFactory->make($data, ...$this->toArray());
+        return $this->validationFactory->make($data, ...$this->toValidatorArguments());
+    }
+
+    public function toValidatorArguments(): array
+    {
+        return $this->items->reduce(function (array $carry, ValidationItem $item) {
+            $itemArguments = $item->toValidatorArguments();
+
+            $carry['rules'] = array_merge($carry['rules'], $itemArguments['rules']);
+            $carry['messages'] = array_merge($carry['messages'], $itemArguments['messages']);
+            $carry['attributes'] = array_merge($carry['attributes'], $itemArguments['attributes']);
+
+            return $carry;
+        }, ['rules' => [], 'messages' => [], 'attributes' => []]);
     }
 
     // Arrayable implementation

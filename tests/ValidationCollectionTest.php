@@ -137,6 +137,34 @@ describe('ValidationCollection::makeValidator', function () {
     });
 });
 
+describe('ValidationCollection::toValidatorArguments', function () {
+    it('provides an array of arguments compatible with the Laravel Validator Factory', function () {
+        $collection = ValidationCollection::make(
+            ValidationItem::make('property1', 'required')
+                ->addMessages(['required' => 'The :attribute field is required.']),
+            ValidationItem::make('property2', 'required', 'min:10', 'max:100')
+                ->setCustomAttribute('custom2')
+        );
+
+        expect($collection)
+            ->toBeInstanceOf(Arrayable::class)
+            ->and($collection->toValidatorArguments())
+            ->toBe([
+                'rules' => [
+                    'property1' => ['required'],
+                    'property2' => ['required', 'min:10', 'max:100'],
+                ],
+                'messages' => [
+                    'property1.required' => 'The :attribute field is required.',
+                ],
+                'attributes' => [
+                    'property1' => 'property1',
+                    'property2' => 'custom2'
+                ]
+            ]);
+    });
+});
+
 describe('ValidationCollection::toArray', function () {
     it('implements Arrayable and provides an array of rules, messages and attributes compatible with Laravel Validation', function () {
         $collection = ValidationCollection::make(
