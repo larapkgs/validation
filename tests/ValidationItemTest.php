@@ -243,19 +243,3 @@ describe('ValidationItem::makeValidator()', function () {
         expect($validator)->toBeInstanceOf(Validator::class);
     });
 });
-
-describe('ValidationItem::toArray()', function () {
-    it('provides an array of rules, messages and attribute compatible with Laravel Validation', function () {
-        $validation = ValidationItem::make('property')
-            ->addRules(['required', 'min:10', 'max:100'])
-            ->addMessages(['required' => 'The :attribute field is required.'])
-            ->setCustomAttribute('custom');
-
-        expect($validation)->toBeInstanceOf(Arrayable::class)
-            ->toArray()->toBe([
-                'rules' => ['required', 'min:10', 'max:100'],
-                'messages' => ['required' => 'The :attribute field is required.'],
-                'attribute' => 'custom'
-            ]);
-    });
-});

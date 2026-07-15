@@ -11,7 +11,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 
-final class ValidationCollection implements Arrayable, Countable
+final class ValidationCollection implements Countable
 {
     protected Collection $items;
 
@@ -97,28 +97,6 @@ final class ValidationCollection implements Arrayable, Countable
 
             return $carry;
         }, ['rules' => [], 'messages' => [], 'attributes' => []]);
-    }
-
-    // Arrayable implementation
-    public function toArray(): array
-    {
-        return $this->items->reduce(function(array $carry, ValidationItem $item, string $key) {
-            $carry['rules'][$key] = $item->getRules();
-            $carry['attributes'][$key] = $item->getCustomAttribute();
-
-            return $this->mergeMessagesIntoCarry($carry, $key, $item->getMessages());
-        }, ['rules' => [], 'messages' => [], 'attributes' => []]);
-    }
-
-    protected function mergeMessagesIntoCarry(array $carry, string $key, array $messages): array
-    {
-        $prepared = Collection::make($messages)
-            ->mapWithKeys(fn(string $message, string $rule) => [$key . '.' . $rule => $message])
-            ->all();
-
-        $carry['messages'] = array_merge($carry['messages'], $prepared);
-
-        return $carry;
     }
 
     public function count(): int

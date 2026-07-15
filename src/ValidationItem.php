@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace LaraPkgs\Validation;
 
 use Closure;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
@@ -14,7 +13,7 @@ use LaraPkgs\Validation\Concerns\HasFluentRules;
 use LaraPkgs\Validation\Concerns\IsValidatable;
 use LaraPkgs\Validation\Contracts\RuleFactory;
 
-final class ValidationItem implements Arrayable
+final class ValidationItem
 {
     use HasFluentRules;
     use IsValidatable;
@@ -160,17 +159,5 @@ final class ValidationItem implements Arrayable
     protected function prepareAttributeForValidator(): array
     {
         return [$this->key => $this->getCustomAttribute()];
-    }
-
-    /**
-     * @return array{rules: array<int, mixed>, messages: array<string, string>, attribute: string}
-     */
-    public function toArray(): array
-    {
-        return [
-            'rules' => $this->getRules(),
-            'messages' => $this->getMessages(),
-            'attribute' => $this->getCustomAttribute()
-        ];
     }
 }
