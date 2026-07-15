@@ -6,19 +6,26 @@ namespace LaraPkgs\Validation;
 
 use Closure;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use LaraPkgs\Validation\Concerns\HasFluentRules;
+use LaraPkgs\Validation\Concerns\IsValidatable;
 use LaraPkgs\Validation\Contracts\RuleFactory;
 
 final class ValidationItem implements Arrayable
 {
     use HasFluentRules;
+    use IsValidatable;
 
     protected string $key;
 
     protected RuleFactory $ruleFactory;
 
     protected RuleCollection $rules;
+
+    protected ValidatorFactory $validatorFactory;
 
     /**
      * @var array<string, string>
@@ -30,13 +37,15 @@ final class ValidationItem implements Arrayable
     public static function make(string $key, mixed ...$rules)
     {
         $ruleFactory = App::make(RuleFactory::class);
+        $validatorFactory = App::make(ValidatorFactory::class);
 
-        return new self($ruleFactory, $key, ...$rules);
+        return new self($ruleFactory, $validatorFactory, $key, ...$rules);
     }
 
-    public function __construct(RuleFactory $ruleFactory, string $key, mixed ...$rules)
+    public function __construct(RuleFactory $ruleFactory, ValidatorFactory $validatorFactory, string $key, mixed ...$rules)
     {
         $this->ruleFactory = $ruleFactory;
+        $this->validatorFactory = $validatorFactory;
         $this->key = $key;
         $this->rules = RuleCollection::make(...$rules);
     }
@@ -114,6 +123,43 @@ final class ValidationItem implements Arrayable
     public function getCustomAttribute(): string
     {
         return $this->customAttribute ?? $this->key;
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function makeValidator(array $data): Validator
+    {
+        return $this->validatorFactory->make($data, ...$this->toValidatorArguments());
+    }
+
+    /**
+     * @return array{rules: array<int, mixed>, messages: array<string, string>, attributes: string}
+     */
+    public function toValidatorArguments(): array
+    {
+        return [
+            'rules' => $this->prepareRulesForValidator(),
+            'messages' => $this->prepareMessagesForValidator(),
+            'attributes' => $this->prepareAttributeForValidator()
+        ];
+    }
+
+    protected function prepareRulesForValidator(): array
+    {
+        return [$this->key => $this->rules->toArray()];
+    }
+
+    protected function prepareMessagesForValidator(): array
+    {
+        return Collection::make($this->messages)
+            ->mapWithKeys(fn(string $message, string $rule) => [$this->key . '.' . $rule => $message])
+            ->all();
+    }
+
+    protected function prepareAttributeForValidator(): array
+    {
+        return [$this->key => $this->getCustomAttribute()];
     }
 
     /**

@@ -3,12 +3,16 @@
 declare(strict_types=1);
 
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
 use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\ValidationItem;
 
 it('expects an instance of the RuleFactory and a key on instantiation', function () {
     $ruleFactory = App::make(RuleFactory::class);
-    $validation = new ValidationItem($ruleFactory, 'property');
+    $validatorFactory = App::make(ValidatorFactory::class);
+    $validation = new ValidationItem($ruleFactory, $validatorFactory, 'property');
 
     expect($validation->getKey())->toBe('property');
 });
@@ -179,6 +183,64 @@ describe('ValidationItem::getCustomAttribute()', function () {
         $validation = ValidationItem::make('property');
 
         expect($validation)->getCustomAttribute()->toBe('property');
+    });
+});
+
+describe('ValidationItem::passes()', function () {
+    it('indicates if the given data passes the constraints as set by the rules', function () {
+        $validation = ValidationItem::make('property')->required();
+        $data = ['property' => 'value'];
+
+        expect($validation)->passes($data)->toBeTrue();
+    });
+});
+
+describe('ValidationItem::fails()', function () {
+    it('indicates if the given data fails the constraints as set by the rules', function () {
+        $validation = ValidationItem::make('property')->required();
+        $data = [];
+
+        expect($validation)->fails($data)->toBeTrue();
+    });
+});
+
+describe('ValidationItem::validate()', function () {
+    it('tries to validate the given data', function () {
+        $validation = ValidationItem::make('property')->required();
+        $data = ['property' => 'value'];
+
+        expect($validation)->validate($data)->toBe($data);
+
+        $data = [];
+
+        expect(fn() => $validation->validate($data))
+            ->toThrow(ValidationException::class);
+    });
+});
+
+describe('ValidationItem::toValidatorArguments()', function () {
+    it('provides an array of arguments compatible with the Laravel Validator Factory', function () {
+        $validation = ValidationItem::make('property')->required()
+            ->addMessages(['required' => 'The :attribute field is required.'])
+            ->setCustomAttribute('customProperty');
+
+        $validatorArguments = $validation->toValidatorArguments();
+
+        expect($validatorArguments)->toBe([
+                'rules' => ['property' => ['required']],
+                'messages' => ['property.required' => 'The :attribute field is required.'],
+                'attributes' => ['property' => 'customProperty']
+        ]);
+    });
+});
+
+describe('ValidationItem::makeValidator()', function () {
+    it('provides a factory method that creates a Laravel Validator for the given data', function () {
+        $validation = ValidationItem::make('property')->required();
+
+        $validator = $validation->makeValidator([]);
+
+        expect($validator)->toBeInstanceOf(Validator::class);
     });
 });
 
