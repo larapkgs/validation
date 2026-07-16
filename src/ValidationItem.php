@@ -133,7 +133,7 @@ final class ValidationItem
     }
 
     /**
-     * @return array{rules: array<int, mixed>, messages: array<string, string>, attributes: string}
+     * @return array{rules: array<int, mixed>, messages: array<string, string>, attributes: array}
      */
     public function toValidatorArguments(): array
     {

@@ -25,7 +25,7 @@ final class MakeValidationCommand extends Command
      */
     protected $type = 'Validation';
 
-    public function handle(): int|bool|null
+    public function handle(): int
     {
         return (!($generator = $this->makeGenerator())->isOverwriting() && $generator->exists())
             ? tap(self::FAILURE, fn() => $this->error('Validation class already exists!'))

@@ -16,7 +16,7 @@ trait IsValidatable
      */
     public function passes(array $data): bool
     {
-        return $this->makeValidator($data)->passes();
+        return !$this->fails($data);
     }
 
     /**
@@ -53,8 +53,8 @@ trait IsValidatable
     }
 
     /**
-     * @param array<string, string> $messages
-     * @return array<string, string>
+     * @param array<string, array> $messages
+     * @return array<string, array>
      */
     protected function prefixValidationMessages(array $messages, string $errorBagPrefix): array
     {
