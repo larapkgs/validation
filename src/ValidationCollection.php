@@ -103,7 +103,8 @@ final class ValidationCollection implements Countable
      */
     public function toValidatorArguments(): array
     {
-        return $this->items->reduce(function (array $carry, ValidationItem $item) {
+        /** @var array{rules: array<string, array<int, string>>, messages: array<string, string>, attributes: array<string, string>} $arguments */
+        $arguments = $this->items->reduce(function (array $carry, ValidationItem $item) {
             $itemArguments = $item->toValidatorArguments();
 
             $carry['rules'] = array_merge($carry['rules'], $itemArguments['rules']);
@@ -112,6 +113,8 @@ final class ValidationCollection implements Countable
 
             return $carry;
         }, ['rules' => [], 'messages' => [], 'attributes' => []]);
+
+        return $arguments;
     }
 
     public function count(): int

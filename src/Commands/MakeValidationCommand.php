@@ -34,13 +34,15 @@ final class MakeValidationCommand extends Command
 
     protected function makeGenerator(): Generator
     {
-        $name = $this->argument('name');
+        /** @var string $fileInput */
+        $fileInput = $this->argument('name');
         $stubs = $this->getStubs();
         $config = Config::get('validation.generators.validation');
 
-        return new Generator($name, ...$stubs)->applyConfig($config)
+
+        return new Generator($fileInput, ...$stubs)->applyConfig($config)
             ->type($this->type)->forceType()
-            ->overwrite($this->option('force'));
+            ->overwrite((bool) $this->option('force'));
     }
 
     /**

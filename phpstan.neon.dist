@@ -6,6 +6,4 @@ parameters:
     paths:
         - src/
 
-    # Level 9 is the highest and strictest level.
-    # We will start at level 5 to get a feel for it.
-    level: 6
+    level: 7

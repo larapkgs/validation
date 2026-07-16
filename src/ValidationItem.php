@@ -101,7 +101,7 @@ final class ValidationItem
     }
 
     /**
-     * @param array<int, string> $messages
+     * @param array<string, string> $messages
      */
     public function addMessages(array $messages): self
     {
