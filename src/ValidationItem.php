@@ -33,7 +33,7 @@ final class ValidationItem
 
     protected ?string $customAttribute = null;
 
-    public static function make(string $key, mixed ...$rules)
+    public static function make(string $key, mixed ...$rules): self
     {
         $ruleFactory = App::make(RuleFactory::class);
         $validatorFactory = App::make(ValidatorFactory::class);
@@ -80,6 +80,9 @@ final class ValidationItem
         });
     }
 
+    /**
+     * @param array<string, mixed> $arguments
+     */
     public function applyFluentRule(string $ruleName, array $arguments = []): self
     {
         return $this->newInstance(function(self $instance) use ($ruleName, $arguments) {
@@ -97,6 +100,9 @@ final class ValidationItem
         return $this->rules->toArray();
     }
 
+    /**
+     * @param array<int, string> $messages
+     */
     public function addMessages(array $messages): self
     {
         return $this->newInstance(function(self $instance) use ($messages) {
@@ -133,7 +139,7 @@ final class ValidationItem
     }
 
     /**
-     * @return array{rules: array<int, mixed>, messages: array<string, string>, attributes: array}
+     * @return array{rules: array<string, array<int, mixed>>, messages: array<string, string>, attributes: array<string, string>}
      */
     public function toValidatorArguments(): array
     {
@@ -144,11 +150,17 @@ final class ValidationItem
         ];
     }
 
+    /**
+     * @return array<string, array<int, mixed>>
+     */
     protected function prepareRulesForValidator(): array
     {
         return [$this->key => $this->rules->toArray()];
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function prepareMessagesForValidator(): array
     {
         return Collection::make($this->messages)
@@ -156,6 +168,9 @@ final class ValidationItem
             ->all();
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function prepareAttributeForValidator(): array
     {
         return [$this->key => $this->getCustomAttribute()];

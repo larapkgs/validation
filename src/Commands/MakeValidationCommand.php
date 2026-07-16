@@ -43,6 +43,9 @@ final class MakeValidationCommand extends Command
             ->overwrite($this->option('force'));
     }
 
+    /**
+     * @return array<int, string>
+     */
     protected function getStubs(): array
     {
         $publishedStubPath = $this->laravel->basePath('stubs/validation.stub');

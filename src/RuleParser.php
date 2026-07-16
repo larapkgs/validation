@@ -32,7 +32,7 @@ final class RuleParser
      * @return array<int, ValidationRuleContract>
      * @throws UnparsableRuleException
      */
-    public function parse($subject): array
+    public function parse(mixed $subject): array
     {
         return match(true) {
             $subject instanceof ValidationRuleContract => [$subject],

@@ -143,6 +143,9 @@ trait HasFluentRules
         return $this->applyFluentRule('digits_between', compact('min', 'max'));
     }
 
+    /**
+     * @param array<string, string> $constraints
+     */
     public function dimensions(array $constraints): self
     {
         return $this->applyFluentRule('dimensions', compact('constraints'));

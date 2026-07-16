@@ -35,9 +35,17 @@ final class RuleTypeResolver implements RuleTypeResolverContract
      */
     protected function resolveRuleToTypeMap(): Collection
     {
-        return Collection::make(Config::get('validation.typeToRuleMap', []))
+        return Collection::make($this->getTypeToRuleMapFromConfig())
             ->flatMap(function (array $rules, string $type) {
                 return Collection::make($rules)->mapWithKeys(fn (string $rule) => [$rule => $type]);
             });
+    }
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    protected function getTypeToRuleMapFromConfig(): array
+    {
+        return Config::get('validation.typeToRuleMap', []);
     }
 }

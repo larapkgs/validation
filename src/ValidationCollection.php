@@ -15,6 +15,7 @@ final class ValidationCollection implements Countable
 {
     use IsValidatable;
 
+    /** @var Collection<string, ValidationItem> */
     protected Collection $items;
 
     protected ValidationFactoryContract $validationFactory;
@@ -39,11 +40,17 @@ final class ValidationCollection implements Countable
         $this->items = $this->cloneItems();
     }
 
+    /**
+     * @return Collection<string, ValidationItem>
+     */
     public function getItems(): Collection
     {
         return $this->cloneItems();
     }
 
+    /**
+     * @return Collection<string, ValidationItem>
+     */
     protected function cloneItems(): Collection
     {
         return $this->items->map(fn(ValidationItem $item) => clone $item);
@@ -83,11 +90,17 @@ final class ValidationCollection implements Countable
         return self::make(...$items);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function makeValidator(array $data): Validator
     {
         return $this->validationFactory->make($data, ...$this->toValidatorArguments());
     }
 
+    /**
+     * @return array{rules: array<string, array<int, string>>, messages: array<string, string>, attributes: array<string, string>}
+     */
     public function toValidatorArguments(): array
     {
         return $this->items->reduce(function (array $carry, ValidationItem $item) {

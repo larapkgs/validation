@@ -53,8 +53,8 @@ trait IsValidatable
     }
 
     /**
-     * @param array<string, array> $messages
-     * @return array<string, array>
+     * @param array<string, array<int, string>> $messages
+     * @return array<string, array<int, string>>
      */
     protected function prefixValidationMessages(array $messages, string $errorBagPrefix): array
     {

@@ -160,6 +160,9 @@ final class Generator
             }, File::get($this->stubPath));
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function getStubData(): array
     {
         return [

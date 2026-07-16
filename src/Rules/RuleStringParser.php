@@ -44,6 +44,9 @@ final class RuleStringParser
         return $this->ruleFactory->make($name, $arguments);
     }
 
+    /**
+     * @return array<array-key, string>
+     */
     protected function parseArgumentsString(string $arguments): array
     {
         return Str::of($arguments)->explode(',')

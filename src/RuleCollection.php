@@ -6,7 +6,6 @@ namespace LaraPkgs\Validation;
 
 use Countable;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use LaraPkgs\Validation\Concerns\HasFluentRules;
@@ -14,6 +13,9 @@ use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\Contracts\RulePrefixer;
 use LaraPkgs\Validation\Contracts\ValidationRule;
 
+/**
+ * @implements Arrayable<string, mixed>
+ */
 final class RuleCollection implements Arrayable, Countable
 {
     use HasFluentRules;
@@ -62,6 +64,9 @@ final class RuleCollection implements Arrayable, Countable
         return $this->processRules(...$rules);
     }
 
+    /**
+     * @param array<string, mixed> $arguments
+     */
     protected function applyFluentRule(string $ruleName, array $arguments = []): self
     {
         $rule = $this->factory->make($ruleName, $arguments);
