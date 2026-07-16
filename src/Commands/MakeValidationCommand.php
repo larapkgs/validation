@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace LaraPkgs\Validation\Commands;
 
-use Illuminate\Console\GeneratorCommand;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Str;
-use Symfony\Component\Console\Command\Command;
+use LaraPkgs\Validation\Support\Generator;
 
-final class MakeValidationCommand extends GeneratorCommand
+final class MakeValidationCommand extends Command
 {
     /**
      * @var string
@@ -28,79 +27,27 @@ final class MakeValidationCommand extends GeneratorCommand
 
     public function handle(): int|bool|null
     {
-        if ((! $this->hasOption('force') || ! $this->option('force')) && $this->alreadyExists($this->getNameInput())) {
-            $this->components->error($this->type.' already exists.');
-
-            return Command::FAILURE;
-        }
-
-        return parent::handle();
+        return (!($generator = $this->makeGenerator())->isOverwriting() && $generator->exists())
+            ? tap(self::FAILURE, fn() => $this->error('Validation class already exists!'))
+            : tap(self::SUCCESS, fn() => $generator->generate());
     }
 
-    protected function getStub(): string
+    protected function makeGenerator(): Generator
+    {
+        $name = $this->argument('name');
+        $stubs = $this->getStubs();
+        $config = Config::get('validation.generators.validation');
+
+        return new Generator($name, ...$stubs)->applyConfig($config)
+            ->type($this->type)->forceType()
+            ->overwrite($this->option('force'));
+    }
+
+    protected function getStubs(): array
     {
         $publishedStubPath = $this->laravel->basePath('stubs/validation.stub');
+        $defaultStubPath = __DIR__ . '/../../stubs/validation.stub';
 
-        return file_exists($publishedStubPath)
-            ? $publishedStubPath
-            : __DIR__ . '/../../stubs/validation.stub';
-    }
-
-    protected function getNameInput(): string
-    {
-        return Str::of(trim($this->argument('name')))
-            ->trim('/')
-            ->replaceEnd('.php', '')
-            ->replaceEnd('Validation', '')
-            ->append('Validation')
-            ->toString();
-    }
-
-    protected function rootNamespace(): string
-    {
-        return $this->getBaseNamespaceConfig();
-    }
-
-    protected function getDefaultNamespace($rootNamespace): string
-    {
-        if(Str::contains($this->getNameInput(), '/')) {
-            return $rootNamespace;
-        }
-
-        return Str::of($this->getDirectoryConfig())
-            ->replace('/', '\\')
-            ->prepend($rootNamespace, '\\')
-            ->toString();
-    }
-
-    protected function getPath($name): string
-    {
-        return Str::of($name)
-            ->replaceFirst($this->rootNamespace(), '')
-            ->replace('\\', '/')
-            ->trim('/')
-            ->prepend($this->getBasePathConfig(), '/')
-            ->append('.php')
-            ->toString();
-    }
-
-    protected function getConfig(string $key): array|string
-    {
-        return Config::get('validation.generators.validation.' . $key);
-    }
-
-    protected function getBasePathConfig(): string
-    {
-        return Str::trim($this->getConfig('base_path'), '/');
-    }
-
-    protected function getBaseNamespaceConfig(): string
-    {
-        return Str::trim($this->getConfig('base_namespace'), '\\');
-    }
-
-    protected function getDirectoryConfig(): string
-    {
-        return Str::trim($this->getConfig('directory'), '/');
+        return [$publishedStubPath, $defaultStubPath];
     }
 }

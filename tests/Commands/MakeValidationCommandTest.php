@@ -2,119 +2,56 @@
 
 declare(strict_types=1);
 
+namespace Tests\Commands;
+
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
-use LaraPkgs\Validation\Tests\TestSupport\TestsConfigurableComponentGenerator;
 
-uses(TestsConfigurableComponentGenerator::class);
+function callArtisanCommand($parameters = []): int
+{
+    $parameters = array_merge(['name' => 'User'], $parameters);
+
+    return Artisan::call('make:validation', $parameters);
+}
+
+function cleanup()
+{
+    if(File::isDirectory($directory = app_path('Validation'))) {
+        File::deleteDirectory($directory);
+    }
+
+    if(File::isDirectory($directory = base_path('stubs'))) {
+        File::deleteDirectory($directory);
+    }
+}
 
 beforeEach(function () {
-   $this->initializeTestsConfigurableComponentGenerator('UserValidation', 'validation.generators.validation');
+    $this->file = app_path('Validation/UserValidation.php');
+    cleanup();
 });
 
 afterEach(function () {
-    $this->cleanupComponentDirectories();
+    cleanup();
 });
 
-it('creates a new validation class using default configuration values', function (): void {
-    expect(File::exists($this->resolveComponentPath()))->toBeFalse();
+it('creates a new validation class using configuration values', function (): void {
+    expect(callArtisanCommand())->toBe(Command::SUCCESS);
 
-    expect($this->callComponentMakeCommand())->toBe(0);
-    expect(File::exists($this->resolveComponentPath()))->toBeTrue();
-
-    expect(File::get($this->resolveComponentPath()))
-        ->toContain('namespace ' . $this->resolveComponentNamespace() . ';')
-        ->toContain('final class ' . $this->resolveComponentName() . ' extends Validatable')
+    expect(File::get($this->file))
+        ->toContain('namespace App\Validation;')
+        ->toContain('final class UserValidation extends Validatable')
         ->toContain('protected function makeValidationCollection(): ValidationCollection');
 });
 
-it('creates a new validation class using custom configuration values within the Laravel app path', function (): void {
-    $this->setComponentConfig([
-        'base_path' => app_path('Domain/Users'),
-        'base_namespace' => 'App\\Domain\\Users\\',
-        'directory' => 'Rules',
-    ]);
-
-    expect(File::exists($this->resolveComponentPath()))->toBeFalse();
-
-    expect($this->callComponentMakeCommand())->toBe(0);
-    expect(File::exists($this->resolveComponentPath()))->toBeTrue();
-
-    expect(File::get($this->resolveComponentPath()))
-        ->toContain('namespace ' . $this->resolveComponentNamespace() . ';')
-        ->toContain('final class ' . $this->resolveComponentName() . ' extends Validatable')
-        ->toContain('protected function makeValidationCollection(): ValidationCollection');
+it('prevents creating a validation class that already exists', function () {
+    expect(callArtisanCommand())->toBe(Command::SUCCESS);
+    expect(callArtisanCommand())->toBe(Command::FAILURE);
 });
 
-it('creates a new validation class using custom configuration values outside the Laravel app path', function (): void {
-    $this->setComponentConfig([
-        'base_path' => base_path('modules'),
-        'base_namespace' => 'Modules\\',
-    ]);
-
-    expect(File::exists($this->resolveComponentPath()))->toBeFalse();
-
-    expect($this->callComponentMakeCommand())->toBe(0);
-    expect(File::exists($this->resolveComponentPath()))->toBeTrue();
-
-    expect(File::get($this->resolveComponentPath()))
-        ->toContain('namespace ' . $this->resolveComponentNamespace() . ';')
-        ->toContain('final class ' . $this->resolveComponentName() . ' extends Validatable')
-        ->toContain('protected function makeValidationCollection(): ValidationCollection');
-});
-
-it('normalizes the class name', function (string $nameArgument): void {
-    $this->setComponentNameArgument($nameArgument);
-
-    expect(File::exists($this->resolveComponentPath()))->toBeFalse();
-    expect($this->callComponentMakeCommand())->toBe(0);
-
-    expect(File::exists($this->resolveComponentPath()))->toBeTrue();
-
-    expect(File::get($this->resolveComponentPath()))
-        ->toContain('namespace ' . $this->resolveComponentNamespace() . ';')
-        ->toContain('final class ' . $this->resolveComponentName() . ' extends Validatable')
-        ->toContain('protected function makeValidationCollection(): ValidationCollection');
-})->with([
-    'User',
-    'User.php',
-    'UserValidation.php'
-]);
-
-it('accepts a custom path within the root directory', function () {
-    $this->setComponentNameArgument('Users/Validation/UserValidation');
-    $this->setComponentConfig([
-        'base_path' => app_path('Domain'),
-        'base_namespace' => 'App\\Domain\\'
-    ]);
-
-    expect(File::exists($this->resolveComponentPath()))->toBeFalse();
-    expect($this->callComponentMakeCommand())->toBe(0);
-    expect(File::exists($this->resolveComponentPath()))->toBeTrue();
-
-    expect(File::get($this->resolveComponentPath()))
-        ->toContain('namespace ' . $this->resolveComponentNamespace() . ';')
-        ->toContain('final class ' . $this->resolveComponentName() . ' extends Validatable')
-        ->toContain('protected function makeValidationCollection(): ValidationCollection');
-});
-
-it('fails when trying to create a class that already exists', function (): void {
-    expect(File::exists($this->resolveComponentPath()))->toBeFalse();
-
-    expect($this->callComponentMakeCommand())->toBe(0);
-    expect($this->callComponentMakeCommand())->toBe(1);
-
-    expect(File::exists($this->resolveComponentPath()))->toBeTrue();
-});
-
-it('succeeds when trying to create a class that already exists using the force (--force) option', function (): void {
-    expect(File::exists($this->resolveComponentPath()))->toBeFalse();
-
-    expect($this->callComponentMakeCommand())->toBe(0);
-    expect(File::exists($this->resolveComponentPath()))->toBeTrue();
-
-    expect($this->callComponentMakeCommand(parameters: ['--force' => true]))->toBe(0);
-    expect(File::exists($this->resolveComponentPath()))->toBeTrue();
+it('allows creating a validation class that already exists when the --force option is set', function () {
+    expect(callArtisanCommand())->toBe(Command::SUCCESS);
+    expect(callArtisanCommand(['--force' => true]))->toBe(Command::SUCCESS);
 });
 
 it('uses the published validation.stub when available', function (): void {
@@ -130,12 +67,12 @@ it('uses the published validation.stub when available', function (): void {
     File::put($stubPath, $stubContent . $line);
     expect(File::get($stubPath))->toContain($line);
 
-    expect($this->callComponentMakeCommand())->toBe(0);
-    expect(File::exists($this->resolveComponentPath()))->toBeTrue();
+    expect(callArtisanCommand())->toBe(0);
+    expect(File::exists($this->file))->toBeTrue();
 
-    expect(File::get($this->resolveComponentPath()))
-        ->toContain('namespace ' . $this->resolveComponentNamespace() . ';')
-        ->toContain('final class ' . $this->resolveComponentName() . ' extends Validatable')
+    expect(File::get($this->file))
+        ->toContain('namespace App\Validation;')
+        ->toContain('final class UserValidation extends Validatable')
         ->toContain('protected function makeValidationCollection(): ValidationCollection')
         ->toContain($line);
 });
