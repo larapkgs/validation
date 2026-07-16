@@ -231,6 +231,19 @@ describe('Generator::overwrite', function () {
     });
 });
 
+describe('Generator::isOverwriting', function () {
+    it('indicates if files are going to be overwritten', function () {
+        $config = getGeneratorConfig();
+        $generator = new Generator('Test', $this->stub)->applyConfig($config);
+
+        expect($generator->isOverwriting())->toBeFalse();
+
+        $generator->overwrite();
+
+        expect($generator->isOverwriting())->toBeTrue();
+    });
+});
+
 describe('Generator::exists', function () {
     it('indicates if the intended file path already exists', function () {
         $config = getGeneratorConfig();

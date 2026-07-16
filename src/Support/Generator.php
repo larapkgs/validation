@@ -107,6 +107,11 @@ final class Generator
         return $this;
     }
 
+    public function isOverwriting(): bool
+    {
+        return $this->overwrite;
+    }
+
     /** @param array{base_path?: string, base_namespace?: string, directory?: ?string} $configInput */
     public function applyConfig(array $configInput): self
     {
