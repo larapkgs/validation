@@ -12,8 +12,9 @@ use Illuminate\Support\Facades\App;
 use LaraPkgs\Validation\Concerns\HasFluentRules;
 use LaraPkgs\Validation\Concerns\IsValidatable;
 use LaraPkgs\Validation\Contracts\RuleFactory;
+use LaraPkgs\Validation\Contracts\Validatable;
 
-final class ValidationItem
+final class ValidatableBuilder implements Validatable
 {
     use HasFluentRules;
     use IsValidatable;

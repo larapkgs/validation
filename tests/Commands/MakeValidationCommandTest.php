@@ -41,7 +41,7 @@ it('creates a new validation class using configuration values', function (): voi
     expect(File::get($this->file))
         ->toContain('namespace App\Validation;')
         ->toContain('final class UserValidation extends Validatable')
-        ->toContain('protected function makeValidationCollection(): ValidationCollection');
+        ->toContain('protected function makeValidatableCollection(): ValidatableCollection');
 });
 
 it('prevents creating a validation class that already exists', function () {
@@ -73,6 +73,6 @@ it('uses the published validation.stub when available', function (): void {
     expect(File::get($this->file))
         ->toContain('namespace App\Validation;')
         ->toContain('final class UserValidation extends Validatable')
-        ->toContain('protected function makeValidationCollection(): ValidationCollection')
+        ->toContain('protected function makeValidatableCollection(): ValidatableCollection')
         ->toContain($line);
 });

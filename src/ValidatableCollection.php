@@ -10,24 +10,25 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use LaraPkgs\Validation\Concerns\IsValidatable;
+use LaraPkgs\Validation\Contracts\Validatable;
 
-final class ValidationCollection implements Countable
+final class ValidatableCollection implements Countable, Validatable
 {
     use IsValidatable;
 
-    /** @var Collection<string, ValidationItem> */
+    /** @var Collection<string, ValidatableBuilder> */
     protected Collection $items;
 
     protected ValidationFactoryContract $validationFactory;
 
-    public static function make(ValidationItem ...$items): self
+    public static function make(ValidatableBuilder ...$items): self
     {
         $factory = App::make(ValidationFactoryContract::class);
 
         return new self($factory, ...$items);
     }
 
-    public function __construct(ValidationFactoryContract $validationFactory, ValidationItem ...$items)
+    public function __construct(ValidationFactoryContract $validationFactory, ValidatableBuilder ...$items)
     {
         $this->items = new Collection();
         $this->validationFactory = $validationFactory;
@@ -41,7 +42,7 @@ final class ValidationCollection implements Countable
     }
 
     /**
-     * @return Collection<string, ValidationItem>
+     * @return Collection<string, ValidatableBuilder>
      */
     public function getItems(): Collection
     {
@@ -49,41 +50,41 @@ final class ValidationCollection implements Countable
     }
 
     /**
-     * @return Collection<string, ValidationItem>
+     * @return Collection<string, ValidatableBuilder>
      */
     protected function cloneItems(): Collection
     {
-        return $this->items->map(fn(ValidationItem $item) => clone $item);
+        return $this->items->map(fn(ValidatableBuilder $item) => clone $item);
     }
 
-    protected function processItems(ValidationItem ...$validationItems): self
+    protected function processItems(ValidatableBuilder ...$items): self
     {
-        foreach ($validationItems as $validationItem) {
-            $this->items->put($validationItem->getKey(), $validationItem);
+        foreach ($items as $item) {
+            $this->items->put($item->getKey(), $item);
         }
 
         return $this;
     }
 
-    public function add(ValidationItem ...$validationItems): self
+    public function add(ValidatableBuilder ...$items): self
     {
-        return (clone $this)->processItems(...$validationItems);
+        return (clone $this)->processItems(...$items);
     }
 
     public function prefix(string $prefix): self
     {
         $items = $this->items
-            ->map(fn(ValidationItem $item) => $item->prefix($prefix))
+            ->map(fn(ValidatableBuilder $item) => $item->prefix($prefix))
             ->values()->all();
 
         return self::make(...$items);
     }
 
-    public function merge(ValidationCollection ...$validationCollections): self
+    public function merge(ValidatableCollection ...$validatableCollections): self
     {
-        /** @var array<int, ValidationItem> $items */
-        $items = new Collection([$this, ...$validationCollections])
-            ->reduce(function(array $carry, ValidationCollection $collection) {
+        /** @var array<int, ValidatableBuilder> $items */
+        $items = new Collection([$this, ...$validatableCollections])
+            ->reduce(function(array $carry, ValidatableCollection $collection) {
                 return array_merge($carry, $collection->getItems()->all());
             }, []);
 
@@ -104,7 +105,7 @@ final class ValidationCollection implements Countable
     public function toValidatorArguments(): array
     {
         /** @var array{rules: array<string, array<int, string>>, messages: array<string, string>, attributes: array<string, string>} $arguments */
-        $arguments = $this->items->reduce(function (array $carry, ValidationItem $item) {
+        $arguments = $this->items->reduce(function (array $carry, ValidatableBuilder $item) {
             $itemArguments = $item->toValidatorArguments();
 
             $carry['rules'] = array_merge($carry['rules'], $itemArguments['rules']);

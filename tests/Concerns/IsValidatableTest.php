@@ -6,8 +6,8 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 use Illuminate\Validation\ValidationException;
 use LaraPkgs\Validation\Concerns\IsValidatable;
-use LaraPkgs\Validation\ValidationCollection;
-use LaraPkgs\Validation\ValidationItem;
+use LaraPkgs\Validation\ValidatableCollection;
+use LaraPkgs\Validation\ValidatableBuilder;
 
 beforeEach(function () {
     $this->validation = new class() {
@@ -15,9 +15,9 @@ beforeEach(function () {
 
         public function makeValidator(array $data): Validator
         {
-            return ValidationCollection::make(
-                ValidationItem::make('property1', 'required'),
-                ValidationItem::make('property2', 'nullable'),
+            return ValidatableCollection::make(
+                ValidatableBuilder::make('property1', 'required'),
+                ValidatableBuilder::make('property2', 'nullable'),
             )->makeValidator($data);
         }
     };
@@ -25,7 +25,7 @@ beforeEach(function () {
 
 describe('IsValidatable::passes', function () {
     it('indicates if the given data passes the constraints as set by the rules', function () {
-        $validation = ValidationItem::make('property')->required();
+        $validation = ValidatableBuilder::make('property')->required();
         $data = ['property' => 'value'];
 
         expect($validation)->passes($data)->toBeTrue();
@@ -34,7 +34,7 @@ describe('IsValidatable::passes', function () {
 
 describe('IsValidatable::fails', function () {
     it('indicates if the given data fails the constraints as set by the rules', function () {
-        $validation = ValidationItem::make('property')->required();
+        $validation = ValidatableBuilder::make('property')->required();
         $data = [];
 
         expect($validation)->fails($data)->toBeTrue();

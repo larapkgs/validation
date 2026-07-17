@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace {{ namespace }};
 
 use LaraPkgs\Validation\Validatable;
-use LaraPkgs\Validation\ValidationCollection;
+use LaraPkgs\Validation\ValidatableCollection;
 
 final class {{ class }} extends Validatable
 {
-    protected function makeValidationCollection(): ValidationCollection
+    protected function makeValidatableCollection(): ValidatableCollection
     {
-        return ValidationCollection::make(
+        return ValidatableCollection::make(
             //
         );
     }

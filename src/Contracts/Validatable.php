@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace LaraPkgs\Validation\Contracts;
 
 use Illuminate\Contracts\Validation\Validator;
-use LaraPkgs\Validation\ValidationCollection;
+use LaraPkgs\Validation\ValidatableCollection;
 
 interface Validatable
 {

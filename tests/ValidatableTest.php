@@ -7,16 +7,16 @@ use Illuminate\Contracts\Validation\Validator;
 use LaraPkgs\Validation\Concerns\IsValidatable;
 use LaraPkgs\Validation\Contracts\Validatable as ValidatableContract;
 use LaraPkgs\Validation\Validatable;
-use LaraPkgs\Validation\ValidationCollection;
-use LaraPkgs\Validation\ValidationItem;
+use LaraPkgs\Validation\ValidatableCollection;
+use LaraPkgs\Validation\ValidatableBuilder;
 
 beforeEach(function () {
     $this->validatable = new class() extends Validatable {
-        protected function makeValidationCollection(): ValidationCollection
+        protected function makeValidatableCollection(): ValidatableCollection
         {
-            return ValidationCollection::make(
-                ValidationItem::make('property1', 'required'),
-                ValidationItem::make('property2', 'nullable'),
+            return ValidatableCollection::make(
+                ValidatableBuilder::make('property1', 'required'),
+                ValidatableBuilder::make('property2', 'nullable'),
             );
         }
     };
@@ -32,14 +32,14 @@ it('uses the IsValidatable trait', function () {
     expect(class_uses(Validatable::class))->toHaveKey(IsValidatable::class);
 });
 
-describe('Validatable::getValidationCollection', function () {
-    it('provides a clone of the underlying ValidationCollection', function () {
-        $getValidationCollection = function($subject) {
-            return (fn() => $this->validationCollection)->call($subject);
+describe('Validatable::getValidatableCollection', function () {
+    it('provides a clone of the underlying ValidatableCollection', function () {
+        $getValidatableCollection = function($subject) {
+            return (fn() => $this->validatableCollection)->call($subject);
         };
 
-        expect($this->validatable->getValidationCollection())
-            ->not->toBe($getValidationCollection($this->validatable));
+        expect($this->validatable->getValidatableCollection())
+            ->not->toBe($getValidatableCollection($this->validatable));
     });
 });
 

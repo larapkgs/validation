@@ -12,16 +12,16 @@ abstract class Validatable implements ValidatableContract
 {
     use IsValidatable;
 
-    protected ?ValidationCollection $validationCollection = null;
+    protected ?ValidatableCollection $validatableCollection = null;
 
-    public function getValidationCollection(): ValidationCollection
+    public function getValidatableCollection(): ValidatableCollection
     {
-        return clone $this->resolveValidationCollection();
+        return clone $this->resolveValidatableCollection();
     }
 
-    protected function resolveValidationCollection(): ValidationCollection
+    protected function resolveValidatableCollection(): ValidatableCollection
     {
-        return clone $this->validationCollection ??= $this->makeValidationCollection();
+        return clone $this->validatableCollection ??= $this->makeValidatableCollection();
     }
 
     /**
@@ -29,8 +29,8 @@ abstract class Validatable implements ValidatableContract
      */
     public function makeValidator(array $data): Validator
     {
-        return $this->resolveValidationCollection()->makeValidator($data);
+        return $this->resolveValidatableCollection()->makeValidator($data);
     }
 
-    abstract protected function makeValidationCollection(): ValidationCollection;
+    abstract protected function makeValidatableCollection(): ValidatableCollection;
 }

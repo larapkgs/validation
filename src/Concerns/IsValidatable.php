@@ -7,7 +7,7 @@ namespace LaraPkgs\Validation\Concerns;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
-use LaraPkgs\Validation\ValidationCollection;
+use LaraPkgs\Validation\ValidatableCollection;
 
 trait IsValidatable
 {
