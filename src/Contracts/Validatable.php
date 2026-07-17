@@ -9,8 +9,6 @@ use LaraPkgs\Validation\ValidationCollection;
 
 interface Validatable
 {
-    public function getValidationCollection(): ValidationCollection;
-
     /**
      * @param array<string, mixed> $data
      */
