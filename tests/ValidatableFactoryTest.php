@@ -9,11 +9,11 @@ beforeEach(function () {
 });
 
 describe('ValidatableFactory::make', function () {
-    it('instantiates a ValidatableBuilder when the first argument is a string', function () {
+    it('instantiates a ValidatableBuilder when given a string', function () {
         expect($this->factory->make('property'))->toBeInstanceOf(ValidatableBuilder::class);
     });
 
-    it('instantiates a ValidatableCollection when the first argument is a ValidatableBuilder', function () {
+    it('instantiates a ValidatableCollection when given a ValidatableBuilder', function () {
         expect($this->factory->make(
             ValidatableBuilder::make('property')
         ))->toBeInstanceOf(ValidatableCollection::class);

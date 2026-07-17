@@ -10,6 +10,7 @@ use LaraPkgs\Validation\Contracts\RuleFactory as RuleFactoryContract;
 use LaraPkgs\Validation\Contracts\RulePrefixer as RulePrefixerContract;
 use LaraPkgs\Validation\Contracts\RulePriorityResolver as RulePriorityResolverContract;
 use LaraPkgs\Validation\Contracts\RuleTypeResolver as RuleTypeResolverContract;
+use LaraPkgs\Validation\Contracts\ValidatableFactory as ValidatableFactoryContract;
 use LaraPkgs\Validation\Rules\RuleFactory;
 use LaraPkgs\Validation\Rules\RuleParser;
 use LaraPkgs\Validation\Rules\RulePrefixer;
@@ -48,6 +49,10 @@ final class ValidationServiceProvider extends ServiceProvider
 
         $this->app->singleton(RulePrefixerContract::class, function ($app) {
             return new RulePrefixer();
+        });
+
+        $this->app->singleton(ValidatableFactoryContract::class, function ($app) {
+            return new ValidatableFactory();
         });
 
         $this->mergeConfigFrom(
