@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\Exceptions\UnparsableRuleException;
-use LaraPkgs\Validation\RuleParser;
+use LaraPkgs\Validation\Rules\RuleParser;
 use LaraPkgs\Validation\Rules\RuleStringParser;
 use LaraPkgs\Validation\Rules\ValidationRule;
 

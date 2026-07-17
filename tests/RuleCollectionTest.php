@@ -5,8 +5,8 @@ declare(strict_types=1);
 use Illuminate\Validation\Rule;
 use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\Contracts\RulePrefixer;
-use LaraPkgs\Validation\RuleCollection;
-use LaraPkgs\Validation\RuleParser;
+use LaraPkgs\Validation\Rules\RuleCollection;
+use LaraPkgs\Validation\Rules\RuleParser;
 use LaraPkgs\Validation\Rules\ValidationRule;
 
 it('expects an instance of the RuleFactory and RuleParser on instantiation', function () {

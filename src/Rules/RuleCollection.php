@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LaraPkgs\Validation;
+namespace LaraPkgs\Validation\Rules;
 
 use Countable;
 use Illuminate\Contracts\Support\Arrayable;

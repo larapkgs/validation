@@ -13,6 +13,7 @@ use LaraPkgs\Validation\Concerns\HasFluentRules;
 use LaraPkgs\Validation\Concerns\IsValidatable;
 use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\Contracts\Validatable;
+use LaraPkgs\Validation\Rules\RuleCollection;
 
 final class ValidatableBuilder implements Validatable
 {

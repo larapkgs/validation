@@ -11,6 +11,7 @@ use LaraPkgs\Validation\Contracts\RulePrefixer as RulePrefixerContract;
 use LaraPkgs\Validation\Contracts\RulePriorityResolver as RulePriorityResolverContract;
 use LaraPkgs\Validation\Contracts\RuleTypeResolver as RuleTypeResolverContract;
 use LaraPkgs\Validation\Rules\RuleFactory;
+use LaraPkgs\Validation\Rules\RuleParser;
 use LaraPkgs\Validation\Rules\RulePrefixer;
 use LaraPkgs\Validation\Rules\RulePriorityResolver;
 use LaraPkgs\Validation\Rules\RuleStringParser;
