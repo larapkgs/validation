@@ -67,9 +67,11 @@ final class RuleCollection implements Arrayable, Countable
     /**
      * @param array<string, mixed> $arguments
      */
-    protected function applyFluentRule(string $ruleName, array $arguments = []): self
+    protected function applyFluentRule(string|ValidationRule $rule, array $arguments = []): self
     {
-        $rule = $this->factory->make($ruleName, $arguments);
+        if(is_string($rule)) {
+            $rule = $this->factory->make($rule, $arguments);
+        }
 
         return $this->add($rule);
     }

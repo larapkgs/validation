@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace LaraPkgs\Validation\Tests\TestSupport;
 
 use LaraPkgs\Validation\Concerns\HasFluentRules;
+use LaraPkgs\Validation\Contracts\ValidationRule;
 
 final class HasFluentRuleTestClass
 {
@@ -17,9 +18,9 @@ final class HasFluentRuleTestClass
         return $this->rules;
     }
 
-    protected function applyFluentRule(string $ruleName, array $arguments = []): self
+    protected function applyFluentRule(string|ValidationRule $rule, array $arguments = []): self
     {
-        $this->rules[$ruleName] = $arguments;
+        $this->rules[$rule] = $arguments;
 
         return $this;
     }

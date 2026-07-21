@@ -13,6 +13,7 @@ use LaraPkgs\Validation\Concerns\HasFluentRules;
 use LaraPkgs\Validation\Concerns\IsValidatable;
 use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\Contracts\Validatable;
+use LaraPkgs\Validation\Contracts\ValidationRule;
 use LaraPkgs\Validation\Rules\RuleCollection;
 
 final class ValidatableBuilder implements Validatable
@@ -85,10 +86,12 @@ final class ValidatableBuilder implements Validatable
     /**
      * @param array<string, mixed> $arguments
      */
-    public function applyFluentRule(string $ruleName, array $arguments = []): self
+    public function applyFluentRule(string|ValidationRule $rule, array $arguments = []): self
     {
-        return $this->newInstance(function(self $instance) use ($ruleName, $arguments) {
-            $rule = $this->ruleFactory->make($ruleName, $arguments);
+        return $this->newInstance(function(self $instance) use ($rule, $arguments) {
+            if(is_string($rule)) {
+                $rule = $this->ruleFactory->make($rule, $arguments);
+            }
 
             $instance->rules->add($rule);
         });

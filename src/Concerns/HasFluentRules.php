@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace LaraPkgs\Validation\Concerns;
 
+use LaraPkgs\Validation\Contracts\ValidationRule;
+
 trait HasFluentRules
 {
-    abstract protected function applyFluentRule(string $ruleName, array $arguments = []): self;
+    abstract protected function applyFluentRule(string|ValidationRule $rule, array $arguments = []): self;
 
     /**
      * @RuleType = constraint
