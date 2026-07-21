@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaraPkgs\Validation\Rules;
 
+use Closure;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use LaraPkgs\Validation\Contracts\ValidationRule as ValidationRuleContract;
@@ -16,6 +17,9 @@ final class ValidationRule implements ValidationRuleContract
     protected array $arguments;
 
     protected int $priority;
+
+    /** @var (\Closure(self): (string|object))|null */
+    protected ?Closure $validatorRuleResolver = null;
 
     /**
      * @param array<array-key, mixed> $arguments
@@ -63,8 +67,24 @@ final class ValidationRule implements ValidationRuleContract
         return $this->priority;
     }
 
+    public function toValidatorRuleUsing(callable $validatorRuleResolver): self
+    {
+        if(!$validatorRuleResolver instanceof Closure) {
+            $validatorRuleResolver = $validatorRuleResolver(...);
+        }
+
+        $clone = clone $this;
+        $clone->validatorRuleResolver = $validatorRuleResolver;
+
+        return $clone;
+    }
+
     public function toValidatorRule(): string|object
     {
+        if($this->validatorRuleResolver !== null) {
+            return ($this->validatorRuleResolver)($this);
+        }
+
         $arguments = Collection::make($this->arguments);
 
         if($arguments->count() == 0) {

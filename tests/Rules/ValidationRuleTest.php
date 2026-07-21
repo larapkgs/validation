@@ -91,6 +91,34 @@ describe('ValidationRule::getPriority', function () {
     });
 });
 
+describe('ValidationRule::toValidatorRuleUsing', function () {
+    it('accepts a closure as a custom validator rule resolver', function () {
+        $resolver = function (ValidationRule $rule) {
+            return 'custom_min:' . implode(',', $rule->getArguments());
+        };
+
+        $rule = new ValidationRule('min', ['value' => 5]);
+        $customRule = $rule->toValidatorRuleUsing($resolver);
+
+        expect($rule->toValidatorRule())->toBe('min:5')
+            ->and($customRule->toValidatorRule())->toBe('custom_min:5');
+    });
+
+    it('accepts a callable as a custom validator rule resolver', function () {
+        $resolver = new class {
+            public function __invoke(ValidationRule $rule): string {
+                return 'custom_min:' . implode(',', $rule->getArguments());
+            }
+        };
+
+        $rule = new ValidationRule('min', ['value' => 5]);
+        $customRule = $rule->toValidatorRuleUsing($resolver);
+
+        expect($rule->toValidatorRule())->toBe('min:5')
+            ->and($customRule->toValidatorRule())->toBe('custom_min:5');
+    });
+});
+
 describe('ValidationRule::toValidatorRule', function () {
     it('provides the name when no arguments are set', function () {
         $rule = new ValidationRule('required');
