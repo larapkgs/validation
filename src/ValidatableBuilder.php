@@ -102,7 +102,7 @@ final class ValidatableBuilder implements Validatable
      */
     public function getRules(): array
     {
-        return $this->rules->toArray();
+        return $this->rules->toValidatorArgument();
     }
 
     /**
@@ -160,7 +160,7 @@ final class ValidatableBuilder implements Validatable
      */
     protected function prepareRulesForValidator(): array
     {
-        return [$this->key => $this->rules->toArray()];
+        return [$this->key => $this->rules->toValidatorArgument()];
     }
 
     /**

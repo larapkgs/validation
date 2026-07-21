@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace LaraPkgs\Validation\Rules;
 
 use Countable;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use LaraPkgs\Validation\Concerns\HasFluentRules;
@@ -13,10 +12,7 @@ use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\Contracts\RulePrefixer;
 use LaraPkgs\Validation\Contracts\ValidationRule;
 
-/**
- * @implements Arrayable<string, mixed>
- */
-final class RuleCollection implements Arrayable, Countable
+final class RuleCollection implements Countable
 {
     use HasFluentRules;
 
@@ -106,7 +102,7 @@ final class RuleCollection implements Arrayable, Countable
     /**
      * @return array<int, mixed>
      */
-    public function toArray(): array
+    public function toValidatorArgument(): array
     {
         return $this->rules
             ->sortBy(fn(ValidationRule $rule) => $rule->getPriority())
