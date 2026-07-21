@@ -63,7 +63,7 @@ final class ValidationRule implements ValidationRuleContract
         return $this->priority;
     }
 
-    public function asValidatorRule(): string|object
+    public function toValidatorRule(): string|object
     {
         $arguments = Collection::make($this->arguments);
 

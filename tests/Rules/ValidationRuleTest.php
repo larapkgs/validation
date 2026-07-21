@@ -91,37 +91,37 @@ describe('ValidationRule::getPriority', function () {
     });
 });
 
-describe('ValidationRule::asValidatorRule', function () {
+describe('ValidationRule::toValidatorRule', function () {
     it('provides the name when no arguments are set', function () {
         $rule = new ValidationRule('required');
 
-        expect($rule)->asValidatorRule()->toBe('required');
+        expect($rule)->toValidatorRule()->toBe('required');
     });
 
     it('provides an object when the only argument is an object', function () {
         $rule = new ValidationRule('in', [$object = Rule::in([])]);
 
-        expect($rule)->asValidatorRule()->toBe($object);
+        expect($rule)->toValidatorRule()->toBe($object);
     });
 
     it('provides a string starting with the name separated by colon from the comma separated arguments', function () {
         $rule = new ValidationRule('min', $arguments = ['value' => 1]);
-        expect($rule)->asValidatorRule()->toBe($rule->getName() . ':' . Arr::join($arguments, ','));
+        expect($rule)->toValidatorRule()->toBe($rule->getName() . ':' . Arr::join($arguments, ','));
 
         $rule = new ValidationRule('min', $arguments = [1]);
-        expect($rule)->asValidatorRule()->toBe($rule->getName() . ':' . Arr::join($arguments, ','));
+        expect($rule)->toValidatorRule()->toBe($rule->getName() . ':' . Arr::join($arguments, ','));
 
         $rule = new ValidationRule('between', $arguments = ['min' => 1, 'max' => 10]);
-        expect($rule)->asValidatorRule()->toBe($rule->getName() . ':' . Arr::join($arguments, ','));
+        expect($rule)->toValidatorRule()->toBe($rule->getName() . ':' . Arr::join($arguments, ','));
 
         $rule = new ValidationRule('dimensions', $arguments = ['min_ratio=1/2','max_ratio=3/2']);
-        expect($rule)->asValidatorRule()->toBe($rule->getName() . ':' . Arr::join($arguments, ','));
+        expect($rule)->toValidatorRule()->toBe($rule->getName() . ':' . Arr::join($arguments, ','));
 
         $rule = new ValidationRule('accepted_if', $arguments = [
             'anotherField' => 'category',
             'values' => ['category1', 'category3', 'category5']
         ]);
-        expect($rule)->asValidatorRule()->toBe('accepted_if:category,category1,category3,category5');
+        expect($rule)->toValidatorRule()->toBe('accepted_if:category,category1,category3,category5');
 
     });
 });

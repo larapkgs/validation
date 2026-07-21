@@ -110,7 +110,7 @@ final class RuleCollection implements Arrayable, Countable
     {
         return $this->rules
             ->sortBy(fn(ValidationRule $rule) => $rule->getPriority())
-            ->map(fn(ValidationRule $rule) => $rule->asValidatorRule())
+            ->map(fn(ValidationRule $rule) => $rule->toValidatorRule())
             ->values()->all();
     }
 

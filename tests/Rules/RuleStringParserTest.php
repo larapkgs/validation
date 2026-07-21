@@ -45,7 +45,7 @@ describe('RuleStringParser::parse', function () {
                 fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
                     ->getName()->toBe('required')
                     ->getArguments()->toBeEmpty()
-                    ->asValidatorRule()->toBe('required')
+                    ->toValidatorRule()->toBe('required')
             );
     });
 
@@ -57,7 +57,7 @@ describe('RuleStringParser::parse', function () {
                 fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
                     ->getName()->toBe('min')
                     ->getArguments()->toBe(['10'])
-                    ->asValidatorRule()->toBe('min:10')
+                    ->toValidatorRule()->toBe('min:10')
             );
     });
 
@@ -69,7 +69,7 @@ describe('RuleStringParser::parse', function () {
                 fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
                     ->getName()->toBe('between')
                     ->getArguments()->toBe(['1', '100'])
-                    ->asValidatorRule()->toBe('between:1,100')
+                    ->toValidatorRule()->toBe('between:1,100')
             );
     });
 
@@ -81,7 +81,7 @@ describe('RuleStringParser::parse', function () {
                 fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
                     ->getName()->toBe('dimensions')
                     ->getArguments()->toBe(['min_ratio' => 'min_ratio=1/2', 'max_ratio' => 'max_ratio=3/2'])
-                    ->asValidatorRule()->toBe('dimensions:min_ratio=1/2,max_ratio=3/2')
+                    ->toValidatorRule()->toBe('dimensions:min_ratio=1/2,max_ratio=3/2')
             );
     });
 
@@ -93,19 +93,19 @@ describe('RuleStringParser::parse', function () {
                 fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
                     ->getName()->toBe('required')
                     ->getArguments()->toBeEmpty()
-                    ->asValidatorRule()->toBe('required'),
+                    ->toValidatorRule()->toBe('required'),
                 fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
                     ->getName()->toBe('min')
                     ->getArguments()->toBe(['10'])
-                    ->asValidatorRule()->toBe('min:10'),
+                    ->toValidatorRule()->toBe('min:10'),
                 fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
                     ->getName()->toBe('between')
                     ->getArguments()->toBe(['1', '100'])
-                    ->asValidatorRule()->toBe('between:1,100'),
+                    ->toValidatorRule()->toBe('between:1,100'),
                 fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
                     ->getName()->toBe('dimensions')
                     ->getArguments()->toBe(['min_ratio' => 'min_ratio=1/2', 'max_ratio' => 'max_ratio=3/2'])
-                    ->asValidatorRule()->toBe('dimensions:min_ratio=1/2,max_ratio=3/2')
+                    ->toValidatorRule()->toBe('dimensions:min_ratio=1/2,max_ratio=3/2')
             );
     });
 });

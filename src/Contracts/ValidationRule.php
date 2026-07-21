@@ -20,5 +20,5 @@ interface ValidationRule
 
     public function getPriority(): int;
 
-    public function asValidatorRule(): string|object;
+    public function toValidatorRule(): string|object;
 }
