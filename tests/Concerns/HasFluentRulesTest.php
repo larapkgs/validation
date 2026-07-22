@@ -17,7 +17,11 @@ it('forwards all fluent method calls to the abstract applyFluentRule method', fu
     string $rule,
     array $ruleArguments
 ) {
+    $expected = count($methodArguments) === 1 && is_object($methodArguments[0])
+        ? ['object' => $methodArguments[0]]
+        : [$rule => $ruleArguments];
+
     expect($this->subject->{$method}(...$methodArguments))
         ->toBe($this->subject)
-        ->getRules()->toBe([$rule => $ruleArguments]);
+        ->getRules()->toBe($expected);
 })->with('fluent rules');

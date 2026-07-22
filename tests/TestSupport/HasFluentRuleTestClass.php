@@ -20,7 +20,14 @@ final class HasFluentRuleTestClass
 
     protected function applyFluentRule(string|ValidationRule $rule, array $arguments = []): self
     {
-        $this->rules[$rule] = $arguments;
+        $ruleName = $rule;
+
+        if($rule instanceof ValidationRule) {
+            $ruleName = $rule->getName();
+            $arguments = $rule;
+        }
+
+        $this->rules[$ruleName] = $arguments;
 
         return $this;
     }

@@ -4,11 +4,22 @@ declare(strict_types=1);
 
 namespace LaraPkgs\Validation\Concerns;
 
+use Illuminate\Support\Facades\App;
 use LaraPkgs\Validation\Contracts\ValidationRule;
+use LaraPkgs\Validation\Rules\RuleParser;
 
 trait HasFluentRules
 {
     abstract protected function applyFluentRule(string|ValidationRule $rule, array $arguments = []): self;
+
+    public function applyRule(object $rule): self
+    {
+        $parser = App::make(RuleParser::class);
+
+        $rule = $parser->parse($rule)[0];
+
+        return $this->applyFluentRule($rule);
+    }
 
     /**
      * @RuleType = constraint

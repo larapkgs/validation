@@ -8,9 +8,11 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use LaraPkgs\Validation\Concerns\HasFluentRules;
+use LaraPkgs\Validation\Rules\ValidationRule;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
+use stdClass;
 
 final class FluentRuleDataset
 {
@@ -56,6 +58,7 @@ final class FluentRuleDataset
             'int' => $this->generateIntegerArgumentValue($argumentCount),
             'string', 'array' => $this->generateStringArgumentValue($argumentCount),
             'mixed' => $this->generateMixedArgumentValue($argumentCount),
+            'object' => new ValidationRule('object'),
             default => throw new \Exception('Unsupported argument type: ' . $argumentType),
         };
     }

@@ -3,8 +3,32 @@
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rule;
+use LaraPkgs\Validation\Rules\ValidationRule;
 
 describe('Fluent Rule Integration', function() {
+
+    describe('applyRule', function () {
+        beforeEach(function () {
+            $this->validatable = validatable('property')->applyRule(Rule::numeric());
+        });
+
+        it('it accepts a Laravel Rule Object', function() {
+            $validatable = validatable('property')->applyRule(Rule::numeric());
+            $data = ['property' => 123];
+
+            expect($validatable->passes($data))->toBeTrue();
+        });
+
+        it('it accepts a LaraPkgs ValidationRule', function() {
+            $rule = new ValidationRule('numeric');
+            $validatable = validatable('property')->applyRule($rule);
+
+            $data = ['property' => 123];
+
+            expect($validatable->passes($data))->toBeTrue();
+        });
+    });
 
     describe('accepted', function () {
         beforeEach(function () {
