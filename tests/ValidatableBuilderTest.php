@@ -20,7 +20,7 @@ it('expects an instance of the RuleFactory and a key on instantiation', function
 it('accepts a variadic list of rules on instantiation', function () {
     $validation = ValidatableBuilder::make('property', 'required', 'min:10|max:100');
 
-    expect($validation)->getRules()->toBe(['required', 'min:10', 'max:100']);
+    expect($validation)->getRules()->toValidatorArgument()->toBe(['required', 'min:10', 'max:100']);
 });
 
 describe('applies fluent rules to the underlying RuleCollection', function () {
@@ -32,46 +32,45 @@ describe('applies fluent rules to the underlying RuleCollection', function () {
         expect($this->validation)->required()
             ->toBeInstanceOf(ValidatableBuilder::class)
             ->not->toBe($this->validation)
-            ->getRules()->toBe(['required']);
+            ->getRules()->toValidatorArgument()->toBe(['required']);
     });
 
     it('applies rules that only have a single argument', function () {
         expect($this->validation)->min(1)
             ->toBeInstanceOf(ValidatableBuilder::class)
             ->not->toBe($this->validation)
-            ->getRules()->toBe(['min:1']);
+            ->getRules()->toValidatorArgument()->toBe(['min:1']);
     });
 
     it('applies rules that have multiple arguments', function () {
         expect($this->validation)->between(1, 10)
             ->toBeInstanceOf(ValidatableBuilder::class)
             ->not->toBe($this->validation)
-            ->getRules()->toBe(['between:1,10']);
+            ->getRules()->toValidatorArgument()->toBe(['between:1,10']);
     });
 
     it('applies rules that only have variadic arguments', function () {
         expect($this->validation)->contains('category1', 'category2')
             ->toBeInstanceOf(ValidatableBuilder::class)
             ->not->toBe($this->validation)
-            ->getRules()->toBe(['contains:category1,category2']);
+            ->getRules()->toValidatorArgument()->toBe(['contains:category1,category2']);
     });
 
     it('applies rules that have positional and variadic arguments', function () {
         expect($this->validation)->requiredIf('category', 'category1', 'category3')
             ->toBeInstanceOf(ValidatableBuilder::class)
             ->not->toBe($this->validation)
-            ->getRules()->toBe(['required_if:category,category1,category3']);
+            ->getRules()->toValidatorArgument()->toBe(['required_if:category,category1,category3']);
     });
 
     it('allows chaining of fluent rules', function () {
         expect($this->validation)->required()->min(10)
             ->not->toBe($this->validation)
-            ->getRules()->toBe(['required', 'min:10']);
+            ->getRules()->toValidatorArgument()->toBe(['required', 'min:10']);
     });
 });
 
-describe('ValidatableBuilder
-::make', function () {
+describe('ValidatableBuilder::make', function () {
     it('provides a factory method that expects a key', function () {
         $validation = ValidatableBuilder::make('property');
 
@@ -85,12 +84,11 @@ describe('ValidatableBuilder
 
         expect($validation)
             ->toBeInstanceOf(ValidatableBuilder::class)
-            ->getRules()->toBe(['required', 'min:10', 'max:100']);
+            ->getRules()->toValidatorArgument()->toBe(['required', 'min:10', 'max:100']);
     });
 });
 
-describe('ValidatableBuilder
-::getKey()', function () {
+describe('ValidatableBuilder::getKey()', function () {
     it('provides the key', function () {
        $validation = ValidatableBuilder::make('property');
 
@@ -98,8 +96,7 @@ describe('ValidatableBuilder
     });
 });
 
-describe('ValidatableBuilder
-::prefix()', function () {
+describe('ValidatableBuilder::prefix()', function () {
     it('applies a prefix to the key and returns a new instance', function () {
         $validation = ValidatableBuilder::make('property');
 
@@ -111,8 +108,7 @@ describe('ValidatableBuilder
     });
 });
 
-describe('ValidatableBuilder
-::addRules()', function () {
+describe('ValidatableBuilder::addRules()', function () {
     it('adds a variadic list of rules and returns a new instance', function () {
         $validation = ValidatableBuilder::make('property');
 
@@ -120,21 +116,25 @@ describe('ValidatableBuilder
 
         expect($updated)
             ->not->toBe($validation)
-            ->getRules()->toBe(['required', 'min:10', 'max:100']);
+            ->getRules()->toValidatorArgument()->toBe(['required', 'min:10', 'max:100']);
     });
 });
 
-describe('ValidatableBuilder
-::getRules()', function () {
+describe('ValidatableBuilder::getRules()', function () {
     it('provides an array of rules compatible with Laravel validation', function () {
+        $getRules = function ($subject) {
+            return (fn() => $this->rules)->call($subject);
+        };
+
         $validation = ValidatableBuilder::make('property', 'required', 'min:10|max:100');
 
-        expect($validation)->getRules()->toBe(['required', 'min:10', 'max:100']);
+        expect($validation->getRules())
+            ->not->toBe($getRules($validation))
+            ->toValidatorArgument()->toBe(['required', 'min:10', 'max:100']);
     });
 });
 
-describe('ValidatableBuilder
-::addMessages()', function () {
+describe('ValidatableBuilder::addMessages()', function () {
     it('adds an of messages and returns a new instance', function () {
         $validation = ValidatableBuilder::make('property');
 
@@ -152,8 +152,7 @@ describe('ValidatableBuilder
     });
 });
 
-describe('ValidatableBuilder
-::getMessages()', function () {
+describe('ValidatableBuilder::getMessages()', function () {
     it('provides an array of messages compatible with Laravel validation', function () {
         $validation = ValidatableBuilder::make('property')
             ->addMessages(['required' => 'The :attribute field is required.'])
@@ -166,8 +165,7 @@ describe('ValidatableBuilder
     });
 });
 
-describe('ValidatableBuilder
-::setCustomAttribute()', function () {
+describe('ValidatableBuilder::setCustomAttribute()', function () {
     it('sets a custom attribute and returns a new instance', function () {
         $validation = ValidatableBuilder::make('property');
 
@@ -179,8 +177,7 @@ describe('ValidatableBuilder
     });
 });
 
-describe('ValidatableBuilder
-::getCustomAttribute()', function () {
+describe('ValidatableBuilder::getCustomAttribute()', function () {
     it('provides the custom attribute', function () {
         $validation = ValidatableBuilder::make('property')
             ->setCustomAttribute('customAttribute');
@@ -195,8 +192,7 @@ describe('ValidatableBuilder
     });
 });
 
-describe('ValidatableBuilder
-::passes()', function () {
+describe('ValidatableBuilder::passes()', function () {
     it('indicates if the given data passes the constraints as set by the rules', function () {
         $validation = ValidatableBuilder::make('property')->required();
         $data = ['property' => 'value'];
@@ -205,8 +201,7 @@ describe('ValidatableBuilder
     });
 });
 
-describe('ValidatableBuilder
-::fails()', function () {
+describe('ValidatableBuilder::fails()', function () {
     it('indicates if the given data fails the constraints as set by the rules', function () {
         $validation = ValidatableBuilder::make('property')->required();
         $data = [];
@@ -215,8 +210,7 @@ describe('ValidatableBuilder
     });
 });
 
-describe('ValidatableBuilder
-::validate()', function () {
+describe('ValidatableBuilder::validate()', function () {
     it('tries to validate the given data', function () {
         $validation = ValidatableBuilder::make('property')->required();
         $data = ['property' => 'value'];
@@ -230,8 +224,7 @@ describe('ValidatableBuilder
     });
 });
 
-describe('ValidatableBuilder::toValidatorArguments()', function () {
-    it('provides an array of arguments compatible with the Laravel Validator Factory', function () {
+describe('ValidatableBuilder::toValidatorArguments()', function () {it('provides an array of arguments compatible with the Laravel Validator Factory', function () {
         $validation = ValidatableBuilder::make('property')->required()
             ->addMessages(['required' => 'The :attribute field is required.'])
             ->setCustomAttribute('customProperty');
@@ -246,8 +239,7 @@ describe('ValidatableBuilder::toValidatorArguments()', function () {
     });
 });
 
-describe('ValidatableBuilder
-::makeValidator()', function () {
+describe('ValidatableBuilder::makeValidator()', function () {
     it('provides a factory method that creates a Laravel Validator for the given data', function () {
         $validation = ValidatableBuilder::make('property')->required();
 

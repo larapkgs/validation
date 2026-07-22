@@ -97,12 +97,9 @@ final class ValidatableBuilder implements Validatable
         });
     }
 
-    /**
-     * @return array<int, mixed>
-     */
-    public function getRules(): array
+    public function getRules(): RuleCollection
     {
-        return $this->rules->toValidatorArgument();
+        return clone $this->rules;
     }
 
     /**
