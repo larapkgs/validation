@@ -82,11 +82,11 @@ final class ValidatableBuilder implements Validatable
     protected function applyFluentRule(string|ValidationRule $rule, array $arguments = []): self
     {
         return $this->newInstance(function(self $instance) use ($rule, $arguments) {
-            if(is_string($rule)) {
-                $rule = $this->ruleFactory->make($rule, $arguments);
-            }
+            $rule = is_string($rule)
+                ? $this->ruleFactory->make($rule, $arguments)
+                : clone $rule;
 
-            $instance->rules->applyRule($rule);
+            $instance->rules = $instance->rules->applyRule($rule);
         });
     }
 

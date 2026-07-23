@@ -92,7 +92,7 @@ final class ValidationRule implements ValidationRuleContract
         }
 
         if($arguments->count() === 1 && is_object($arguments->first())) {
-            return $arguments->first();
+            return clone $arguments->first();
         }
 
         $arguments = $arguments

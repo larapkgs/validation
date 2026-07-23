@@ -60,7 +60,7 @@ final class ValidatableCollection implements Countable, Validatable
     protected function processItems(ValidatableBuilder ...$items): self
     {
         foreach ($items as $item) {
-            $this->items->put($item->getKey(), $item);
+            $this->items->put($item->getKey(), clone $item);
         }
 
         return $this;

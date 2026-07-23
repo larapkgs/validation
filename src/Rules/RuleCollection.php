@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaraPkgs\Validation\Rules;
 
+use Closure;
 use Countable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -44,13 +45,16 @@ final class RuleCollection implements Countable
         $this->rules = Collection::make();
     }
 
-    protected function processRules(mixed...$rules): self
+    public function __clone()
     {
-        foreach ($this->parser->parse($rules) as $rule) {
-            $this->rules->put($rule->getName(), $rule);
-        }
+        $this->rules = $this->rules->map(fn (ValidationRule $rule) => clone $rule);
+    }
 
-        return $this;
+    protected function newInstance(Closure $callback): self
+    {
+        $instance = clone $this;
+
+        return tap($instance, $callback);
     }
 
     /**
@@ -58,21 +62,22 @@ final class RuleCollection implements Countable
      */
     protected function applyFluentRule(string|ValidationRule $rule, array $arguments = []): self
     {
-        if(is_string($rule)) {
-            $rule = $this->factory->make($rule, $arguments);
-        }
+        return $this->newInstance(function(self $instance) use ($rule, $arguments) {
+            $rule = is_string($rule)
+                ? $this->factory->make($rule, $arguments)
+                : clone $rule;
 
-        return $this->processRules($rule);
+            $instance->rules->put($rule->getName(), $rule);
+        });
     }
 
     public function prefix(string $prefix): self
     {
-        $this->rules = $this->rules
-            ->map(function(ValidationRule $rule) use ($prefix) {
+        return $this->newInstance(function(self $instance) use ($prefix) {
+            $instance->rules = $instance->rules->map(function(ValidationRule $rule) use ($prefix) {
                 return $this->prefixer->prefix($rule, $prefix);
             });
-
-        return $this;
+        });
     }
 
     public function has(string $name): bool
@@ -82,9 +87,9 @@ final class RuleCollection implements Countable
 
     public function forget(string $name): self
     {
-        $this->rules->forget($name);
-
-        return $this;
+        return $this->newInstance(function(self $instance) use ($name) {
+            $instance->rules->forget($name);
+        });
     }
 
     public function isEmpty(): bool

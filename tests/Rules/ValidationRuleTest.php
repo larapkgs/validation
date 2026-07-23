@@ -129,7 +129,9 @@ describe('ValidationRule::toValidatorRule', function () {
     it('provides an object when the only argument is an object', function () {
         $rule = new ValidationRule('in', [$object = Rule::in([])]);
 
-        expect($rule)->toValidatorRule()->toBe($object);
+        expect($rule->toValidatorRule())
+            ->not->toBe($object)
+            ->toEqual($object);
     });
 
     it('provides a string starting with the name separated by colon from the comma separated arguments', function () {
