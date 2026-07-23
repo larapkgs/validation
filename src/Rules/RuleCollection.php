@@ -27,23 +27,21 @@ final class RuleCollection implements Countable
      */
     protected Collection $rules;
 
-    public static function make(mixed ...$rules): self
+    public static function make(): self
     {
         $factory = App::make(RuleFactory::class);
         $parser = App::make(RuleParser::class);
         $prefixer = App::make(RulePrefixer::class);
 
-        return new self($factory, $parser, $prefixer, ...$rules);
+        return new self($factory, $parser, $prefixer);
     }
 
-    public function __construct(RuleFactory $factory, RuleParser $parser, RulePrefixer $prefixer, mixed ...$rules)
+    public function __construct(RuleFactory $factory, RuleParser $parser, RulePrefixer $prefixer)
     {
         $this->parser = $parser;
         $this->factory = $factory;
         $this->prefixer = $prefixer;
         $this->rules = Collection::make();
-
-        $this->processRules(...$rules);
     }
 
     protected function processRules(mixed...$rules): self
@@ -55,11 +53,6 @@ final class RuleCollection implements Countable
         return $this;
     }
 
-    public function add(mixed ...$rules): self
-    {
-        return $this->processRules(...$rules);
-    }
-
     /**
      * @param array<string, mixed> $arguments
      */
@@ -69,7 +62,7 @@ final class RuleCollection implements Countable
             $rule = $this->factory->make($rule, $arguments);
         }
 
-        return $this->add($rule);
+        return $this->processRules($rule);
     }
 
     public function prefix(string $prefix): self

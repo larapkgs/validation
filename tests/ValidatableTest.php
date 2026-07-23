@@ -15,8 +15,8 @@ beforeEach(function () {
         protected function makeValidatableCollection(): ValidatableCollection
         {
             return ValidatableCollection::make(
-                ValidatableBuilder::make('property1', 'required'),
-                ValidatableBuilder::make('property2', 'nullable'),
+                ValidatableBuilder::make('property1')->required(),
+                ValidatableBuilder::make('property2')->nullable(),
             );
         }
     };

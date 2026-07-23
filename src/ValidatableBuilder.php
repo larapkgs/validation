@@ -36,20 +36,20 @@ final class ValidatableBuilder implements Validatable
 
     protected ?string $customAttribute = null;
 
-    public static function make(string $key, mixed ...$rules): self
+    public static function make(string $key): self
     {
         $ruleFactory = App::make(RuleFactory::class);
         $validatorFactory = App::make(ValidatorFactory::class);
 
-        return new self($ruleFactory, $validatorFactory, $key, ...$rules);
+        return new self($ruleFactory, $validatorFactory, $key);
     }
 
-    public function __construct(RuleFactory $ruleFactory, ValidatorFactory $validatorFactory, string $key, mixed ...$rules)
+    public function __construct(RuleFactory $ruleFactory, ValidatorFactory $validatorFactory, string $key)
     {
         $this->ruleFactory = $ruleFactory;
         $this->validatorFactory = $validatorFactory;
         $this->key = $key;
-        $this->rules = RuleCollection::make(...$rules);
+        $this->rules = RuleCollection::make();
     }
 
     public function __clone()
@@ -76,24 +76,17 @@ final class ValidatableBuilder implements Validatable
         });
     }
 
-    public function addRules(mixed ...$rules): self
-    {
-        return $this->newInstance(function(self $instance) use ($rules) {
-            $instance->rules->add(...$rules);
-        });
-    }
-
     /**
      * @param array<string, mixed> $arguments
      */
-    public function applyFluentRule(string|ValidationRule $rule, array $arguments = []): self
+    protected function applyFluentRule(string|ValidationRule $rule, array $arguments = []): self
     {
         return $this->newInstance(function(self $instance) use ($rule, $arguments) {
             if(is_string($rule)) {
                 $rule = $this->ruleFactory->make($rule, $arguments);
             }
 
-            $instance->rules->add($rule);
+            $instance->rules->applyRule($rule);
         });
     }
 

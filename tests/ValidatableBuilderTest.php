@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
@@ -15,12 +14,6 @@ it('expects an instance of the RuleFactory and a key on instantiation', function
     $validation = new ValidatableBuilder($ruleFactory, $validatorFactory, 'property');
 
     expect($validation->getKey())->toBe('property');
-});
-
-it('accepts a variadic list of rules on instantiation', function () {
-    $validation = ValidatableBuilder::make('property', 'required', 'min:10|max:100');
-
-    expect($validation)->getRules()->toValidatorArgument()->toBe(['required', 'min:10', 'max:100']);
 });
 
 describe('applies fluent rules to the underlying RuleCollection', function () {
@@ -78,14 +71,6 @@ describe('ValidatableBuilder::make', function () {
             ->toBeInstanceOf(ValidatableBuilder::class)
             ->getKey()->toBe('property');
     });
-
-    it('provides a factory method that accepts a variadic list of rules', function () {
-        $validation = ValidatableBuilder::make('property', 'required', 'min:10|max:100');
-
-        expect($validation)
-            ->toBeInstanceOf(ValidatableBuilder::class)
-            ->getRules()->toValidatorArgument()->toBe(['required', 'min:10', 'max:100']);
-    });
 });
 
 describe('ValidatableBuilder::getKey()', function () {
@@ -108,25 +93,13 @@ describe('ValidatableBuilder::prefix()', function () {
     });
 });
 
-describe('ValidatableBuilder::addRules()', function () {
-    it('adds a variadic list of rules and returns a new instance', function () {
-        $validation = ValidatableBuilder::make('property');
-
-        $updated = $validation->addRules('required', 'min:10|max:100');
-
-        expect($updated)
-            ->not->toBe($validation)
-            ->getRules()->toValidatorArgument()->toBe(['required', 'min:10', 'max:100']);
-    });
-});
-
 describe('ValidatableBuilder::getRules()', function () {
     it('provides a collection of rules compatible with Laravel validation', function () {
         $getRules = function ($subject) {
             return (fn() => $this->rules)->call($subject);
         };
 
-        $validation = ValidatableBuilder::make('property', 'required', 'min:10|max:100');
+        $validation = ValidatableBuilder::make('property')->required()->min(10)->max(100);
 
         expect($validation->getRules())
             ->not->toBe($getRules($validation))

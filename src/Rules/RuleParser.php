@@ -12,8 +12,6 @@ use LaraPkgs\Validation\Exceptions\UnparsableRuleException;
 
 final class RuleParser
 {
-    protected RuleStringParser $ruleStringParser;
-
     protected RuleFactory $ruleFactory;
 
     public static function make(): self
@@ -21,9 +19,8 @@ final class RuleParser
         return App::make(self::class);
     }
 
-    public function __construct(RuleStringParser $ruleStringParser, RuleFactory $ruleFactory)
+    public function __construct(RuleFactory $ruleFactory)
     {
-        $this->ruleStringParser = $ruleStringParser;
         $this->ruleFactory = $ruleFactory;
     }
 
@@ -37,7 +34,6 @@ final class RuleParser
             $subject instanceof ValidationRuleContract => [$subject],
             is_array($subject) => $this->parseArray($subject),
             is_object($subject) => $this->parseObject($subject),
-            is_string($subject) => $this->parseString($subject),
             default => throw new UnparsableRuleException($subject)
         };
     }
@@ -62,13 +58,5 @@ final class RuleParser
         $rule = $this->ruleFactory->make($subject::class, [$subject]);
 
         return [$rule];
-    }
-
-    /**
-     * @return array<int, ValidationRuleContract>
-     */
-    protected function parseString(string $subject): array
-    {
-        return $this->ruleStringParser->parse($subject);
     }
 }

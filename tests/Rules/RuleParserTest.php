@@ -7,13 +7,11 @@ use Illuminate\Validation\Rule;
 use LaraPkgs\Validation\Contracts\RuleFactory;
 use LaraPkgs\Validation\Exceptions\UnparsableRuleException;
 use LaraPkgs\Validation\Rules\RuleParser;
-use LaraPkgs\Validation\Rules\RuleStringParser;
 use LaraPkgs\Validation\Rules\ValidationRule;
 
-it('expects an instance of the RuleStringParser and the RuleFactory on instantiation', function () {
-    $ruleStringParser = RuleStringParser::make();
+it('expects an instance of the RuleFactory on instantiation', function () {
     $ruleFactory = App::make(RuleFactory::class);
-    $parser = new RuleParser($ruleStringParser, $ruleFactory);
+    $parser = new RuleParser($ruleFactory);
 
    expect($parser)->toBeInstanceOf(RuleParser::class);
 });
@@ -70,54 +68,22 @@ describe('RuleParser::parse', function () {
             );
     });
 
-    it('parses strings', function () {
-        $subject = 'required|min:10|between:1,100|dimensions:min_ratio=1/2,max_ratio=3/2';
-
-        $parsed = $this->parser->parse($subject);
-
-        expect($parsed)
-            ->toHaveCount(4)
-            ->sequence(
-                fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
-                    ->getName()->toBe('required')
-                    ->getArguments()->toBeEmpty(),
-                fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
-                    ->getName()->toBe('min')
-                    ->getArguments()->toBe(['10']),
-                fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
-                    ->getName()->toBe('between')
-                    ->getArguments()->toBe(['1', '100']),
-                fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
-                    ->getName()->toBe('dimensions')
-                    ->getArguments()->toBe(['min_ratio' => 'min_ratio=1/2', 'max_ratio' => 'max_ratio=3/2'])
-            );
-    });
-
     it('parses arrays', function () {
         $validationRuleObject = new ValidationRule('test', $arguments = ['arg1' => 'value1', 'arg2' => 'value2']);
         $laravelRuleObject = Rule::string();
-        $subject = [$validationRuleObject, $laravelRuleObject, 'required|min:10','max:100'];
+        $subject = [$validationRuleObject, $laravelRuleObject];
 
         $parsed = $this->parser->parse($subject);
 
         expect($parsed)
-            ->toHaveCount(5)
+            ->toHaveCount(2)
             ->sequence(
                 fn($rule) => $rule->toBe($validationRuleObject)
                     ->getName()->toBe('test')
                     ->getArguments()->toBe($arguments),
                 fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
                     ->getName()->toBe($laravelRuleObject::class)
-                    ->getArguments()->toBe([$laravelRuleObject]),
-                fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
-                    ->getName()->toBe('required')
-                    ->getArguments()->toBeEmpty(),
-                fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
-                    ->getName()->toBe('min')
-                    ->getArguments()->toBe(['10']),
-                fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
-                    ->getName()->toBe('max')
-                    ->getArguments()->toBe(['100'])
+                    ->getArguments()->toBe([$laravelRuleObject])
             );
     });
 

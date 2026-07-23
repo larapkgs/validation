@@ -167,9 +167,9 @@ describe('ValidatableCollection::validate', function () {
 describe('ValidatableCollection::toValidatorArguments', function () {
     it('provides an array of arguments compatible with the Laravel Validator Factory', function () {
         $collection = ValidatableCollection::make(
-            ValidatableBuilder::make('property1', 'required')
+            ValidatableBuilder::make('property1')->required()
                 ->addMessages(['required' => 'The :attribute field is required.']),
-            ValidatableBuilder::make('property2', 'required', 'min:10', 'max:100')
+            ValidatableBuilder::make('property2')->required()->min(10)->max(100)
                 ->setCustomAttribute('custom2')
         );
 
@@ -194,7 +194,7 @@ describe('ValidatableCollection::toValidatorArguments', function () {
 describe('ValidatableCollection::makeValidator', function () {
     it('provides a factory method that creates a Laravel Validator for the given data', function () {
         $collection = ValidatableCollection::make(
-            ValidatableBuilder::make('property1', 'required')
+            ValidatableBuilder::make('property1')->required()
                 ->addMessages(['required' => 'Custom :attribute required message.'])
                 ->setCustomAttribute('customized'),
         );

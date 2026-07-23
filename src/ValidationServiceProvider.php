@@ -15,7 +15,6 @@ use LaraPkgs\Validation\Rules\RuleFactory;
 use LaraPkgs\Validation\Rules\RuleParser;
 use LaraPkgs\Validation\Rules\RulePrefixer;
 use LaraPkgs\Validation\Rules\RulePriorityResolver;
-use LaraPkgs\Validation\Rules\RuleStringParser;
 use LaraPkgs\Validation\Rules\RuleTypeResolver;
 
 final class ValidationServiceProvider extends ServiceProvider
@@ -23,14 +22,8 @@ final class ValidationServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(RuleParser::class, function ($app) {
-            $parser  = $app->make(RuleStringParser::class);
             $factory = $app->make(RuleFactoryContract::class);
-            return new RuleParser($parser, $factory);
-        });
-
-        $this->app->singleton(RuleStringParser::class, function ($app) {
-            $factory = $app->make(RuleFactoryContract::class);
-            return new RuleStringParser($factory);
+            return new RuleParser($factory);
         });
 
         $this->app->singleton(RuleTypeResolverContract::class, function ($app) {

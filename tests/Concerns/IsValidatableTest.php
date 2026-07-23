@@ -16,8 +16,8 @@ beforeEach(function () {
         public function makeValidator(array $data): Validator
         {
             return ValidatableCollection::make(
-                ValidatableBuilder::make('property1', 'required'),
-                ValidatableBuilder::make('property2', 'nullable'),
+                ValidatableBuilder::make('property1')->required(),
+                ValidatableBuilder::make('property2')->nullable(),
             )->makeValidator($data);
         }
     };
