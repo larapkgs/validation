@@ -95,13 +95,19 @@ final class ValidationRule implements ValidationRuleContract
             return $arguments->first();
         }
 
-        $arguments = $arguments->reduce(function (Collection $arguments, mixed $argument) {
-            return is_array($argument) ? $arguments->merge($argument) : $arguments->push($argument);
-        }, Collection::make());
+        $arguments = $arguments
+            ->flatMap(fn (mixed $argument) => is_array($argument) ? $argument : [$argument])
+            ->map(fn (mixed $argument) => $this->formatArgument($argument))
+            ->join(',');
 
-        return Str::of($this->getName())
-            ->append(':')
-            ->append($arguments->join(','))
-            ->toString();
+        return $this->getName() . ':' . $arguments;
+    }
+
+    protected function formatArgument(mixed $argument): mixed
+    {
+        return match(true) {
+            is_bool($argument) => $argument ? 'true' : 'false',
+            default => $argument,
+        };
     }
 }
