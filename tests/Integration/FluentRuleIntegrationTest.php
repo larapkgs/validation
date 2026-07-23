@@ -50,19 +50,19 @@ describe('Fluent Rule Integration', function() {
 
     describe('acceptedIf', function () {
         beforeEach(function () {
-            $this->validatable = validatable('property')->acceptedIf('referenced', 1);
+            $this->validatable = validatable('property')->acceptedIf('referenced', true);
         });
 
         dataset('payload', ['no', 'off', 0, '0', false, 'false', 'test', 100]);
 
         it('fails on invalid data', function ($payload) {
-            $data = ['property' => $payload, 'referenced' => 1];
+            $data = ['property' => $payload, 'referenced' => true];
 
             expect($this->validatable->fails($data))->toBeTrue();
         })->with('payload');
 
         it('passes on valid data', function ($payload) {
-            $data = ['property' => $payload, 'referenced' => 0];
+            $data = ['property' => $payload, 'referenced' => false];
 
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with('payload');
@@ -104,6 +104,16 @@ describe('Fluent Rule Integration', function() {
 
             expect($validatable)->passes($data)->toBeTrue();
         })->with('afterArgument');
+
+        it('marks the argument as field when a reference to another field is used', function () {
+            $validatable = validatable('property')->after('referenced');
+
+            $getRule = function() use ($validatable) {
+                return (fn() => $this->rules)->call($validatable->getRules())->first();
+            };
+
+            expect($getRule())->getArguments()->toBe(['field' => 'referenced']);
+        });
     });
 
     describe('afterOrEqual', function () {
@@ -124,6 +134,16 @@ describe('Fluent Rule Integration', function() {
 
             expect($validatable)->passes($data)->toBeTrue();
         })->with('afterOrEqualArgument');
+
+        it('marks the argument as field when a reference to another field is used', function () {
+            $validatable = validatable('property')->afterOrEqual('referenced');
+
+            $getRule = function() use ($validatable) {
+                return (fn() => $this->rules)->call($validatable->getRules())->first();
+            };
+
+            expect($getRule())->getArguments()->toBe(['field' => 'referenced']);
+        });
     });
 
     describe('alpha', function () {
@@ -142,6 +162,12 @@ describe('Fluent Rule Integration', function() {
 
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with(['a', 'A']);
+
+        it('can be configured to only allow ascii values', function () {
+            $validatable = validatable('property')->alpha(true);
+
+            expect($validatable->toValidatorArguments()['rules'])->toBe(['property' => ['alpha:ascii']]);
+        });
     });
 
     describe('alphaDash', function () {
@@ -160,6 +186,12 @@ describe('Fluent Rule Integration', function() {
 
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with(['a', 'A', '9', '-']);
+
+        it('can be configured to only allow ascii values', function () {
+            $validatable = validatable('property')->alphaDash(true);
+
+            expect($validatable->toValidatorArguments()['rules'])->toBe(['property' => ['alpha_dash:ascii']]);
+        });
     });
 
     describe('alphaNum', function () {
@@ -178,6 +210,12 @@ describe('Fluent Rule Integration', function() {
 
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with(['a', 'A', '9',]);
+
+        it('can be configured to only allow ascii values', function () {
+            $validatable = validatable('property')->alphaNum(true);
+
+            expect($validatable->toValidatorArguments()['rules'])->toBe(['property' => ['alpha_num:ascii']]);
+        });
     });
 
     describe('array', function () {
@@ -255,6 +293,16 @@ describe('Fluent Rule Integration', function() {
 
             expect($validatable)->passes($data)->toBeTrue();
         })->with('beforeArgument');
+
+        it('marks the argument as field when a reference to another field is used', function () {
+            $validatable = validatable('property')->before('referenced');
+
+            $getRule = function() use ($validatable) {
+                return (fn() => $this->rules)->call($validatable->getRules())->first();
+            };
+
+            expect($getRule())->getArguments()->toBe(['field' => 'referenced']);
+        });
     });
 
     describe('beforeOrEqual', function () {
@@ -275,6 +323,16 @@ describe('Fluent Rule Integration', function() {
 
             expect($validatable)->passes($data)->toBeTrue();
         })->with('beforeOrEqualArgument');
+
+        it('marks the argument as field when a reference to another field is used', function () {
+            $validatable = validatable('property')->beforeOrEqual('referenced');
+
+            $getRule = function() use ($validatable) {
+                return (fn() => $this->rules)->call($validatable->getRules())->first();
+            };
+
+            expect($getRule())->getArguments()->toBe(['field' => 'referenced']);
+        });
     });
 
     describe('between (numeric)', function () {
@@ -347,6 +405,12 @@ describe('Fluent Rule Integration', function() {
 
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with([true, false, 1, 0, "1", "0"]);
+
+        it('can be configured to use strict comparison', function () {
+            $validatable = validatable('property')->boolean(true);
+
+            expect($validatable->toValidatorArguments()['rules'])->toBe(['property' => ['boolean:strict']]);
+        });
     });
 
     describe('confirmed', function () {
@@ -364,6 +428,14 @@ describe('Fluent Rule Integration', function() {
             $data = ['property' => 'value', 'property_confirmation' => 'value'];
 
             expect($this->validatable)->passes($data)->toBeTrue();
+        });
+
+        it('allows for a custom confirmation field', function () {
+            $validatable = validatable('property')->confirmed('property_repeated');
+
+            $data = ['property' => 'value', 'property_repeated' => 'value'];
+
+            expect($validatable)->passes($data)->toBeTrue();
         });
     });
 
@@ -476,6 +548,12 @@ describe('Fluent Rule Integration', function() {
 
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with([100.12, 100.123]);
+
+        it('allows the max argument to be omitted', function () {
+            $validatable = validatable('property')->decimal(2);
+
+            expect($validatable->toValidatorArguments()['rules'])->toBe(['property' => ['decimal:2']]);
+        });
     });
 
     describe('declined', function () {
@@ -498,19 +576,19 @@ describe('Fluent Rule Integration', function() {
 
     describe('declinedIf', function () {
         beforeEach(function () {
-            $this->validatable = validatable('property')->declinedIf('referenced', 1);
+            $this->validatable = validatable('property')->declinedIf('referenced', true);
         });
 
         dataset('declinedIfPayload', ['yes', 'on', 1, '1', true, 'true', 'test', 100]);
 
         it('fails on invalid data', function ($payload) {
-            $data = ['property' => $payload, 'referenced' => 1];
+            $data = ['property' => $payload, 'referenced' => true];
 
             expect($this->validatable->fails($data))->toBeTrue();
         })->with('declinedIfPayload');
 
         it('passes on valid data', function ($payload) {
-            $data = ['property' => $payload, 'referenced' => 0];
+            $data = ['property' => $payload, 'referenced' => false];
 
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with('declinedIfPayload');
@@ -577,8 +655,8 @@ describe('Fluent Rule Integration', function() {
             $this->validatable = validatable('property')->dimensions([
                 'min_width=100',
                 'min_height=100',
-                'max_width=500',
-                'max_height=500',
+                'max_width' => 500,
+                'max_height' => 500
             ]);
         });
 
@@ -619,6 +697,24 @@ describe('Fluent Rule Integration', function() {
 
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with([[1, 2, 3], ['apple', 'banana', 'orange']]);
+
+        it('can be configured to use strict comparison', function () {
+            $validatable = validatable('property')->distinct(strict: true);
+
+            expect($validatable->toValidatorArguments()['rules'])->toBe(['property' => ['distinct:strict']]);
+        });
+
+        it('can be configured to use case insensitive comparison', function () {
+            $validatable = validatable('property')->distinct(ignoreCase: true);
+
+            expect($validatable->toValidatorArguments()['rules'])->toBe(['property' => ['distinct:ignore_case']]);
+        });
+
+        it('can be configured to use both strict and case insensitive comparison', function () {
+            $validatable = validatable('property')->distinct(strict: true, ignoreCase: true);
+
+            expect($validatable->toValidatorArguments()['rules'])->toBe(['property' => ['distinct:strict,ignore_case']]);
+        });
     });
 
     describe('doesntContain', function () {
@@ -691,6 +787,12 @@ describe('Fluent Rule Integration', function() {
 
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with(['user@example.com', 'user@mail.example.com', 'user+tag@example.com', 'first.last@example.com']);
+
+        it('accepts a variadic list of validators', function () {
+            $validatable = validatable('property')->email('rfc', 'dns');
+
+            expect($validatable->toValidatorArguments()['rules'])->toBe(['property' => ['email:rfc,dns']]);
+        });
     });
 
     describe('encoding', function () {
@@ -755,11 +857,11 @@ describe('Fluent Rule Integration', function() {
 
     describe('excludeIf', function () {
         beforeEach(function () {
-            $this->validatable = validatable('property')->excludeIf('referenced', 1);
+            $this->validatable = validatable('property')->excludeIf('referenced', true);
         });
 
         it('removes the property when condition matches', function () {
-            $data = ['property' => 'value', 'referenced' => 1];
+            $data = ['property' => 'value', 'referenced' => true];
             $validator = $this->validatable->makeValidator($data);
 
             expect($validator->passes())->toBeTrue();
@@ -767,7 +869,7 @@ describe('Fluent Rule Integration', function() {
         });
 
         it('keeps the property when condition does not match', function () {
-            $data = ['property' => 'value', 'referenced' => 0];
+            $data = ['property' => 'value', 'referenced' => false];
             $validator = $this->validatable->makeValidator($data);
 
             expect($validator->passes())->toBeTrue();
@@ -777,11 +879,11 @@ describe('Fluent Rule Integration', function() {
 
     describe('excludeUnless', function () {
         beforeEach(function () {
-            $this->validatable = validatable('property')->excludeUnless('referenced', 1);
+            $this->validatable = validatable('property')->excludeUnless('referenced', true);
         });
 
         it('keeps the property when condition matches', function () {
-            $data = ['property' => 'value', 'referenced' => 1];
+            $data = ['property' => 'value', 'referenced' => true];
             $validator = $this->validatable->makeValidator($data);
 
             expect($validator->passes())->toBeTrue();
@@ -789,7 +891,7 @@ describe('Fluent Rule Integration', function() {
         });
 
         it('removes the property when condition does not match', function () {
-            $data = ['property' => 'value', 'referenced' => 0];
+            $data = ['property' => 'value', 'referenced' => false];
             $validator = $this->validatable->makeValidator($data);
 
             expect($validator->passes())->toBeTrue();
@@ -1185,6 +1287,12 @@ describe('Fluent Rule Integration', function() {
 
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with([123, 0, -5, '123', '-5']);
+
+        it('can be configured to use strict comparison', function () {
+            $validatable = validatable('property')->integer(true);
+
+            expect($validatable->toValidatorArguments()['rules'])->toBe(['property' => ['integer:strict']]);
+        });
     });
 
     describe('ip', function () {
@@ -2093,7 +2201,7 @@ describe('Fluent Rule Integration', function() {
         });
 
         it('fails on invalid data', function () {
-            $data = ['property' => '', 'referenced' => 'active',];
+            $data = ['property' => '', 'referenced' => 'active'];
 
             expect($this->validatable)->fails($data)->toBeTrue();
         });
@@ -2475,6 +2583,12 @@ describe('Fluent Rule Integration', function() {
 
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with(['http://laravel.com', 'https://laravel.com', 'https://github.com/pestphp/pest', 'http://localhost:8000']);
+
+        it('accepts a variadic list of protocols', function () {
+            $validatable = validatable('property')->url('http', 'https');
+
+            expect($validatable->toValidatorArguments()['rules'])->toBe(['property' => ['url:http,https']]);
+        });
     });
 
     describe('uuid', function () {
@@ -2503,5 +2617,11 @@ describe('Fluent Rule Integration', function() {
             'f47ac10b-58cc-4372-a567-0e02b2c3d475',
             '00000000-0000-0000-0000-000000000000',
         ]);
+
+        it('can be configures to use a specific version', function () {
+            $validatable = validatable('property')->uuid(4);
+
+            expect($validatable->toValidatorArguments()['rules'])->toBe(['property' => ['uuid:4']]);
+        });
     });
 });

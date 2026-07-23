@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaraPkgs\Validation\Concerns;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use LaraPkgs\Validation\Contracts\ValidationRule;
 use LaraPkgs\Validation\Rules\RuleParser;
@@ -31,7 +32,6 @@ trait HasFluentRules
 
     /**
      * @RuleType = constraint
-     * TODO Check boolean casting
      */
     public function acceptedIf(string $field, mixed ...$values): self
     {
@@ -48,47 +48,52 @@ trait HasFluentRules
 
     /**
      * @RuleType = constraint
-     * TODO Tell ValidationRule when a field is referenced
      */
     public function after(string $date): self
     {
-        return $this->applyFluentRule('after', compact('date'));
+        $arguments = !strtotime($date) ? ['field' => $date] : compact('date');
+
+        return $this->applyFluentRule('after', $arguments);
     }
 
     /**
      * @RuleType = constraint
-     * TODO Tell ValidationRule when a field is referenced
      */
     public function afterOrEqual(string $date): self
     {
-        return $this->applyFluentRule('after_or_equal', compact('date'));
+        $arguments = !strtotime($date) ? ['field' => $date] : compact('date');
+
+        return $this->applyFluentRule('after_or_equal', $arguments);
     }
 
     /**
      * @RuleType = constraint
-     * TODO add ascii option
      */
-    public function alpha(): self
+    public function alpha(bool $ascii = false): self
     {
-        return $this->applyFluentRule('alpha');
+        $rule = $ascii ? 'alpha:ascii' : 'alpha';
+
+        return $this->applyFluentRule($rule);
     }
 
     /**
      * @RuleType = constraint
-     * TODO add ascii option
      */
-    public function alphaDash(): self
+    public function alphaDash(bool $ascii = false): self
     {
-        return $this->applyFluentRule('alpha_dash');
+        $rule = $ascii ? 'alpha_dash:ascii' : 'alpha_dash';
+
+        return $this->applyFluentRule($rule);
     }
 
     /**
      * @RuleType = constraint
-     * TODO add ascii option
      */
-    public function alphaNum(): self
+    public function alphaNum(bool $ascii = false): self
     {
-        return $this->applyFluentRule('alpha_num');
+        $rule = $ascii ? 'alpha_num:ascii' : 'alpha_num';
+
+        return $this->applyFluentRule($rule);
     }
 
     /**
@@ -117,20 +122,22 @@ trait HasFluentRules
 
     /**
      * @RuleType = constraint
-     * TODO Tell ValidationRule when a field is referenced
      */
     public function before(string $date): self
     {
-        return $this->applyFluentRule('before', compact('date'));
+        $arguments = !strtotime($date) ? ['field' => $date] : compact('date');
+
+        return $this->applyFluentRule('before', $arguments);
     }
 
     /**
      * @RuleType = constraint
-     * TODO Tell ValidationRule when a field is referenced
      */
     public function beforeOrEqual(string $date): self
     {
-        return $this->applyFluentRule('before_or_equal', compact('date'));
+        $arguments = !strtotime($date) ? ['field' => $date] : compact('date');
+
+        return $this->applyFluentRule('before_or_equal', $arguments);
     }
 
     /**
@@ -143,20 +150,22 @@ trait HasFluentRules
 
     /**
      * @RuleType = type
-     * TODO Add strict option
      */
-    public function boolean(): self
+    public function boolean(bool $strict = false): self
     {
-        return $this->applyFluentRule('boolean');
+        $rule = $strict ? 'boolean:strict' : 'boolean';
+
+        return $this->applyFluentRule($rule);
     }
 
     /**
      * @RuleType = constraint
-     *  TODO Add custom field option
      */
-    public function confirmed(): self
+    public function confirmed(?string $field = null): self
     {
-        return $this->applyFluentRule('confirmed');
+        $arguments = $field !== null ? ['field' => $field] : [];
+
+        return $this->applyFluentRule('confirmed', $arguments);
     }
 
     /**
@@ -201,11 +210,12 @@ trait HasFluentRules
 
     /**
      * @RuleType = constraint
-     *  TODO make max nullable
      */
-    public function decimal(int $min, int $max): self
+    public function decimal(int $min, ?int $max = null): self
     {
-        return $this->applyFluentRule('decimal', compact('min', 'max'));
+        $arguments = $max !== null ? compact('min', 'max') : compact('min');
+
+        return $this->applyFluentRule('decimal', $arguments);
     }
 
     /**
@@ -218,7 +228,6 @@ trait HasFluentRules
 
     /**
      * @RuleType = constraint
-     * TODO Check boolean casting
      */
     public function declinedIf(string $field, mixed ...$values): self
     {
@@ -251,21 +260,30 @@ trait HasFluentRules
 
     /**
      * @RuleType = constraint
-     * TODO add strict option
-     * TODO add ignore_case option
      */
-    public function distinct(): self
+    public function distinct(bool $strict = false, bool $ignoreCase = false): self
     {
-        return $this->applyFluentRule('distinct');
+        $arguments = [];
+        if($strict) { $arguments[] = 'strict'; }
+        if($ignoreCase) { $arguments[] = 'ignore_case'; }
+
+        $rule = !empty($arguments)
+            ? 'distinct:' . implode(',', $arguments)
+            : 'distinct';
+
+        return $this->applyFluentRule($rule);
     }
 
     /**
      * @param array<string, string> $constraints
      * @RuleType = constraint
-     * TODO handle key value constraints eg. ['min_height' => 600] iso ['min_height=600']
      */
     public function dimensions(array $constraints): self
     {
+        $constraints = Collection::make($constraints)
+            ->map(fn($value, $key) => !is_int($key) ? $key . '=' . $value : $value)
+            ->values()->all();
+
         return $this->applyFluentRule('dimensions', compact('constraints'));
     }
 
@@ -295,11 +313,10 @@ trait HasFluentRules
 
     /**
      * @RuleType = constraint
-     * TODO add validation type eg. rfc, strict, dns, ...
      */
-    public function email(): self
+    public function email(string ...$validators): self
     {
-        return $this->applyFluentRule('email');
+        return $this->applyFluentRule('email', compact('validators'));
     }
 
     /**
@@ -448,11 +465,12 @@ trait HasFluentRules
 
     /**
      * @RuleType = type
-     * TODO add strict option
      */
-    public function integer(): self
+    public function integer(bool $strict = false): self
     {
-        return $this->applyFluentRule('integer');
+        $rule = $strict ? 'integer:strict' : 'integer';
+
+        return $this->applyFluentRule($rule);
     }
 
     /**
@@ -640,7 +658,7 @@ trait HasFluentRules
     }
 
     /**
-     * @RuleType = modiefier
+     * @RuleType = modifier
      */
     public function nullable(): self
     {
@@ -714,7 +732,7 @@ trait HasFluentRules
     /**
      * @RuleType = presence
      */
-    public function prohibitedIfAccepted(string...$fields): self
+    public function prohibitedIfAccepted(string ...$fields): self
     {
         return $this->applyFluentRule('prohibited_if_accepted', compact('fields'));
     }
@@ -722,7 +740,7 @@ trait HasFluentRules
     /**
      * @RuleType = presence
      */
-    public function prohibitedIfDeclined(string...$fields): self
+    public function prohibitedIfDeclined(string ...$fields): self
     {
         return $this->applyFluentRule('prohibited_if_declined', compact('fields'));
     }
@@ -786,7 +804,7 @@ trait HasFluentRules
     /**
      * @RuleType = presence
      */
-    public function requiredIfDeclined(string $fields): self
+    public function requiredIfDeclined(string ...$fields): self
     {
         return $this->applyFluentRule('required_if_declined', compact('fields'));
     }
@@ -905,19 +923,21 @@ trait HasFluentRules
 
     /**
      * @RuleType = constraint
-     * TODO add protocols
      */
-    public function url(): self
+    public function url(string ...$protocols): self
     {
-        return $this->applyFluentRule('url');
+        $arguments = !empty($protocols) ? compact('protocols') : [];
+
+        return $this->applyFluentRule('url', $arguments);
     }
 
     /**
      * @RuleType = constraint
-     *  TODO add version
      */
-    public function uuid(): self
+    public function uuid(?int $version = null): self
     {
-        return $this->applyFluentRule('uuid');
+        $arguments = $version !== null ? compact('version') : [];
+
+        return $this->applyFluentRule('uuid', $arguments);
     }
 }

@@ -121,7 +121,7 @@ describe('ValidatableBuilder::addRules()', function () {
 });
 
 describe('ValidatableBuilder::getRules()', function () {
-    it('provides an array of rules compatible with Laravel validation', function () {
+    it('provides a collection of rules compatible with Laravel validation', function () {
         $getRules = function ($subject) {
             return (fn() => $this->rules)->call($subject);
         };
