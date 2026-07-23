@@ -17,9 +17,7 @@ final class RuleTypeResolver implements RuleTypeResolverContract
 
     public function resolve(string $ruleName): string
     {
-        return $this->getRuleToTypeMap()->has($ruleName)
-            ? $this->getRuleToTypeMap()->get($ruleName)
-            : 'constraint';
+        return $this->getRuleToTypeMap()->get($ruleName) ?? 'constraint';
     }
 
     /**

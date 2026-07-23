@@ -178,11 +178,8 @@ final class Generator
 
     protected function resolveClassName(): string
     {
-        $className = $this->hasSubDirectory()
-            ? Str::of($this->fileInput)->explode('/')->last()
-            : $this->fileInput;
-
-        return Str::of($className)
+        return Str::of($this->fileInput)
+            ->afterLast('/')
             ->trim('/')
             ->replaceEnd('.php', '')
             ->replaceEnd($this->type, '')
@@ -210,7 +207,7 @@ final class Generator
         return Str::of($this->basePath)
             ->trim('/')
             ->prepend('/')
-            ->when($this->resolveDirectory() !== null, fn(Stringable $path) => $path->append('/', $this->resolveDirectory()))
+            ->when($this->resolveDirectory(), fn(Stringable $path, string $directory) => $path->append('/', $directory))
             ->replace('/', DIRECTORY_SEPARATOR)
             ->toString();
     }
@@ -219,7 +216,7 @@ final class Generator
     {
         return Str::of($this->baseNamespace)
             ->trim('\\')
-            ->when($this->resolveDirectory() !== null, fn(Stringable $path) => $path->append('\\', $this->resolveDirectory()))
+            ->when($this->resolveDirectory(), fn(Stringable $path, string $directory) => $path->append('\\', $directory))
             ->replace('/', '\\')
             ->toString();
     }

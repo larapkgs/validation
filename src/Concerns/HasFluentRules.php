@@ -275,7 +275,7 @@ trait HasFluentRules
     }
 
     /**
-     * @param array<string, string> $constraints
+     * @param array<array-key, string|int> $constraints
      * @RuleType = constraint
      */
     public function dimensions(array $constraints): self
