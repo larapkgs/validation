@@ -10,4 +10,4 @@ it('formats the correct error message based on the given type', function (mixed 
 
     expect($exception->getMessage())
         ->toBe("Validation rule subject of type [{$type}] could not be parsed.");
-})->with([1, true, new stdClass()]);
+})->with([1, true, new stdClass]);

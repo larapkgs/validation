@@ -23,29 +23,32 @@ final class ValidationServiceProvider extends ServiceProvider
     {
         $this->app->singleton(RuleParser::class, function ($app) {
             $factory = $app->make(RuleFactoryContract::class);
+
             return new RuleParser($factory);
         });
 
         $this->app->singleton(RuleTypeResolverContract::class, function ($app) {
-            return new RuleTypeResolver();
+            return new RuleTypeResolver;
         });
 
         $this->app->singleton(RulePriorityResolverContract::class, function ($app) {
             $ruleTypeResolver = $app->make(RuleTypeResolverContract::class);
+
             return new RulePriorityResolver($ruleTypeResolver);
         });
 
         $this->app->singleton(RuleFactoryContract::class, function ($app) {
             $rulePriorityResolver = $app->make(RulePriorityResolverContract::class);
+
             return new RuleFactory($rulePriorityResolver);
         });
 
         $this->app->singleton(RulePrefixerContract::class, function ($app) {
-            return new RulePrefixer();
+            return new RulePrefixer;
         });
 
         $this->app->singleton(ValidatableFactoryContract::class, function ($app) {
-            return new ValidatableFactory();
+            return new ValidatableFactory;
         });
 
         $this->mergeConfigFrom(
@@ -59,7 +62,6 @@ final class ValidationServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../config/validation.php' => config_path('validation.php'),
             ], 'larapkgs-validation-config');
-
 
             $this->publishes([
                 __DIR__ . '/../stubs' => base_path('stubs'),

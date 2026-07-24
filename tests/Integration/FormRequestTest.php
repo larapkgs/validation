@@ -18,7 +18,7 @@ describe('Controller Method Injection', function () {
             ->assertOk()
             ->assertJson([
                 'status' => 'success',
-                'data' => ['property' => 'value']
+                'data' => ['property' => 'value'],
             ]);
     });
 });

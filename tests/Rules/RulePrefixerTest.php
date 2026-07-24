@@ -8,7 +8,7 @@ use LaraPkgs\Validation\Rules\ValidationRule;
 describe('RulePrefixer::prefix', function () {
 
     beforeEach(function () {
-        $this->prefixer = new RulePrefixer();
+        $this->prefixer = new RulePrefixer;
     });
 
     it('prefixes singular "field" arguments and returns a new ValidationRule instance', function () {

@@ -9,17 +9,17 @@ use LaraPkgs\Validation\Rules\ValidationRule;
 
 describe('RuleFactory::make', function () {
     beforeEach(function () {
-       $rulePriorityResolver = App::make(RulePriorityResolver::class);
-       $this->factory = new RuleFactory($rulePriorityResolver);
+        $rulePriorityResolver = App::make(RulePriorityResolver::class);
+        $this->factory = new RuleFactory($rulePriorityResolver);
     });
 
     dataset('rules', function () {
         return [
             'modifier rule' => ['sometimes', [], 1],
-            'circuit rule'  => ['bail', [],2],
+            'circuit rule' => ['bail', [], 2],
             'presence rule' => ['required', [], 3],
-            'type rule'     => ['integer', [], 4],
-            'constraint rule' => ['min', ['value' => 1], 100]
+            'type rule' => ['integer', [], 4],
+            'constraint rule' => ['min', ['value' => 1], 100],
         ];
     });
 

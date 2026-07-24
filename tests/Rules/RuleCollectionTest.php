@@ -19,7 +19,7 @@ it('expects an instance of the RuleFactory and RuleParser on instantiation', fun
 
 describe('applies fluent rules', function () {
     beforeEach(function () {
-       $this->collection = RuleCollection::make();
+        $this->collection = RuleCollection::make();
     });
 
     it('applies rules without any arguments', function () {

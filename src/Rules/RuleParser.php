@@ -26,11 +26,12 @@ final class RuleParser
 
     /**
      * @return array<int, ValidationRuleContract>
+     *
      * @throws UnparsableRuleException
      */
     public function parse(mixed $subject): array
     {
-        return match(true) {
+        return match (true) {
             $subject instanceof ValidationRuleContract => [$subject],
             is_array($subject) => $this->parseArray($subject),
             is_object($subject) => $this->parseObject($subject),
@@ -39,13 +40,13 @@ final class RuleParser
     }
 
     /**
-     * @param array<array-key, mixed> $subject
+     * @param  array<array-key, mixed>  $subject
      * @return array<int, ValidationRuleContract>
      */
     protected function parseArray(array $subject): array
     {
         return new Collection($subject)
-            ->reduce(function(array $parsed, mixed $parsable) {
+            ->reduce(function (array $parsed, mixed $parsable) {
                 return [...$parsed, ...$this->parse($parsable)];
             }, []);
     }

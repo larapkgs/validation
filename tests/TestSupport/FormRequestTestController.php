@@ -2,8 +2,6 @@
 
 namespace LaraPkgs\Validation\Tests\TestSupport;
 
-use LaraPkgs\Validation\Tests\TestSupport\TestRequest;
-
 class FormRequestTestController
 {
     public function __invoke(TestRequest $request, TestValidation $validatable)

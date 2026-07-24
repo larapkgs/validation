@@ -3,24 +3,25 @@
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\PresenceVerifierInterface;
 use Illuminate\Validation\Rule;
 use LaraPkgs\Validation\Rules\ValidationRule;
 
-describe('Fluent Rule Integration', function() {
+describe('Fluent Rule Integration', function () {
 
     describe('applyRule', function () {
         beforeEach(function () {
             $this->validatable = validatable('property')->applyRule(Rule::numeric());
         });
 
-        it('it accepts a Laravel Rule Object', function() {
+        it('it accepts a Laravel Rule Object', function () {
             $validatable = validatable('property')->applyRule(Rule::numeric());
             $data = ['property' => 123];
 
             expect($validatable->passes($data))->toBeTrue();
         });
 
-        it('it accepts a LaraPkgs ValidationRule', function() {
+        it('it accepts a LaraPkgs ValidationRule', function () {
             $rule = new ValidationRule('numeric');
             $validatable = validatable('property')->applyRule($rule);
 
@@ -108,8 +109,8 @@ describe('Fluent Rule Integration', function() {
         it('marks the argument as field when a reference to another field is used', function () {
             $validatable = validatable('property')->after('referenced');
 
-            $getRule = function() use ($validatable) {
-                return (fn() => $this->rules)->call($validatable->getRules())->first();
+            $getRule = function () use ($validatable) {
+                return (fn () => $this->rules)->call($validatable->getRules())->first();
             };
 
             expect($getRule())->getArguments()->toBe(['field' => 'referenced']);
@@ -138,8 +139,8 @@ describe('Fluent Rule Integration', function() {
         it('marks the argument as field when a reference to another field is used', function () {
             $validatable = validatable('property')->afterOrEqual('referenced');
 
-            $getRule = function() use ($validatable) {
-                return (fn() => $this->rules)->call($validatable->getRules())->first();
+            $getRule = function () use ($validatable) {
+                return (fn () => $this->rules)->call($validatable->getRules())->first();
             };
 
             expect($getRule())->getArguments()->toBe(['field' => 'referenced']);
@@ -179,7 +180,7 @@ describe('Fluent Rule Integration', function() {
             $data = ['property' => $payload];
 
             expect($this->validatable)->fails($data)->toBeTrue();
-        })->with(['/', '|',]);
+        })->with(['/', '|']);
 
         it('passes on valid data', function ($payload) {
             $data = ['property' => $payload];
@@ -209,7 +210,7 @@ describe('Fluent Rule Integration', function() {
             $data = ['property' => $payload];
 
             expect($this->validatable)->passes($data)->toBeTrue();
-        })->with(['a', 'A', '9',]);
+        })->with(['a', 'A', '9']);
 
         it('can be configured to only allow ascii values', function () {
             $validatable = validatable('property')->alphaNum(true);
@@ -297,8 +298,8 @@ describe('Fluent Rule Integration', function() {
         it('marks the argument as field when a reference to another field is used', function () {
             $validatable = validatable('property')->before('referenced');
 
-            $getRule = function() use ($validatable) {
-                return (fn() => $this->rules)->call($validatable->getRules())->first();
+            $getRule = function () use ($validatable) {
+                return (fn () => $this->rules)->call($validatable->getRules())->first();
             };
 
             expect($getRule())->getArguments()->toBe(['field' => 'referenced']);
@@ -327,8 +328,8 @@ describe('Fluent Rule Integration', function() {
         it('marks the argument as field when a reference to another field is used', function () {
             $validatable = validatable('property')->beforeOrEqual('referenced');
 
-            $getRule = function() use ($validatable) {
-                return (fn() => $this->rules)->call($validatable->getRules())->first();
+            $getRule = function () use ($validatable) {
+                return (fn () => $this->rules)->call($validatable->getRules())->first();
             };
 
             expect($getRule())->getArguments()->toBe(['field' => 'referenced']);
@@ -344,13 +345,13 @@ describe('Fluent Rule Integration', function() {
             $data = ['property' => $payload];
 
             expect($this->validatable)->fails($data)->toBeTrue();
-        })->with([1,5]);
+        })->with([1, 5]);
 
         it('passes on valid data', function ($payload) {
             $data = ['property' => $payload];
 
             expect($this->validatable)->passes($data)->toBeTrue();
-        })->with([2,3,4]);
+        })->with([2, 3, 4]);
     });
 
     describe('between (string)', function () {
@@ -380,13 +381,13 @@ describe('Fluent Rule Integration', function() {
             $data = ['property' => $payload];
 
             expect($this->validatable)->fails($data)->toBeTrue();
-        })->with([[[1]], [[1,2,3,4,5]]]);
+        })->with([[[1]], [[1, 2, 3, 4, 5]]]);
 
         it('passes on valid data', function ($payload) {
             $data = ['property' => $payload];
 
             expect($this->validatable)->passes($data)->toBeTrue();
-        })->with([[[1,2]], [[1,2,3]], [[1,2,3,4]]]);
+        })->with([[[1, 2]], [[1, 2, 3]], [[1, 2, 3, 4]]]);
     });
 
     describe('boolean', function () {
@@ -404,7 +405,7 @@ describe('Fluent Rule Integration', function() {
             $data = ['property' => $payload];
 
             expect($this->validatable)->passes($data)->toBeTrue();
-        })->with([true, false, 1, 0, "1", "0"]);
+        })->with([true, false, 1, 0, '1', '0']);
 
         it('can be configured to use strict comparison', function () {
             $validatable = validatable('property')->boolean(true);
@@ -534,7 +535,7 @@ describe('Fluent Rule Integration', function() {
 
     describe('decimal', function () {
         beforeEach(function () {
-            $this->validatable = validatable('property')->decimal(2,3);
+            $this->validatable = validatable('property')->decimal(2, 3);
         });
 
         it('fails on invalid data', function ($payload) {
@@ -656,7 +657,7 @@ describe('Fluent Rule Integration', function() {
                 'min_width=100',
                 'min_height=100',
                 'max_width' => 500,
-                'max_height' => 500
+                'max_height' => 500,
             ]);
         });
 
@@ -947,7 +948,7 @@ describe('Fluent Rule Integration', function() {
         it('fails on invalid data', function () {
             $validatable = validatable('property')->exists('users', 'id');
 
-            $presenceVerifier = Mockery::mock(\Illuminate\Validation\PresenceVerifierInterface::class);
+            $presenceVerifier = Mockery::mock(PresenceVerifierInterface::class);
             $presenceVerifier->shouldReceive('getCount')
                 ->with('users', 'id', 999, null, null, [])
                 ->once()
@@ -962,7 +963,7 @@ describe('Fluent Rule Integration', function() {
         it('passes on valid data', function () {
             $validatable = validatable('property')->exists('users', 'id');
 
-            $presenceVerifier = Mockery::mock(\Illuminate\Validation\PresenceVerifierInterface::class);
+            $presenceVerifier = Mockery::mock(PresenceVerifierInterface::class);
             $presenceVerifier->shouldReceive('getCount')->with('users', 'id', 1, null, null, [])->once()->andReturn(1);
 
             $validator = $validatable->makeValidator(['property' => 1]);
@@ -1206,7 +1207,7 @@ describe('Fluent Rule Integration', function() {
         it('fails on invalid data', function ($payload) {
             $data = [
                 'property' => $payload,
-                'referenced' => ['apple', 'banana', 'orange']
+                'referenced' => ['apple', 'banana', 'orange'],
             ];
 
             expect($this->validatable)->fails($data)->toBeTrue();
@@ -1240,10 +1241,9 @@ describe('Fluent Rule Integration', function() {
         })->with([
             [['us' => 'United States']],
             [['ca' => 'Canada']],
-            [['us' => 'United States', 'mx' => 'Mexico']]
+            [['us' => 'United States', 'mx' => 'Mexico']],
         ]);
     });
-
 
     describe('image', function () {
         beforeEach(function () {
@@ -1267,7 +1267,7 @@ describe('Fluent Rule Integration', function() {
         })->with([
             UploadedFile::fake()->image('avatar.jpg'),
             UploadedFile::fake()->image('photo.png'),
-            UploadedFile::fake()->image('animation.gif')
+            UploadedFile::fake()->image('animation.gif'),
         ]);
     });
 
@@ -1382,7 +1382,7 @@ describe('Fluent Rule Integration', function() {
             [[0 => 'apple', 2 => 'banana']],
             'not-an-array',
             123,
-            null
+            null,
         ]);
 
         it('passes on valid data', function ($payload) {
@@ -1392,7 +1392,7 @@ describe('Fluent Rule Integration', function() {
         })->with([
             [['apple', 'banana', 'orange']],
             [[0 => 'a', 1 => 'b', 2 => 'c']],
-            [[]]
+            [[]],
         ]);
     });
 
@@ -1422,7 +1422,7 @@ describe('Fluent Rule Integration', function() {
         it('fails on invalid data', function ($payload) {
             $data = [
                 'property' => $payload,
-                'referenced' => ['one', 'two', 'three']
+                'referenced' => ['one', 'two', 'three'],
             ];
 
             expect($this->validatable)->fails($data)->toBeTrue();
@@ -1431,14 +1431,14 @@ describe('Fluent Rule Integration', function() {
         it('passes on valid data', function ($payload) {
             $data = [
                 'property' => $payload,
-                'referenced' => ['one', 'two', 'three'] // Count 3
+                'referenced' => ['one', 'two', 'three'], // Count 3
             ];
 
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with([
             [['a']],
             [['a', 'b']],
-            [[]]
+            [[]],
         ]); // Strictly less than 3 elements
     });
 
@@ -1486,7 +1486,7 @@ describe('Fluent Rule Integration', function() {
         it('fails on invalid data', function ($payload) {
             $data = [
                 'property' => $payload,
-                'referenced' => ['one', 'two', 'three']
+                'referenced' => ['one', 'two', 'three'],
             ];
 
             expect($this->validatable)->fails($data)->toBeTrue();
@@ -1495,11 +1495,11 @@ describe('Fluent Rule Integration', function() {
         it('passes on valid data', function ($payload) {
             $data = [
                 'property' => $payload,
-                'referenced' => ['one', 'two', 'three']
+                'referenced' => ['one', 'two', 'three'],
             ];
 
             expect($this->validatable)->passes($data)->toBeTrue();
-        })->with([[['a', 'b', 'c']], [['a', 'b']], [[]]
+        })->with([[['a', 'b', 'c']], [['a', 'b']], [[]],
         ]);
     });
 
@@ -1554,7 +1554,7 @@ describe('Fluent Rule Integration', function() {
             $data = ['property' => $payload];
 
             expect($this->validatable)->passes($data)->toBeTrue();
-        })->with(['01:23:45:67:89:ab', '01-23-45-67-89-ab', '0123.4567.89ab',]);
+        })->with(['01:23:45:67:89:ab', '01-23-45-67-89-ab', '0123.4567.89ab']);
     });
 
     describe('max (array)', function () {
@@ -2021,7 +2021,7 @@ describe('Fluent Rule Integration', function() {
         })->with([
             [['property' => 'value', 'first' => 'value', 'second' => 'value']],
             [['first' => 'value']],
-            [[]]
+            [[]],
         ]);
     });
 
@@ -2109,7 +2109,7 @@ describe('Fluent Rule Integration', function() {
         });
 
         it('passes on valid data', function () {
-            $data = ['property' => 'value', 'referenced' => 'active',];
+            $data = ['property' => 'value', 'referenced' => 'active'];
 
             expect($this->validatable)->passes($data)->toBeTrue();
         });
@@ -2127,7 +2127,7 @@ describe('Fluent Rule Integration', function() {
         })->with([
             [['secondary' => 'present']],
             [['tertiary' => 'present']],
-            [['secondary' => 'present', 'tertiary' => 'present']]
+            [['secondary' => 'present', 'tertiary' => 'present']],
         ]);
 
         it('passes on valid data', function ($payload) {
@@ -2137,7 +2137,7 @@ describe('Fluent Rule Integration', function() {
         })->with([
             [['property' => 'any-value']],
             [['secondary' => 'present', 'tertiary' => 'present']],
-            [[]]
+            [[]],
         ]);
     });
 
@@ -2279,14 +2279,14 @@ describe('Fluent Rule Integration', function() {
         })->with([
             [['first' => 'present']],
             [['second' => 'present']],
-            [['first' => 'present', 'second' => 'present']]
+            [['first' => 'present', 'second' => 'present']],
         ]);
 
         it('passes on valid data', function ($data) {
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with([
             [['property' => 'filled', 'first' => 'present']],
-            [['first' => null, 'second' => null]]
+            [['first' => null, 'second' => null]],
         ]);
     });
 
@@ -2305,7 +2305,7 @@ describe('Fluent Rule Integration', function() {
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with([
             [['property' => 'filled', 'first' => 'present', 'second' => 'present']],
-            [['property' => '', 'first' => 'present']]
+            [['property' => '', 'first' => 'present']],
         ]);
     });
 
@@ -2324,7 +2324,7 @@ describe('Fluent Rule Integration', function() {
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with([
             [['property' => '', 'first' => 'present', 'second' => 'present']],
-            [['property' => 'filled', 'first' => 'present']]
+            [['property' => 'filled', 'first' => 'present']],
         ]);
     });
 
@@ -2343,7 +2343,7 @@ describe('Fluent Rule Integration', function() {
             expect($this->validatable)->passes($data)->toBeTrue();
         })->with([
             [['property' => '', 'first' => 'present']],
-            [['property' => 'filled']]
+            [['property' => 'filled']],
         ]);
     });
 
@@ -2521,7 +2521,7 @@ describe('Fluent Rule Integration', function() {
         it('fails on invalid data', function () {
             $validatable = validatable('property')->unique('users', 'email');
 
-            $presenceVerifier = Mockery::mock(\Illuminate\Validation\PresenceVerifierInterface::class);
+            $presenceVerifier = Mockery::mock(PresenceVerifierInterface::class);
             $presenceVerifier->shouldReceive('getCount')
                 ->with('users', 'email', 'existing@example.com', null, null, [])
                 ->once()
@@ -2536,7 +2536,7 @@ describe('Fluent Rule Integration', function() {
         it('passes on valid data', function () {
             $validatable = validatable('property')->unique('users', 'email');
 
-            $presenceVerifier = Mockery::mock(\Illuminate\Validation\PresenceVerifierInterface::class);
+            $presenceVerifier = Mockery::mock(PresenceVerifierInterface::class);
             $presenceVerifier->shouldReceive('getCount')
                 ->with('users', 'email', 'new@example.com', null, null, [])
                 ->once()

@@ -16,7 +16,7 @@ use LaraPkgs\Validation\ValidatableCollection;
  */
 class Validatable extends Facade
 {
-    static function getFacadeAccessor(): string
+    public static function getFacadeAccessor(): string
     {
         return ValidatableFactory::class;
     }

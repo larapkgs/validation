@@ -13,7 +13,7 @@ it('expects an instance of the RuleFactory on instantiation', function () {
     $ruleFactory = App::make(RuleFactory::class);
     $parser = new RuleParser($ruleFactory);
 
-   expect($parser)->toBeInstanceOf(RuleParser::class);
+    expect($parser)->toBeInstanceOf(RuleParser::class);
 });
 
 it('resolves as a singleton from the service container', function () {
@@ -37,7 +37,7 @@ describe('RuleParser::make', function () {
 
 describe('RuleParser::parse', function () {
     beforeEach(function () {
-       $this->parser = RuleParser::make();
+        $this->parser = RuleParser::make();
     });
 
     it('keeps ValidationRule objects untouched ', function () {
@@ -48,7 +48,7 @@ describe('RuleParser::parse', function () {
         expect($parsed)
             ->toHaveCount(1)
             ->sequence(
-                fn($rule) => $rule->toBe($subject)
+                fn ($rule) => $rule->toBe($subject)
                     ->getName()->toBe('test')
                     ->getArguments()->toBe($arguments)
             );
@@ -62,7 +62,7 @@ describe('RuleParser::parse', function () {
         expect($parsed)
             ->toHaveCount(1)
             ->sequence(
-                fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
+                fn ($rule) => $rule->toBeInstanceOf(ValidationRule::class)
                     ->getName()->toBe($subject::class)
                     ->getArguments()->toBe([$subject])
             );
@@ -78,10 +78,10 @@ describe('RuleParser::parse', function () {
         expect($parsed)
             ->toHaveCount(2)
             ->sequence(
-                fn($rule) => $rule->toBe($validationRuleObject)
+                fn ($rule) => $rule->toBe($validationRuleObject)
                     ->getName()->toBe('test')
                     ->getArguments()->toBe($arguments),
-                fn($rule) => $rule->toBeInstanceOf(ValidationRule::class)
+                fn ($rule) => $rule->toBeInstanceOf(ValidationRule::class)
                     ->getName()->toBe($laravelRuleObject::class)
                     ->getArguments()->toBe([$laravelRuleObject])
             );
@@ -90,7 +90,7 @@ describe('RuleParser::parse', function () {
     it('rejects unparsable rules', function () {
         $subject = 1;
 
-        expect(fn() => $this->parser->parse($subject))
+        expect(fn () => $this->parser->parse($subject))
             ->toThrow(UnparsableRuleException::class);
-    })->with([1, true, new StdClass()]);
+    })->with([1, true, new StdClass]);
 });

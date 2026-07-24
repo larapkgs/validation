@@ -71,17 +71,17 @@ final class ValidatableBuilder implements Validatable
 
     public function prefix(string $prefix): self
     {
-        return $this->newInstance(function(self $instance) use ($prefix) {
+        return $this->newInstance(function (self $instance) use ($prefix) {
             $instance->key = $prefix . $instance->key;
         });
     }
 
     /**
-     * @param array<string, mixed> $arguments
+     * @param  array<string, mixed>  $arguments
      */
     protected function applyFluentRule(string|ValidationRule $rule, array $arguments = []): self
     {
-        return $this->newInstance(function(self $instance) use ($rule, $arguments) {
+        return $this->newInstance(function (self $instance) use ($rule, $arguments) {
             $rule = is_string($rule)
                 ? $this->ruleFactory->make($rule, $arguments)
                 : clone $rule;
@@ -96,11 +96,11 @@ final class ValidatableBuilder implements Validatable
     }
 
     /**
-     * @param array<string, string> $messages
+     * @param  array<string, string>  $messages
      */
     public function addMessages(array $messages): self
     {
-        return $this->newInstance(function(self $instance) use ($messages) {
+        return $this->newInstance(function (self $instance) use ($messages) {
             $instance->messages = array_merge($instance->messages, $messages);
         });
     }
@@ -115,7 +115,7 @@ final class ValidatableBuilder implements Validatable
 
     public function setCustomAttribute(string $customAttribute): self
     {
-        return $this->newInstance(function(self $instance) use ($customAttribute) {
+        return $this->newInstance(function (self $instance) use ($customAttribute) {
             $instance->customAttribute = $customAttribute;
         });
     }
@@ -126,7 +126,7 @@ final class ValidatableBuilder implements Validatable
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function makeValidator(array $data): Validator
     {
@@ -141,7 +141,7 @@ final class ValidatableBuilder implements Validatable
         return [
             'rules' => $this->prepareRulesForValidator(),
             'messages' => $this->prepareMessagesForValidator(),
-            'attributes' => $this->prepareAttributeForValidator()
+            'attributes' => $this->prepareAttributeForValidator(),
         ];
     }
 
@@ -159,7 +159,7 @@ final class ValidatableBuilder implements Validatable
     protected function prepareMessagesForValidator(): array
     {
         return Collection::make($this->messages)
-            ->mapWithKeys(fn(string $message, string $rule) => [$this->key . '.' . $rule => $message])
+            ->mapWithKeys(fn (string $message, string $rule) => [$this->key . '.' . $rule => $message])
             ->all();
     }
 

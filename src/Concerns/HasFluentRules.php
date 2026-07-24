@@ -51,7 +51,7 @@ trait HasFluentRules
      */
     public function after(string $date): self
     {
-        $arguments = !strtotime($date) ? ['field' => $date] : compact('date');
+        $arguments = ! strtotime($date) ? ['field' => $date] : compact('date');
 
         return $this->applyFluentRule('after', $arguments);
     }
@@ -61,7 +61,7 @@ trait HasFluentRules
      */
     public function afterOrEqual(string $date): self
     {
-        $arguments = !strtotime($date) ? ['field' => $date] : compact('date');
+        $arguments = ! strtotime($date) ? ['field' => $date] : compact('date');
 
         return $this->applyFluentRule('after_or_equal', $arguments);
     }
@@ -125,7 +125,7 @@ trait HasFluentRules
      */
     public function before(string $date): self
     {
-        $arguments = !strtotime($date) ? ['field' => $date] : compact('date');
+        $arguments = ! strtotime($date) ? ['field' => $date] : compact('date');
 
         return $this->applyFluentRule('before', $arguments);
     }
@@ -135,7 +135,7 @@ trait HasFluentRules
      */
     public function beforeOrEqual(string $date): self
     {
-        $arguments = !strtotime($date) ? ['field' => $date] : compact('date');
+        $arguments = ! strtotime($date) ? ['field' => $date] : compact('date');
 
         return $this->applyFluentRule('before_or_equal', $arguments);
     }
@@ -264,10 +264,14 @@ trait HasFluentRules
     public function distinct(bool $strict = false, bool $ignoreCase = false): self
     {
         $arguments = [];
-        if($strict) { $arguments[] = 'strict'; }
-        if($ignoreCase) { $arguments[] = 'ignore_case'; }
+        if ($strict) {
+            $arguments[] = 'strict';
+        }
+        if ($ignoreCase) {
+            $arguments[] = 'ignore_case';
+        }
 
-        $rule = !empty($arguments)
+        $rule = ! empty($arguments)
             ? 'distinct:' . implode(',', $arguments)
             : 'distinct';
 
@@ -275,13 +279,14 @@ trait HasFluentRules
     }
 
     /**
-     * @param array<array-key, string|int> $constraints
+     * @param  array<array-key, string|int>  $constraints
+     *
      * @RuleType = constraint
      */
     public function dimensions(array $constraints): self
     {
         $constraints = Collection::make($constraints)
-            ->map(fn($value, $key) => !is_int($key) ? $key . '=' . $value : $value)
+            ->map(fn ($value, $key) => ! is_int($key) ? $key . '=' . $value : $value)
             ->values()->all();
 
         return $this->applyFluentRule('dimensions', compact('constraints'));
@@ -926,7 +931,7 @@ trait HasFluentRules
      */
     public function url(string ...$protocols): self
     {
-        $arguments = !empty($protocols) ? compact('protocols') : [];
+        $arguments = ! empty($protocols) ? compact('protocols') : [];
 
         return $this->applyFluentRule('url', $arguments);
     }

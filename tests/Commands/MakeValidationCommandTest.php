@@ -17,11 +17,11 @@ function callArtisanCommand($parameters = []): int
 
 function cleanup()
 {
-    if(File::isDirectory($directory = app_path('Validation'))) {
+    if (File::isDirectory($directory = app_path('Validation'))) {
         File::deleteDirectory($directory);
     }
 
-    if(File::isDirectory($directory = base_path('stubs'))) {
+    if (File::isDirectory($directory = base_path('stubs'))) {
         File::deleteDirectory($directory);
     }
 }
@@ -58,7 +58,7 @@ it('uses the published validation.stub when available', function (): void {
     $stubPath = base_path('stubs/validation.stub');
     expect(File::exists($stubPath))->toBeFalse();
 
-    Artisan::call('vendor:publish', ['--tag'   => 'larapkgs-validation-stubs']);
+    Artisan::call('vendor:publish', ['--tag' => 'larapkgs-validation-stubs']);
     expect(File::exists($stubPath))->toBeTrue();
 
     $stubContent = File::get($stubPath);

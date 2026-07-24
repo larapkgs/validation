@@ -58,11 +58,11 @@ final class RuleCollection implements Countable
     }
 
     /**
-     * @param array<string, mixed> $arguments
+     * @param  array<string, mixed>  $arguments
      */
     protected function applyFluentRule(string|ValidationRule $rule, array $arguments = []): self
     {
-        return $this->newInstance(function(self $instance) use ($rule, $arguments) {
+        return $this->newInstance(function (self $instance) use ($rule, $arguments) {
             $rule = is_string($rule)
                 ? $this->factory->make($rule, $arguments)
                 : clone $rule;
@@ -73,8 +73,8 @@ final class RuleCollection implements Countable
 
     public function prefix(string $prefix): self
     {
-        return $this->newInstance(function(self $instance) use ($prefix) {
-            $instance->rules = $instance->rules->map(function(ValidationRule $rule) use ($prefix) {
+        return $this->newInstance(function (self $instance) use ($prefix) {
+            $instance->rules = $instance->rules->map(function (ValidationRule $rule) use ($prefix) {
                 return $this->prefixer->prefix($rule, $prefix);
             });
         });
@@ -87,7 +87,7 @@ final class RuleCollection implements Countable
 
     public function forget(string $name): self
     {
-        return $this->newInstance(function(self $instance) use ($name) {
+        return $this->newInstance(function (self $instance) use ($name) {
             $instance->rules->forget($name);
         });
     }
@@ -103,8 +103,8 @@ final class RuleCollection implements Countable
     public function toValidatorArgument(): array
     {
         return $this->rules
-            ->sortBy(fn(ValidationRule $rule) => $rule->getPriority())
-            ->map(fn(ValidationRule $rule) => $rule->toValidatorRule())
+            ->sortBy(fn (ValidationRule $rule) => $rule->getPriority())
+            ->map(fn (ValidationRule $rule) => $rule->toValidatorRule())
             ->values()->all();
     }
 

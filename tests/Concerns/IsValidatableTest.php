@@ -6,11 +6,12 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 use Illuminate\Validation\ValidationException;
 use LaraPkgs\Validation\Concerns\IsValidatable;
-use LaraPkgs\Validation\ValidatableCollection;
 use LaraPkgs\Validation\ValidatableBuilder;
+use LaraPkgs\Validation\ValidatableCollection;
 
 beforeEach(function () {
-    $this->validation = new class() {
+    $this->validation = new class
+    {
         use IsValidatable;
 
         public function makeValidator(array $data): Validator
@@ -43,7 +44,7 @@ describe('IsValidatable::fails', function () {
 
 describe('IsValidatable::validate', function () {
     it('validates the given data', function () {
-        expect(fn() => $this->validation->validate([]))
+        expect(fn () => $this->validation->validate([]))
             ->toThrow(ValidationException::class);
 
         $data = ['property1' => 'value1', 'property2' => 'value2'];
@@ -54,7 +55,7 @@ describe('IsValidatable::validate', function () {
         $getValidationErrorKeys = function (?string $errorBagPrefix = null) {
             try {
                 $this->validation->validate([], $errorBagPrefix);
-            } catch(ValidationException $e) {
+            } catch (ValidationException $e) {
                 return array_keys($e->errors());
             }
         };

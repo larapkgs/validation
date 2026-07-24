@@ -12,7 +12,7 @@ use LaraPkgs\Validation\Rules\RulePriorityResolver;
 use LaraPkgs\Validation\Rules\RuleTypeResolver;
 use LaraPkgs\Validation\ValidatableFactory;
 
-describe('ValidationServiceProvider::register', function() {
+describe('ValidationServiceProvider::register', function () {
     it('binds the RuleTypeResolver contract to the concrete implementation', function () {
         $resolved = App::make(RuleTypeResolverContract::class);
 

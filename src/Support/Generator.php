@@ -44,12 +44,12 @@ final class Generator
     protected function resolveStubPath(string ...$stubPaths): string
     {
         foreach ($stubPaths as $stubPath) {
-            if(File::exists($stubPath)) {
+            if (File::exists($stubPath)) {
                 return $stubPath;
             }
         }
 
-        throw new InvalidArgumentException("No valid stub could be resolved.");
+        throw new InvalidArgumentException('No valid stub could be resolved.');
     }
 
     protected function applyDefaults(): self
@@ -130,11 +130,11 @@ final class Generator
     {
         $overwrite ??= $this->overwrite;
 
-        if ($this->exists() && !$overwrite) {
+        if ($this->exists() && ! $overwrite) {
             throw new RuntimeException("A file already exists at the target path: [{$this->resolveFilePath()}].");
         }
 
-        if(!File::isDirectory($this->resolveDirectoryPath())) {
+        if (! File::isDirectory($this->resolveDirectoryPath())) {
             File::makeDirectory($this->resolveDirectoryPath(), 0777, true, true);
         }
 
@@ -153,7 +153,7 @@ final class Generator
     protected function renderStub(): string
     {
         return Collection::make($this->getStubData())
-            ->reduce(function(string $rendered, string $value, string $key) {
+            ->reduce(function (string $rendered, string $value, string $key) {
                 $search = Str::of($key)->prepend('{{ ')->append(' }}')->__toString();
 
                 return Str::replace($search, $value, $rendered);
@@ -166,8 +166,8 @@ final class Generator
     protected function getStubData(): array
     {
         return [
-          'namespace' => $this->resolveNamespace(),
-          'class' => $this->resolveClassName()
+            'namespace' => $this->resolveNamespace(),
+            'class' => $this->resolveClassName(),
         ];
     }
 
@@ -183,7 +183,7 @@ final class Generator
             ->trim('/')
             ->replaceEnd('.php', '')
             ->replaceEnd($this->type, '')
-            ->when($this->forceType, fn(Stringable $className) => $className->append(Str::studly($this->type)))
+            ->when($this->forceType, fn (Stringable $className) => $className->append(Str::studly($this->type)))
             ->toString();
     }
 
@@ -195,10 +195,10 @@ final class Generator
             ->toString();
     }
 
-    protected function resolveDirectory(): null|string
+    protected function resolveDirectory(): ?string
     {
         return $this->hasSubDirectory()
-            ? Str::of($this->fileInput)->explode('/')->slice(0,-1)->join('/')
+            ? Str::of($this->fileInput)->explode('/')->slice(0, -1)->join('/')
             : $this->directory;
     }
 
@@ -207,7 +207,7 @@ final class Generator
         return Str::of($this->basePath)
             ->trim('/')
             ->prepend('/')
-            ->when($this->resolveDirectory(), fn(Stringable $path, string $directory) => $path->append('/', $directory))
+            ->when($this->resolveDirectory(), fn (Stringable $path, string $directory) => $path->append('/', $directory))
             ->replace('/', DIRECTORY_SEPARATOR)
             ->toString();
     }
@@ -216,7 +216,7 @@ final class Generator
     {
         return Str::of($this->baseNamespace)
             ->trim('\\')
-            ->when($this->resolveDirectory(), fn(Stringable $path, string $directory) => $path->append('\\', $directory))
+            ->when($this->resolveDirectory(), fn (Stringable $path, string $directory) => $path->append('\\', $directory))
             ->replace('/', '\\')
             ->toString();
     }

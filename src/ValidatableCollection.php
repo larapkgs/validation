@@ -30,7 +30,7 @@ final class ValidatableCollection implements Countable, Validatable
 
     public function __construct(ValidationFactoryContract $validationFactory, ValidatableBuilder ...$items)
     {
-        $this->items = new Collection();
+        $this->items = new Collection;
         $this->validationFactory = $validationFactory;
 
         $this->processItems(...$items);
@@ -54,7 +54,7 @@ final class ValidatableCollection implements Countable, Validatable
      */
     protected function cloneItems(): Collection
     {
-        return $this->items->map(fn(ValidatableBuilder $item) => clone $item);
+        return $this->items->map(fn (ValidatableBuilder $item) => clone $item);
     }
 
     protected function processItems(ValidatableBuilder ...$items): self
@@ -74,7 +74,7 @@ final class ValidatableCollection implements Countable, Validatable
     public function prefix(string $prefix): self
     {
         $items = $this->items
-            ->map(fn(ValidatableBuilder $item) => $item->prefix($prefix))
+            ->map(fn (ValidatableBuilder $item) => $item->prefix($prefix))
             ->values()->all();
 
         return self::make(...$items);
@@ -84,7 +84,7 @@ final class ValidatableCollection implements Countable, Validatable
     {
         /** @var array<int, ValidatableBuilder> $items */
         $items = new Collection([$this, ...$validatableCollections])
-            ->reduce(function(array $carry, ValidatableCollection $collection) {
+            ->reduce(function (array $carry, ValidatableCollection $collection) {
                 return array_merge($carry, $collection->getItems()->all());
             }, []);
 
@@ -92,7 +92,7 @@ final class ValidatableCollection implements Countable, Validatable
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function makeValidator(array $data): Validator
     {

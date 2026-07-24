@@ -25,7 +25,7 @@ abstract class Validatable implements ValidatableContract
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function makeValidator(array $data): Validator
     {

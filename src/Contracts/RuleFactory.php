@@ -9,7 +9,7 @@ use LaraPkgs\Validation\Rules\ValidationRule;
 interface RuleFactory
 {
     /**
-     * @param array<array-key, mixed> $arguments
+     * @param  array<array-key, mixed>  $arguments
      */
     public function make(string $name, array $arguments = []): ValidationRule;
 }

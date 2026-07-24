@@ -5,7 +5,7 @@ use LaraPkgs\Validation\ValidatableCollection;
 use LaraPkgs\Validation\ValidatableFactory;
 
 beforeEach(function () {
-    $this->factory = new ValidatableFactory();
+    $this->factory = new ValidatableFactory;
 });
 
 describe('ValidatableFactory::make', function () {
@@ -38,6 +38,3 @@ describe('ValidatableFactory::collection', function () {
         ))->toBeInstanceOf(ValidatableCollection::class);
     });
 });
-
-
-

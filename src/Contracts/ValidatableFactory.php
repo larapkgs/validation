@@ -2,8 +2,8 @@
 
 namespace LaraPkgs\Validation\Contracts;
 
-use LaraPkgs\Validation\ValidatableCollection;
 use LaraPkgs\Validation\ValidatableBuilder;
+use LaraPkgs\Validation\ValidatableCollection;
 
 interface ValidatableFactory
 {

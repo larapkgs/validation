@@ -19,9 +19,9 @@ final class RulePrefixer implements RulePrefixerContract
 
     public function prefix(ValidationRule $rule, string $prefix): ValidationRule
     {
-        if(!Arr::hasAny($arguments = $rule->getArguments(), $this->prefixableArguments)) {
+        if (! Arr::hasAny($arguments = $rule->getArguments(), $this->prefixableArguments)) {
             return $rule;
-        };
+        }
 
         $arguments = Collection::make($arguments)->map(function (mixed $value, string $argument) use ($prefix) {
             return $this->shouldApplyPrefix($argument)
@@ -33,13 +33,13 @@ final class RulePrefixer implements RulePrefixerContract
         return $rule->withArguments($arguments);
     }
 
-    protected function shouldApplyPrefix(string $argument):bool
+    protected function shouldApplyPrefix(string $argument): bool
     {
         return in_array($argument, $this->prefixableArguments);
     }
 
     /**
-     * @param array<array-key, string>|string $value
+     * @param  array<array-key, string>|string  $value
      * @return array<array-key, string>|string
      */
     protected function applyPrefix(array|string $value, string $prefix): array|string
@@ -50,13 +50,13 @@ final class RulePrefixer implements RulePrefixerContract
     }
 
     /**
-     * @param array<array-key, string> $array
+     * @param  array<array-key, string>  $array
      * @return array<array-key, string>
      */
     protected function applyPrefixToArray(array $array, string $prefix): array
     {
         return Collection::make($array)
-            ->map(fn(string $value) => $this->applyPrefixToString($value, $prefix))
+            ->map(fn (string $value) => $this->applyPrefixToString($value, $prefix))
             ->all();
     }
 

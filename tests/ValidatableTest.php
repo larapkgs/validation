@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
 use LaraPkgs\Validation\Concerns\IsValidatable;
 use LaraPkgs\Validation\Contracts\Validatable as ValidatableContract;
 use LaraPkgs\Validation\Validatable;
-use LaraPkgs\Validation\ValidatableCollection;
 use LaraPkgs\Validation\ValidatableBuilder;
+use LaraPkgs\Validation\ValidatableCollection;
 
 beforeEach(function () {
-    $this->validatable = new class() extends Validatable {
+    $this->validatable = new class extends Validatable
+    {
         protected function makeValidatableCollection(): ValidatableCollection
         {
             return ValidatableCollection::make(
@@ -34,8 +35,8 @@ it('uses the IsValidatable trait', function () {
 
 describe('Validatable::getValidatableCollection', function () {
     it('provides a clone of the underlying ValidatableCollection', function () {
-        $getValidatableCollection = function($subject) {
-            return (fn() => $this->validatableCollection)->call($subject);
+        $getValidatableCollection = function ($subject) {
+            return (fn () => $this->validatableCollection)->call($subject);
         };
 
         expect($this->validatable->getValidatableCollection())
@@ -65,7 +66,7 @@ describe('Validatable::validate', function () {
         expect($this->validatable)->validate($data)->toBe($data);
 
         $data = [];
-        expect(fn() => $this->validatable->validate($data))
+        expect(fn () => $this->validatable->validate($data))
             ->toThrow(ValidationException::class);
     });
 });

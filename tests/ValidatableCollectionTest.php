@@ -5,11 +5,11 @@ declare(strict_types=1);
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
-use LaraPkgs\Validation\ValidatableCollection;
 use LaraPkgs\Validation\ValidatableBuilder;
+use LaraPkgs\Validation\ValidatableCollection;
 
 it('expects an instance of the Laravel Validation Factory contract on instantiation', function () {
-    $newCollectionWithoutValidationFactory = function(string ...$rules) {
+    $newCollectionWithoutValidationFactory = function (string ...$rules) {
         /**
          * @noinspection PhpParamsInspection
          * @noinspection RedundantSuppression
@@ -17,10 +17,10 @@ it('expects an instance of the Laravel Validation Factory contract on instantiat
         return new ValidatableCollection(...$rules);
     };
 
-    expect(fn() => $newCollectionWithoutValidationFactory())
+    expect(fn () => $newCollectionWithoutValidationFactory())
         ->toThrow(ArgumentCountError::class);
 
-    expect(fn() => $newCollectionWithoutValidationFactory(...['property', 'required', 'min:10|max:100']))
+    expect(fn () => $newCollectionWithoutValidationFactory(...['property', 'required', 'min:10|max:100']))
         ->toThrow(TypeError::class);
 
     $factory = app(Factory::class);
@@ -80,8 +80,8 @@ describe('ValidatableCollection::prefix', function () {
 
 describe('ValidatableCollection::merge', function () {
     it('merges a variadic list of validation collections and returns a new instance', function () {
-        $getItem = function(ValidatableCollection $collection, string $key) {
-            return (fn() => $this->items)->call($collection)->get($key);
+        $getItem = function (ValidatableCollection $collection, string $key) {
+            return (fn () => $this->items)->call($collection)->get($key);
         };
 
         $validation = ValidatableCollection::make(
@@ -159,7 +159,7 @@ describe('ValidatableCollection::validate', function () {
 
         $data = ['property1' => 'value1'];
 
-        expect(fn() => $collection->validate($data))
+        expect(fn () => $collection->validate($data))
             ->toThrow(ValidationException::class);
     });
 });
@@ -185,8 +185,8 @@ describe('ValidatableCollection::toValidatorArguments', function () {
                 ],
                 'attributes' => [
                     'property1' => 'property1',
-                    'property2' => 'custom2'
-                ]
+                    'property2' => 'custom2',
+                ],
             ]);
     });
 });

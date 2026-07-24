@@ -18,7 +18,7 @@ it('expects an instance of the RuleFactory and a key on instantiation', function
 
 describe('applies fluent rules to the underlying RuleCollection', function () {
     beforeEach(function () {
-        $this->validatable  = ValidatableBuilder::make('property');
+        $this->validatable = ValidatableBuilder::make('property');
     });
 
     it('applies rules without any arguments', function () {
@@ -82,9 +82,9 @@ describe('ValidatableBuilder::make', function () {
 
 describe('ValidatableBuilder::getKey()', function () {
     it('provides the key', function () {
-       $validatable = ValidatableBuilder::make('property');
+        $validatable = ValidatableBuilder::make('property');
 
-       expect($validatable->getKey())->toBe('property');
+        expect($validatable->getKey())->toBe('property');
     });
 });
 
@@ -103,7 +103,7 @@ describe('ValidatableBuilder::prefix()', function () {
 describe('ValidatableBuilder::getRules()', function () {
     it('provides a collection of rules compatible with Laravel validation', function () {
         $getRules = function ($subject) {
-            return (fn() => $this->rules)->call($subject);
+            return (fn () => $this->rules)->call($subject);
         };
 
         $validatable = ValidatableBuilder::make('property')->required()->min(10)->max(100);
@@ -120,14 +120,14 @@ describe('ValidatableBuilder::addMessages()', function () {
 
         $updated = $validatable->addMessages([
             'required' => 'The :attribute field is required.',
-            'min:10' => 'The :attribute must be 10 characters minimum.'
+            'min:10' => 'The :attribute must be 10 characters minimum.',
         ]);
 
         expect($updated)
             ->not->toBe($validatable)
             ->getMessages()->toBe([
                 'required' => 'The :attribute field is required.',
-                'min:10' => 'The :attribute must be 10 characters minimum.'
+                'min:10' => 'The :attribute must be 10 characters minimum.',
             ]);
     });
 });
@@ -140,7 +140,7 @@ describe('ValidatableBuilder::getMessages()', function () {
 
         expect($validatable)->getMessages()->toBe([
             'required' => 'The :attribute field is required.',
-            'min:10' => 'The :attribute must be 10 characters minimum.'
+            'min:10' => 'The :attribute must be 10 characters minimum.',
         ]);
     });
 });
@@ -199,7 +199,7 @@ describe('ValidatableBuilder::validate()', function () {
 
         $data = [];
 
-        expect(fn() => $validatable->validate($data))
+        expect(fn () => $validatable->validate($data))
             ->toThrow(ValidationException::class);
     });
 });
@@ -213,9 +213,9 @@ describe('ValidatableBuilder::toValidatorArguments()', function () {
         $validatorArguments = $validatable->toValidatorArguments();
 
         expect($validatorArguments)->toBe([
-                'rules' => ['property' => ['required']],
-                'messages' => ['property.required' => 'The :attribute field is required.'],
-                'attributes' => ['property' => 'customProperty']
+            'rules' => ['property' => ['required']],
+            'messages' => ['property.required' => 'The :attribute field is required.'],
+            'attributes' => ['property' => 'customProperty'],
         ]);
     });
 });

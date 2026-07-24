@@ -13,7 +13,7 @@ function getGeneratorConfig(array $config = []): array
     return array_merge([
         'base_path' => App::path(),
         'base_namespace' => App::getNamespace(),
-        'directory' => 'Components'
+        'directory' => 'Components',
     ], $config);
 }
 
@@ -21,7 +21,7 @@ function cleanup(array $config = []): void
 {
     $config = getGeneratorConfig($config);
     $directory = $config['base_path'] . DIRECTORY_SEPARATOR . $config['directory'];
-    if(File::isDirectory($directory)) {
+    if (File::isDirectory($directory)) {
         File::deleteDirectory($directory);
     }
 }
@@ -48,10 +48,10 @@ it('allows a variadic list of stubs', function () {
 });
 
 it('throws an exception if no resolvable stubs are given', function () {
-    expect(fn() => new Generator('TestComponent'))
+    expect(fn () => new Generator('TestComponent'))
         ->toThrow(InvalidArgumentException::class);
 
-    expect(fn() => new Generator('TestComponent', getStubPath('missing-component.stub')))
+    expect(fn () => new Generator('TestComponent', getStubPath('missing-component.stub')))
         ->toThrow(InvalidArgumentException::class);
 });
 
@@ -62,7 +62,7 @@ describe('Generator::generate', function () {
 
         $generator->generate();
 
-        expect(File::get( $config['base_path'] . ('/Components/Test.php')))
+        expect(File::get($config['base_path'] . ('/Components/Test.php')))
             ->toContain('namespace ' . $config['base_namespace'] . 'Components' . ';')
             ->toContain('final class Test')
             ->toContain('return \'component\';');
@@ -73,7 +73,7 @@ describe('Generator::generate', function () {
         $generator = new Generator('Test', $this->stub)->applyConfig($config);
 
         expect($generator->generate())->not->toThrow(RuntimeException::class);
-        expect(fn() => $generator->generate())->toThrow(RuntimeException::class);
+        expect(fn () => $generator->generate())->toThrow(RuntimeException::class);
     });
 
     it('allows overwriting an existing file when the overwrite parameter is set to true', function () {
@@ -90,7 +90,7 @@ describe('Generator::generate', function () {
 
         $generator->generate();
 
-        expect(File::get( $config['base_path'] . ('/Components/Test.php')))
+        expect(File::get($config['base_path'] . ('/Components/Test.php')))
             ->toContain('namespace ' . $config['base_namespace'] . 'Components' . ';')
             ->toContain('final class Test')
             ->toContain('return \'published component\';');
@@ -104,7 +104,7 @@ describe('Generator::generate', function () {
 
         $generator->generate();
 
-        expect(File::get( $config['base_path'] . ('/Users/Test.php')))
+        expect(File::get($config['base_path'] . ('/Users/Test.php')))
             ->toContain('namespace ' . $config['base_namespace'] . 'Users' . ';')
             ->toContain('final class Test')
             ->toContain('return \'component\';');
@@ -135,7 +135,7 @@ describe('Generator::applyDefaults', function () {
 
         $generator->generate();
 
-        expect(File::get( $config['base_path'] . ('/Actions/Test.php')))
+        expect(File::get($config['base_path'] . ('/Actions/Test.php')))
             ->toContain('namespace ' . $config['base_namespace'] . 'Actions;');
 
         cleanup($config);
@@ -167,7 +167,7 @@ describe('Generator::baseNamespace', function () {
 
         $generator->generate();
 
-        expect(File::get( $config['base_path'] . ('/Components/Test.php')))
+        expect(File::get($config['base_path'] . ('/Components/Test.php')))
             ->toContain('namespace ' . $baseNamespace . 'Components;');
     });
 });
@@ -182,7 +182,7 @@ describe('Generator::directory', function () {
 
         $generator->generate();
 
-        expect(File::get($config['base_path'] . '/' . $directory .'/Test.php'))
+        expect(File::get($config['base_path'] . '/' . $directory . '/Test.php'))
             ->toContain('namespace ' . $config['base_namespace'] . $directory . ';');
 
         cleanup(['directory' => $directory]);
@@ -227,7 +227,7 @@ describe('Generator::overwrite', function () {
         $generator = new Generator('Test', $this->stub)->applyConfig($config)->overwrite();
 
         expect($generator->generate())->not->toThrow(RuntimeException::class);
-        expect(fn() => $generator->generate())->not->toThrow(RuntimeException::class);
+        expect(fn () => $generator->generate())->not->toThrow(RuntimeException::class);
     });
 });
 

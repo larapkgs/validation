@@ -6,7 +6,6 @@ namespace LaraPkgs\Validation\Rules;
 
 use Closure;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use LaraPkgs\Validation\Contracts\ValidationRule as ValidationRuleContract;
 
 final class ValidationRule implements ValidationRuleContract
@@ -18,11 +17,11 @@ final class ValidationRule implements ValidationRuleContract
 
     protected int $priority;
 
-    /** @var (\Closure(self): (string|object))|null */
+    /** @var (Closure(self): (string|object))|null */
     protected ?Closure $validatorRuleResolver = null;
 
     /**
-     * @param array<array-key, mixed> $arguments
+     * @param  array<array-key, mixed>  $arguments
      */
     public function __construct(string $name, array $arguments = [], int $priority = 100)
     {
@@ -44,7 +43,7 @@ final class ValidationRule implements ValidationRuleContract
     }
 
     /**
-     * @param  array<array-key, mixed> $arguments
+     * @param  array<array-key, mixed>  $arguments
      */
     public function withArguments(array $arguments): self
     {
@@ -69,7 +68,7 @@ final class ValidationRule implements ValidationRuleContract
 
     public function toValidatorRuleUsing(callable $validatorRuleResolver): self
     {
-        if(!$validatorRuleResolver instanceof Closure) {
+        if (! $validatorRuleResolver instanceof Closure) {
             $validatorRuleResolver = $validatorRuleResolver(...);
         }
 
@@ -81,17 +80,17 @@ final class ValidationRule implements ValidationRuleContract
 
     public function toValidatorRule(): string|object
     {
-        if($this->validatorRuleResolver !== null) {
+        if ($this->validatorRuleResolver !== null) {
             return ($this->validatorRuleResolver)($this);
         }
 
         $arguments = Collection::make($this->arguments);
 
-        if($arguments->count() == 0) {
+        if ($arguments->count() == 0) {
             return $this->getName();
         }
 
-        if($arguments->count() === 1 && is_object($arguments->first())) {
+        if ($arguments->count() === 1 && is_object($arguments->first())) {
             return clone $arguments->first();
         }
 
@@ -105,7 +104,7 @@ final class ValidationRule implements ValidationRuleContract
 
     protected function formatArgument(mixed $argument): mixed
     {
-        return match(true) {
+        return match (true) {
             is_bool($argument) => $argument ? 'true' : 'false',
             default => $argument,
         };

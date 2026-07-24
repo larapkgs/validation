@@ -105,8 +105,10 @@ describe('ValidationRule::toValidatorRuleUsing', function () {
     });
 
     it('accepts a callable as a custom validator rule resolver', function () {
-        $resolver = new class {
-            public function __invoke(ValidationRule $rule): string {
+        $resolver = new class
+        {
+            public function __invoke(ValidationRule $rule): string
+            {
                 return 'custom_min:' . implode(',', $rule->getArguments());
             }
         };
@@ -144,12 +146,12 @@ describe('ValidationRule::toValidatorRule', function () {
         $rule = new ValidationRule('between', $arguments = ['min' => 1, 'max' => 10]);
         expect($rule)->toValidatorRule()->toBe($rule->getName() . ':' . Arr::join($arguments, ','));
 
-        $rule = new ValidationRule('dimensions', $arguments = ['min_ratio=1/2','max_ratio=3/2']);
+        $rule = new ValidationRule('dimensions', $arguments = ['min_ratio=1/2', 'max_ratio=3/2']);
         expect($rule)->toValidatorRule()->toBe($rule->getName() . ':' . Arr::join($arguments, ','));
 
         $rule = new ValidationRule('accepted_if', $arguments = [
             'anotherField' => 'category',
-            'values' => ['category1', 'category3', 'category5']
+            'values' => ['category1', 'category3', 'category5'],
         ]);
         expect($rule)->toValidatorRule()->toBe('accepted_if:category,category1,category3,category5');
 
