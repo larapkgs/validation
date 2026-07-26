@@ -16,17 +16,15 @@ return [
             'bail',
         ],
         'presence' => [
-            'required', 'required_array_keys', 'required_if', 'required_id_accepted', 'required_if_declined', 'required_unless', 'required_with',
+            'required', 'required_array_keys', 'required_if', 'required_if_accepted', 'required_if_declined', 'required_unless', 'required_with',
             'required_with_all', 'required_without', 'required_without_all',
-            'prohibited', 'prohibited_if', 'prohibites_if_accepted', 'prohibited_if_declined', 'prohibited_unless',
+            'prohibited', 'prohibited_if', 'prohibited_if_accepted', 'prohibited_if_declined', 'prohibited_unless', 'prohibits',
             'missing', 'missing_if', 'missing_unless', 'missing_with', 'missing_with_all',
             'present', 'present_if', 'present_unless', 'present_with', 'present_with_all',
-            'filled', 'accepted', 'accepted_if',
-            'declined', 'declined_if',
+            'filled', 'accepted', 'accepted_if', 'declined', 'declined_if',
         ],
         'type' => [
-            'string', 'array', 'integer', 'numeric', 'boolean', 'json',
-            'file', 'image', 'object', 'list',
+            'string', 'array', 'integer', 'numeric', 'boolean', 'file',
         ],
     ],
     'typeToPriorityMap' => [

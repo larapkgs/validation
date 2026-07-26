@@ -23,7 +23,7 @@ trait HasFluentRules
     }
 
     /**
-     * @RuleType = constraint
+     * @RuleType = presence
      */
     public function accepted(): self
     {
@@ -31,7 +31,7 @@ trait HasFluentRules
     }
 
     /**
-     * @RuleType = constraint
+     * @RuleType = presence
      */
     public function acceptedIf(string $field, mixed ...$values): self
     {
@@ -219,7 +219,7 @@ trait HasFluentRules
     }
 
     /**
-     * @RuleType = constraint
+     * @RuleType = presence
      */
     public function declined(): self
     {
@@ -227,7 +227,7 @@ trait HasFluentRules
     }
 
     /**
-     * @RuleType = constraint
+     * @RuleType = presence
      */
     public function declinedIf(string $field, mixed ...$values): self
     {
@@ -405,7 +405,7 @@ trait HasFluentRules
     }
 
     /**
-     * @RuleType = constraint
+     * @RuleType = presence
      */
     public function filled(): self
     {
