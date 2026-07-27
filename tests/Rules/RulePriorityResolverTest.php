@@ -11,7 +11,7 @@ describe('RulePriorityResolver::resolve', function () {
         $this->resolver = new RulePriorityResolver($ruleTypeResolver);
     });
 
-    it('it resolves known validation rules to a rule type', function (string $rule, int $priority) {
+    it('resolves known validation rules to a rule type', function (string $rule, int $priority) {
         expect($this->resolver->resolve($rule))->toBe($priority);
     })->with([
         'modifier rule' => ['sometimes', 1],
@@ -22,5 +22,13 @@ describe('RulePriorityResolver::resolve', function () {
 
     it('resolves to 100 when trying to resolve the priority for an unknown rule', function () {
         expect($this->resolver->resolve('unknown_rule'))->toBe(100);
+    });
+
+    it('resolves the default rule priority from the config', function () {
+        expect($this->resolver->resolve('unknown_rule'))->toBe(100);
+
+        Config::set('validation.default_rule_priority', 200);
+
+        expect($this->resolver->resolve('unknown_rule'))->toBe(200);
     });
 });

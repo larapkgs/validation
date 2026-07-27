@@ -37,4 +37,5 @@ return [
         'presence' => 3,
         'type' => 4,
     ],
+    'default_rule_priority' => 100,
 ];
