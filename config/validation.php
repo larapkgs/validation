@@ -27,6 +27,7 @@ return [
             'string', 'array', 'integer', 'numeric', 'boolean', 'file',
         ],
     ],
+    'default_rule_type' => 'constraint',
     'typeToPriorityMap' => [
         'modifier' => 1,
         'circuit' => 2,

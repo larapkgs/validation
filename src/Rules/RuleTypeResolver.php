@@ -17,7 +17,7 @@ final class RuleTypeResolver implements RuleTypeResolverContract
 
     public function resolve(string $ruleName): string
     {
-        return $this->getRuleToTypeMap()->get($ruleName) ?? 'constraint';
+        return $this->getRuleToTypeMap()->get($ruleName) ?? Config::get('validation.default_rule_type', 'constraint');
     }
 
     /**

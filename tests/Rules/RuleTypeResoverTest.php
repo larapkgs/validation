@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\Config;
 use LaraPkgs\Validation\Rules\RuleTypeResolver;
 
 describe('RuleTypeResolver::resolve', function () {
@@ -21,6 +22,16 @@ describe('RuleTypeResolver::resolve', function () {
     it('resolves to constraint when trying to resolve an unknown rule', function () {
         expect($this->resolver->resolve('unknown_rule'))
             ->toBe('constraint');
+    });
+
+    it('resolves the default rule type from the config', function () {
+        expect($this->resolver->resolve('unknown_rule'))
+            ->toBe('constraint');
+
+        Config::set('validation.default_rule_type', 'configured');
+
+        expect($this->resolver->resolve('unknown_rule'))
+            ->toBe('configured');
     });
 
     it('it internally caches the resolved ruleToTypeMap', function () {
