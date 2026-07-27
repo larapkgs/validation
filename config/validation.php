@@ -11,7 +11,7 @@ return [
             'overwrite' => false,
         ],
     ],
-    'typeToRuleMap' => [
+    'type_to_rule_map' => [
         'modifier' => [
             'sometimes', 'nullable', 'exclude', 'exclude_if', 'exclude_unless', 'exclude_with', 'exclude_without',
         ],
@@ -31,7 +31,7 @@ return [
         ],
     ],
     'default_rule_type' => 'constraint',
-    'typeToPriorityMap' => [
+    'type_to_priority_map' => [
         'modifier' => 1,
         'circuit' => 2,
         'presence' => 3,

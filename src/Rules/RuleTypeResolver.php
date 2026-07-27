@@ -44,6 +44,6 @@ final class RuleTypeResolver implements RuleTypeResolverContract
      */
     protected function getTypeToRuleMapFromConfig(): array
     {
-        return Config::get('validation.typeToRuleMap', []);
+        return Config::get('validation.type_to_rule_map', []);
     }
 }
