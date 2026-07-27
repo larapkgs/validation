@@ -6,6 +6,9 @@ return [
             'base_path' => app_path(),
             'base_namespace' => 'App\\',
             'directory' => 'Validation',
+            'type' => 'Validation',
+            'force_type' => true,
+            'overwrite' => false,
         ],
     ],
     'typeToRuleMap' => [

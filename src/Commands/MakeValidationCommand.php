@@ -37,11 +37,13 @@ final class MakeValidationCommand extends Command
         /** @var string $fileInput */
         $fileInput = $this->argument('name');
         $stubs = $this->getStubs();
-        $config = Config::get('validation.generators.validation');
 
-        return new Generator($fileInput, ...$stubs)->applyConfig($config)
-            ->type($this->type)->forceType()
-            ->overwrite((bool) $this->option('force'));
+        $config = Config::get('validation.generators.validation');
+        if ((bool) $this->option('force')) {
+            $config['overwrite'] = true;
+        }
+
+        return new Generator($fileInput, ...$stubs)->applyConfig($config);
     }
 
     /**

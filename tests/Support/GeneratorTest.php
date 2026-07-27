@@ -128,14 +128,19 @@ describe('Generator::applyDefaults', function () {
             'base_path' => app_path('Domain/Users'),
             'base_namespace' => 'App\\Domain\\Users\\',
             'directory' => 'Actions',
+            'type' => 'Action',
+            'force_type' => true,
+            'overwrite' => true,
         ];
 
         cleanup($config);
         $generator = new Generator('Test', $this->stub)->applyConfig($config);
 
+        expect($generator)->isOverwriting()->toBeTrue();
+
         $generator->generate();
 
-        expect(File::get($config['base_path'] . ('/Actions/Test.php')))
+        expect(File::get($config['base_path'] . ('/Actions/TestAction.php')))
             ->toContain('namespace ' . $config['base_namespace'] . 'Actions;');
 
         cleanup($config);

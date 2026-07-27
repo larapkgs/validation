@@ -112,13 +112,24 @@ final class Generator
         return $this->overwrite;
     }
 
-    /** @param array{base_path?: string, base_namespace?: string, directory?: ?string} $configInput */
+    /** @param array{
+     *     base_path?: string,
+     *     base_namespace?: string,
+     *     directory?: ?string,
+     *     type?: ?string,
+     *     force_type?: ?bool,
+     *     overwrite?: ?bool
+     * } $configInput
+     */
     public function applyConfig(array $configInput): self
     {
         $config = Fluent::make($configInput);
         $this->basePath = $config->get('base_path', $this->basePath);
         $this->baseNamespace = $config->get('base_namespace', $this->baseNamespace);
         $this->directory = $config->get('directory', $this->directory);
+        $this->type = $config->get('type', $this->type);
+        $this->forceType = $config->get('force_type', $this->forceType);
+        $this->overwrite = $config->get('overwrite', $this->overwrite);
 
         return $this;
     }
