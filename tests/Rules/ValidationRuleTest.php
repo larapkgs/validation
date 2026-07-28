@@ -154,6 +154,11 @@ describe('ValidationRule::toValidatorRule()', function () {
             'values' => ['category1', 'category3', 'category5'],
         ]);
         expect($rule)->toValidatorRule()->toBe('accepted_if:category,category1,category3,category5');
+    });
 
+    it('filters out empty array arguments', function () {
+        $rule = new ValidationRule('email', ['validators' => []]);
+
+        expect($rule)->toValidatorRule()->toBe('email');
     });
 });

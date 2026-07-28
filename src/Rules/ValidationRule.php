@@ -84,7 +84,8 @@ final class ValidationRule implements ValidationRuleContract
             return ($this->validatorRuleResolver)($this);
         }
 
-        $arguments = Collection::make($this->arguments);
+        $arguments = Collection::make($this->arguments)
+            ->filter(fn (mixed $argument) => ! (is_array($argument) && count($argument) === 0));
 
         if ($arguments->count() == 0) {
             return $this->getName();
