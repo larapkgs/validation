@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace LaraPkgs\Validation;
 
+use Closure;
 use Illuminate\Contracts\Validation\Validator;
 use LaraPkgs\Validation\Concerns\IsValidatable;
 use LaraPkgs\Validation\Contracts\ProvidesValidatableCollection;
@@ -15,6 +16,18 @@ abstract class Validatable implements ProvidesValidatableCollection, Validatable
 
     protected ?ValidatableCollection $validatableCollection = null;
 
+    public function __clone()
+    {
+        $this->validatableCollection = clone $this->resolveValidatableCollection();
+    }
+
+    protected function newInstance(Closure $callback): self
+    {
+        $instance = clone $this;
+
+        return tap($instance, $callback);
+    }
+
     public function getValidatableCollection(): ValidatableCollection
     {
         return clone $this->resolveValidatableCollection();
@@ -22,7 +35,14 @@ abstract class Validatable implements ProvidesValidatableCollection, Validatable
 
     protected function resolveValidatableCollection(): ValidatableCollection
     {
-        return clone $this->validatableCollection ??= $this->makeValidatableCollection();
+        return $this->validatableCollection ??= $this->makeValidatableCollection();
+    }
+
+    public function merge(ValidatableCollection|ProvidesValidatableCollection ...$mergeables): self
+    {
+        return $this->newInstance(function (self $instance) use ($mergeables) {
+            $instance->validatableCollection = $instance->resolveValidatableCollection()->merge(...$mergeables);
+        });
     }
 
     /**

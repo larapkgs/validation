@@ -5,10 +5,16 @@ declare(strict_types=1);
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
 use LaraPkgs\Validation\Concerns\IsValidatable;
+use LaraPkgs\Validation\Contracts\ProvidesValidatableCollection;
 use LaraPkgs\Validation\Contracts\Validatable as ValidatableContract;
 use LaraPkgs\Validation\Validatable;
 use LaraPkgs\Validation\ValidatableBuilder;
 use LaraPkgs\Validation\ValidatableCollection;
+
+function getValidatableCollection($subject)
+{
+    return (fn () => $this->resolveValidatableCollection())->call($subject);
+}
 
 beforeEach(function () {
     $this->validatable = new class extends Validatable
@@ -41,6 +47,49 @@ describe('Validatable::getValidatableCollection', function () {
 
         expect($this->validatable->getValidatableCollection())
             ->not->toBe($getValidatableCollection($this->validatable));
+    });
+});
+
+describe('Validatable::merge', function () {
+    it('merges a variadic list of validation collections and returns a new instance', function () {
+        $collection = ValidatableCollection::make(
+            ValidatableBuilder::make('merged')->required(),
+        );
+
+        expect($this->validatable->getValidatableCollection())
+            ->getItems()->keys()->all()->toBe(['property1', 'property2']);
+
+        $merged = $this->validatable->merge($collection);
+
+        expect(getValidatableCollection($merged))
+            ->not->toBe(getValidatableCollection($this->validatable));
+
+        expect($merged)
+            ->not->toBe($this->validatable)
+            ->getValidatableCollection()
+            ->getItems()->keys()->all()->toBe(['property1', 'property2', 'merged']);
+    });
+
+    it('allows to merge classes that implement the ProvidesValidatableCollection interface', function () {
+        $classThatProvidesValidatableCollection = new class implements ProvidesValidatableCollection
+        {
+            public function getValidatableCollection(): ValidatableCollection
+            {
+                return ValidatableCollection::make(
+                    ValidatableBuilder::make('merged')->required(),
+                );
+            }
+        };
+
+        expect($this->validatable->getValidatableCollection())
+            ->getItems()->keys()->all()->toBe(['property1', 'property2']);
+
+        $merged = $this->validatable->merge($classThatProvidesValidatableCollection);
+
+        expect($merged)
+            ->not->toBe($this->validatable)
+            ->getValidatableCollection()
+            ->getItems()->keys()->all()->toBe(['property1', 'property2', 'merged']);
     });
 });
 
