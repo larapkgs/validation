@@ -5,7 +5,7 @@ declare(strict_types=1);
 use LaraPkgs\Validation\Rules\RulePrefixer;
 use LaraPkgs\Validation\Rules\ValidationRule;
 
-describe('RulePrefixer::prefix', function () {
+describe('RulePrefixer::prefix()', function () {
 
     beforeEach(function () {
         $this->prefixer = new RulePrefixer;

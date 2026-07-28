@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Config;
 use LaraPkgs\Validation\Rules\RuleTypeResolver;
 
-describe('RuleTypeResolver::resolve', function () {
+describe('RuleTypeResolver::resolve()', function () {
     beforeEach(function () {
         $this->resolver = new RuleTypeResolver;
     });

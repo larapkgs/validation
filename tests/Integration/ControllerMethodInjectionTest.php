@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use LaraPkgs\Validation\Tests\TestSupport\MethodInjectionTestController;
 
 describe('Controller Method Injection', function () {

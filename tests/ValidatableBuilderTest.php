@@ -70,7 +70,7 @@ describe('applies fluent rules to the underlying RuleCollection', function () {
     });
 });
 
-describe('ValidatableBuilder::make', function () {
+describe('ValidatableBuilder::make()', function () {
     it('provides a factory method that expects a key', function () {
         $validatable = ValidatableBuilder::make('property');
 

@@ -10,20 +10,6 @@ use LaraPkgs\Validation\ValidatableBuilder;
 use LaraPkgs\Validation\ValidatableCollection;
 
 it('expects an instance of the Laravel Validation Factory contract on instantiation', function () {
-    $newCollectionWithoutValidationFactory = function (string ...$rules) {
-        /**
-         * @noinspection PhpParamsInspection
-         * @noinspection RedundantSuppression
-         */
-        return new ValidatableCollection(...$rules);
-    };
-
-    expect(fn () => $newCollectionWithoutValidationFactory())
-        ->toThrow(ArgumentCountError::class);
-
-    expect(fn () => $newCollectionWithoutValidationFactory(...['property', 'required', 'min:10|max:100']))
-        ->toThrow(TypeError::class);
-
     $factory = app(Factory::class);
     expect(new ValidatableCollection($factory))->toBeInstanceOf(ValidatableCollection::class);
 });
@@ -31,14 +17,14 @@ it('expects an instance of the Laravel Validation Factory contract on instantiat
 it('accepts a variadic list of items on instantiation', function () {
     $collection = new ValidatableCollection(
         app(Factory::class),
-        ValidatableBuilder::make('property1', 'required'),
-        ValidatableBuilder::make('property2', 'required')
+        ValidatableBuilder::make('property1')->required(),
+        ValidatableBuilder::make('property2')->required(),
     );
 
     expect($collection)->toHaveCount(2);
 });
 
-describe('ValidatableCollection::make', function () {
+describe('ValidatableCollection::make()', function () {
     it('provides a factory method', function () {
         $collection = ValidatableCollection::make();
 
@@ -46,13 +32,13 @@ describe('ValidatableCollection::make', function () {
     });
 });
 
-describe('ValidatableCollection::add', function () {
+describe('ValidatableCollection::add()', function () {
     it('adds a variadic list of items and returns a new instance', function () {
         $collection = ValidatableCollection::make();
         expect($collection)->toHaveCount(0);
 
         $mutated = $collection->add(
-            ValidatableBuilder::make('property1', 'required')
+            ValidatableBuilder::make('property1')->required()
         );
 
         expect($mutated)
@@ -61,11 +47,11 @@ describe('ValidatableCollection::add', function () {
     });
 });
 
-describe('ValidatableCollection::prefix', function () {
+describe('ValidatableCollection::prefix()', function () {
     it('applies a prefix to the keys of all items and returns a new instance', function () {
         $validation = ValidatableCollection::make(
-            ValidatableBuilder::make('property1', 'required'),
-            ValidatableBuilder::make('property2', 'required'),
+            ValidatableBuilder::make('property1')->required(),
+            ValidatableBuilder::make('property2')->required(),
         );
 
         $prefixed = $validation->prefix('collection.*.');
@@ -79,22 +65,22 @@ describe('ValidatableCollection::prefix', function () {
     });
 });
 
-describe('ValidatableCollection::merge', function () {
+describe('ValidatableCollection::merge()', function () {
     it('merges a variadic list of validation collections and returns a new instance', function () {
         $getItem = function (ValidatableCollection $collection, string $key) {
             return (fn () => $this->items)->call($collection)->get($key);
         };
 
         $validation = ValidatableCollection::make(
-            $item1 = ValidatableBuilder::make('property1', 'required'),
+            $item1 = ValidatableBuilder::make('property1')->required(),
         );
 
         $mergeable1 = ValidatableCollection::make(
-            $item2 = ValidatableBuilder::make('property2', 'required'),
+            $item2 = ValidatableBuilder::make('property2')->required(),
         );
 
         $mergeable2 = ValidatableCollection::make(
-            $item3 = ValidatableBuilder::make('property3', 'required'),
+            $item3 = ValidatableBuilder::make('property3')->required(),
         );
 
         $merged = $validation->merge($mergeable1, $mergeable2);
@@ -134,10 +120,10 @@ describe('ValidatableCollection::merge', function () {
     });
 });
 
-describe('ValidatableCollection::getItems', function () {
+describe('ValidatableCollection::getItems()', function () {
     it('provides ad instanceof the underlying items collection', function () {
         $collection = ValidatableCollection::make(
-            ValidatableBuilder::make('property1', 'required'),
+            ValidatableBuilder::make('property1')->required()
         );
 
         $items1 = $collection->getItems();
@@ -147,7 +133,7 @@ describe('ValidatableCollection::getItems', function () {
     });
 });
 
-describe('ValidatableCollection::passes', function () {
+describe('ValidatableCollection::passes()', function () {
     it('indicates if the given data passes the constraints as set by the items', function () {
         $collection = ValidatableCollection::make(
             ValidatableBuilder::make('property1')->required(),
@@ -160,7 +146,7 @@ describe('ValidatableCollection::passes', function () {
     });
 });
 
-describe('ValidatableCollection::fails', function () {
+describe('ValidatableCollection::fails()', function () {
     it('indicates if the given data fails the constraints as set by the rules', function () {
         $collection = ValidatableCollection::make(
             ValidatableBuilder::make('property1')->required(),
@@ -173,7 +159,7 @@ describe('ValidatableCollection::fails', function () {
     });
 });
 
-describe('ValidatableCollection::validate', function () {
+describe('ValidatableCollection::validate()', function () {
     it('tries to validate the given data', function () {
         $collection = ValidatableCollection::make(
             ValidatableBuilder::make('property1')->required(),
@@ -190,7 +176,7 @@ describe('ValidatableCollection::validate', function () {
     });
 });
 
-describe('ValidatableCollection::toValidatorArguments', function () {
+describe('ValidatableCollection::toValidatorArguments()', function () {
     it('provides an array of arguments compatible with the Laravel Validator Factory', function () {
         $collection = ValidatableCollection::make(
             ValidatableBuilder::make('property1')->required()
@@ -217,7 +203,7 @@ describe('ValidatableCollection::toValidatorArguments', function () {
     });
 });
 
-describe('ValidatableCollection::makeValidator', function () {
+describe('ValidatableCollection::makeValidator()', function () {
     it('provides a factory method that creates a Laravel Validator for the given data', function () {
         $collection = ValidatableCollection::make(
             ValidatableBuilder::make('property1')->required()
@@ -233,11 +219,11 @@ describe('ValidatableCollection::makeValidator', function () {
     });
 });
 
-describe('ValidatableCollection::count', function () {
+describe('ValidatableCollection::count()', function () {
     it('is countable', function () {
         $collection = ValidatableCollection::make(
-            ValidatableBuilder::make('property1', 'required'),
-            ValidatableBuilder::make('property2', 'required', 'min:10', 'max:100')
+            ValidatableBuilder::make('property1')->required(),
+            ValidatableBuilder::make('property2')->required()->min(10)->max(100)
         );
 
         expect($collection)->toHaveCount(2);

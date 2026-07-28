@@ -7,7 +7,7 @@ use LaraPkgs\Validation\Contracts\RulePriorityResolver;
 use LaraPkgs\Validation\Rules\RuleFactory;
 use LaraPkgs\Validation\Rules\ValidationRule;
 
-describe('RuleFactory::make', function () {
+describe('RuleFactory::make()', function () {
     beforeEach(function () {
         $rulePriorityResolver = App::make(RulePriorityResolver::class);
         $this->factory = new RuleFactory($rulePriorityResolver);

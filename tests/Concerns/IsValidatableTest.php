@@ -24,7 +24,7 @@ beforeEach(function () {
     };
 });
 
-describe('IsValidatable::passes', function () {
+describe('IsValidatable::passes()', function () {
     it('indicates if the given data passes the constraints as set by the rules', function () {
         $validation = ValidatableBuilder::make('property')->required();
         $data = ['property' => 'value'];
@@ -33,7 +33,7 @@ describe('IsValidatable::passes', function () {
     });
 });
 
-describe('IsValidatable::fails', function () {
+describe('IsValidatable::fails()', function () {
     it('indicates if the given data fails the constraints as set by the rules', function () {
         $validation = ValidatableBuilder::make('property')->required();
         $data = [];
@@ -42,7 +42,7 @@ describe('IsValidatable::fails', function () {
     });
 });
 
-describe('IsValidatable::validate', function () {
+describe('IsValidatable::validate()', function () {
     it('validates the given data', function () {
         expect(fn () => $this->validation->validate([]))
             ->toThrow(ValidationException::class);
@@ -68,7 +68,7 @@ describe('IsValidatable::validate', function () {
     });
 });
 
-describe('IsValidatable::makeValidator', function () {
+describe('IsValidatable::makeValidator()', function () {
     it('provides a factory method that creates a Laravel Validator for the given data', function () {
         expect($this->validation)->makeValidator([])->toBeInstanceOf(ValidatorContract::class);
     });

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use LaraPkgs\Validation\Contracts\ValidatableFactory;
 use LaraPkgs\Validation\Support\Facades\Validatable;
 

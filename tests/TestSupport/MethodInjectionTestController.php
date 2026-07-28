@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace LaraPkgs\Validation\Tests\TestSupport;
 
 use Illuminate\Http\Request;
 
-class MethodInjectionTestController
+final class MethodInjectionTestController
 {
     public function __invoke(Request $request, TestValidation $validatable)
     {

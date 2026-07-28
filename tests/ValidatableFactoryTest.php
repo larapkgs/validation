@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use LaraPkgs\Validation\ValidatableBuilder;
 use LaraPkgs\Validation\ValidatableCollection;
 use LaraPkgs\Validation\ValidatableFactory;
@@ -8,7 +10,7 @@ beforeEach(function () {
     $this->factory = new ValidatableFactory;
 });
 
-describe('ValidatableFactory::make', function () {
+describe('ValidatableFactory::make()', function () {
     it('instantiates a ValidatableBuilder when given a string', function () {
         expect($this->factory->make('property'))->toBeInstanceOf(ValidatableBuilder::class);
     });
@@ -20,13 +22,13 @@ describe('ValidatableFactory::make', function () {
     });
 });
 
-describe('ValidatableFactory::item', function () {
+describe('ValidatableFactory::item()', function () {
     it('instantiates a ValidatableBuilder', function () {
         expect($this->factory->item('property'))->toBeInstanceOf(ValidatableBuilder::class);
     });
 });
 
-describe('ValidatableFactory::collection', function () {
+describe('ValidatableFactory::collection()', function () {
     it('instantiates a ValidatableCollection', function () {
         expect($this->factory->collection())->toBeInstanceOf(ValidatableCollection::class);
     });

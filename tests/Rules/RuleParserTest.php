@@ -27,7 +27,7 @@ it('resolves as a singleton from the service container', function () {
         ->toBe($parser);
 });
 
-describe('RuleParser::make', function () {
+describe('RuleParser::make()', function () {
     it('provides a factory method', function () {
         $parser = RuleParser::make();
 
@@ -35,7 +35,7 @@ describe('RuleParser::make', function () {
     });
 });
 
-describe('RuleParser::parse', function () {
+describe('RuleParser::parse()', function () {
     beforeEach(function () {
         $this->parser = RuleParser::make();
     });

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\App;
 use LaraPkgs\Validation\Support\Generator;
 
@@ -51,11 +53,11 @@ it('throws an exception if no resolvable stubs are given', function () {
     expect(fn () => new Generator('TestComponent'))
         ->toThrow(InvalidArgumentException::class);
 
-    expect(fn () => new Generator('TestComponent', getStubPath('missing-component.stub')))
+    expect(fn () => new Generator('TestComponent', 'missing-component.stub'))
         ->toThrow(InvalidArgumentException::class);
 });
 
-describe('Generator::generate', function () {
+describe('Generator::generate()', function () {
     it('generates a file based on the given stub', function () {
         $config = getGeneratorConfig();
         $generator = new Generator('Test', $this->stub)->applyConfig($config);
@@ -122,7 +124,7 @@ describe('Generator::generate', function () {
     });
 });
 
-describe('Generator::applyDefaults', function () {
+describe('Generator::applyDefaults()', function () {
     it('allows to apply a custom configuration', function () {
         $config = [
             'base_path' => app_path('Domain/Users'),
@@ -147,7 +149,7 @@ describe('Generator::applyDefaults', function () {
     });
 });
 
-describe('Generator::basePath', function () {
+describe('Generator::basePath()', function () {
     it('allows to apply a custom base path', function () {
         $basePath = app_path('Domain/Users');
         cleanup(['base_path' => $basePath]);
@@ -163,7 +165,7 @@ describe('Generator::basePath', function () {
     });
 });
 
-describe('Generator::baseNamespace', function () {
+describe('Generator::baseNamespace()', function () {
     it('allows to apply a custom base namespace', function () {
         $baseNamespace = 'App\\Domain\\';
 
@@ -177,7 +179,7 @@ describe('Generator::baseNamespace', function () {
     });
 });
 
-describe('Generator::directory', function () {
+describe('Generator::directory()', function () {
     it('allows to apply a custom directory', function () {
         $directory = 'Domain';
         cleanup(['directory' => $directory]);
@@ -194,7 +196,7 @@ describe('Generator::directory', function () {
     });
 });
 
-describe('Generator::type', function () {
+describe('Generator::type()', function () {
     it('sets the type of file to be generated', function () {
         $config = getGeneratorConfig();
         $generator = new Generator('Test', $this->stub)->applyConfig($config)->type('Validator');
@@ -203,7 +205,7 @@ describe('Generator::type', function () {
     });
 });
 
-describe('Generator::getType', function () {
+describe('Generator::getType()', function () {
     it('provides the type of file to be generated', function () {
         $config = getGeneratorConfig();
         $generator = new Generator('Test', $this->stub)->applyConfig($config);
@@ -212,7 +214,7 @@ describe('Generator::getType', function () {
     });
 });
 
-describe('Generator::forceType', function () {
+describe('Generator::forceType()', function () {
     it('allows the type of file to be appended to the end of the file name', function () {
         $config = getGeneratorConfig();
         $generator = new Generator('Test', $this->stub)->applyConfig($config)
@@ -226,7 +228,7 @@ describe('Generator::forceType', function () {
     });
 });
 
-describe('Generator::overwrite', function () {
+describe('Generator::overwrite()', function () {
     it('allows to overwrite files by default', function () {
         $config = getGeneratorConfig();
         $generator = new Generator('Test', $this->stub)->applyConfig($config)->overwrite();
@@ -236,7 +238,7 @@ describe('Generator::overwrite', function () {
     });
 });
 
-describe('Generator::isOverwriting', function () {
+describe('Generator::isOverwriting()', function () {
     it('indicates if files are going to be overwritten', function () {
         $config = getGeneratorConfig();
         $generator = new Generator('Test', $this->stub)->applyConfig($config);
@@ -249,7 +251,7 @@ describe('Generator::isOverwriting', function () {
     });
 });
 
-describe('Generator::exists', function () {
+describe('Generator::exists()', function () {
     it('indicates if the intended file path already exists', function () {
         $config = getGeneratorConfig();
         $generator = new Generator('Test', $this->stub)->applyConfig($config);

@@ -65,7 +65,7 @@ describe('applies fluent rules', function () {
     });
 });
 
-describe('RuleCollection::make', function () {
+describe('RuleCollection::make()', function () {
     it('provides a factory method', function () {
         $collection = RuleCollection::make();
 
@@ -73,7 +73,7 @@ describe('RuleCollection::make', function () {
     });
 });
 
-describe('RuleCollection::prefix', function () {
+describe('RuleCollection::prefix()', function () {
 
     beforeEach(function () {
         $this->collection = RuleCollection::make();
@@ -120,7 +120,7 @@ describe('RuleCollection::prefix', function () {
     });
 });
 
-describe('RuleCollection::has', function () {
+describe('RuleCollection::has()', function () {
     it('indicates if a rule has been set', function () {
         $collection = RuleCollection::make()->required()->min(10)->applyRule($object = Rule::string());
 
@@ -131,7 +131,7 @@ describe('RuleCollection::has', function () {
     });
 });
 
-describe('RuleCollection::forget', function () {
+describe('RuleCollection::forget()', function () {
     it('deletes rules', function () {
         $collection = RuleCollection::make()->required()->min(10);
         expect($collection->has('min'))->toBeTrue();
@@ -143,7 +143,7 @@ describe('RuleCollection::forget', function () {
     });
 });
 
-describe('RuleCollection::isEmpty', function () {
+describe('RuleCollection::isEmpty()', function () {
     it('indicates if no rules are set', function () {
         $collection = RuleCollection::make();
         expect($collection->isEmpty())->toBeTrue();
@@ -152,7 +152,7 @@ describe('RuleCollection::isEmpty', function () {
     });
 });
 
-describe('RuleCollection::toValidatorArgument', function () {
+describe('RuleCollection::toValidatorArgument()', function () {
     it('provides an array of rules compatible with Laravel’s validator', function () {
         $collection = RuleCollection::make()->required()->min(10)->max(100);
 
@@ -168,7 +168,7 @@ describe('RuleCollection::toValidatorArgument', function () {
     });
 });
 
-describe('RuleCollection::count', function () {
+describe('RuleCollection::count()', function () {
     it('is countable', function () {
         $collection = RuleCollection::make()->required()->min(10)->max(100);
 

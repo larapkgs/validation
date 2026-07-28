@@ -53,7 +53,7 @@ it('deep clones the arguments', function () {
         ->and($clonedArguments['object'])->not->toBe($arguments['object']);
 });
 
-describe('ValidationRule::getName', function () {
+describe('ValidationRule::getName()', function () {
     it('provides the name of the rule', function () {
         $rule = new ValidationRule('required');
 
@@ -61,7 +61,7 @@ describe('ValidationRule::getName', function () {
     });
 });
 
-describe('ValidationRule::withArguments', function () {
+describe('ValidationRule::withArguments()', function () {
     it('merges the given arguments and returns a new instance', function () {
         $rule = new ValidationRule('required_if', $arguments = ['field' => 'category', 'values' => ['category1', 'category3']]);
         expect($rule)->getArguments()->toBe($arguments);
@@ -75,7 +75,7 @@ describe('ValidationRule::withArguments', function () {
     });
 });
 
-describe('ValidationRule::getArguments', function () {
+describe('ValidationRule::getArguments()', function () {
     it('provides the arguments for the rule', function () {
         $rule = new ValidationRule('between', $arguments = ['min' => 1, 'max' => 10]);
 
@@ -83,7 +83,7 @@ describe('ValidationRule::getArguments', function () {
     });
 });
 
-describe('ValidationRule::getPriority', function () {
+describe('ValidationRule::getPriority()', function () {
     it('provides the priority of the rule', function () {
         $rule = new ValidationRule('required', priority: 5);
 
@@ -91,7 +91,7 @@ describe('ValidationRule::getPriority', function () {
     });
 });
 
-describe('ValidationRule::toValidatorRuleUsing', function () {
+describe('ValidationRule::toValidatorRuleUsing()', function () {
     it('accepts a closure as a custom validator rule resolver', function () {
         $resolver = function (ValidationRule $rule) {
             return 'custom_min:' . implode(',', $rule->getArguments());
@@ -121,7 +121,7 @@ describe('ValidationRule::toValidatorRuleUsing', function () {
     });
 });
 
-describe('ValidationRule::toValidatorRule', function () {
+describe('ValidationRule::toValidatorRule()', function () {
     it('provides the name when no arguments are set', function () {
         $rule = new ValidationRule('required');
 

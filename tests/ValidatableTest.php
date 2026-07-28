@@ -39,7 +39,7 @@ it('uses the IsValidatable trait', function () {
     expect(class_uses(Validatable::class))->toHaveKey(IsValidatable::class);
 });
 
-describe('Validatable::getValidatableCollection', function () {
+describe('Validatable::getValidatableCollection()', function () {
     it('provides a clone of the underlying ValidatableCollection', function () {
         $getValidatableCollection = function ($subject) {
             return (fn () => $this->validatableCollection)->call($subject);
@@ -50,7 +50,7 @@ describe('Validatable::getValidatableCollection', function () {
     });
 });
 
-describe('Validatable::merge', function () {
+describe('Validatable::merge()', function () {
     it('merges a variadic list of validation collections and returns a new instance', function () {
         $collection = ValidatableCollection::make(
             ValidatableBuilder::make('merged')->required(),
@@ -93,7 +93,7 @@ describe('Validatable::merge', function () {
     });
 });
 
-describe('Validatable::prefix', function () {
+describe('Validatable::prefix()', function () {
     it('applies a prefix to the keys of the underlying ValidatableCollection and returns a new instance', function (string $prefix) {
         $prefixed = $this->validatable->prefix($prefix);
 
@@ -107,7 +107,7 @@ describe('Validatable::prefix', function () {
     })->with(['collection.*', 'collection.*.']);
 });
 
-describe('Validatable::passes', function () {
+describe('Validatable::passes()', function () {
     it('indicates if the given data passes the constraints as set by the collection', function () {
         $data = ['property1' => 'value1', 'property2' => 'value2'];
 
@@ -115,7 +115,7 @@ describe('Validatable::passes', function () {
     });
 });
 
-describe('Validatable::fails', function () {
+describe('Validatable::fails()', function () {
     it('indicates if the given data fails the constraints as set by the collection', function () {
         $data = [];
 
@@ -123,7 +123,7 @@ describe('Validatable::fails', function () {
     });
 });
 
-describe('Validatable::validate', function () {
+describe('Validatable::validate()', function () {
     it('tries to validate the given data', function () {
         $data = ['property1' => 'value1', 'property2' => 'value2'];
         expect($this->validatable)->validate($data)->toBe($data);
@@ -134,7 +134,7 @@ describe('Validatable::validate', function () {
     });
 });
 
-describe('Validatable::makeValidator', function () {
+describe('Validatable::makeValidator()', function () {
     it('provides a factory method that creates a Laravel Validator for the given data', function () {
         expect($this->validatable)->makeValidator([])
             ->toBeInstanceOf(Validator::class);
