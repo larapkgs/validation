@@ -93,6 +93,20 @@ describe('Validatable::merge', function () {
     });
 });
 
+describe('Validatable::prefix', function () {
+    it('applies a prefix to the keys of the underlying ValidatableCollection and returns a new instance', function (string $prefix) {
+        $prefixed = $this->validatable->prefix($prefix);
+
+        expect($prefixed)
+            ->not->toBe($this->validatable)
+            ->getValidatableCollection()
+            ->getItems()->keys()->all()->toBe([
+                'collection.*.property1',
+                'collection.*.property2',
+            ]);
+    })->with(['collection.*', 'collection.*.']);
+});
+
 describe('Validatable::passes', function () {
     it('indicates if the given data passes the constraints as set by the collection', function () {
         $data = ['property1' => 'value1', 'property2' => 'value2'];

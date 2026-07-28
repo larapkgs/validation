@@ -45,7 +45,7 @@ trait IsValidatable
     protected function handleValidationExceptions(ValidationException $exception, ?string $errorBagPrefix = null): mixed
     {
         if ($errorBagPrefix !== null) {
-            $errorBagPrefix = Str::of($errorBagPrefix)->replaceEnd('.', '')->append('.')->toString();
+            $errorBagPrefix = Str::finish($errorBagPrefix, '.');
 
             $messages = $this->prefixValidationMessages($exception->errors(), $errorBagPrefix);
 

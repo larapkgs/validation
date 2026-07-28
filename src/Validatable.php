@@ -45,6 +45,13 @@ abstract class Validatable implements ProvidesValidatableCollection, Validatable
         });
     }
 
+    public function prefix(string $prefix): self
+    {
+        return $this->newInstance(function (self $instance) use ($prefix) {
+            $instance->validatableCollection = $instance->resolveValidatableCollection()->prefix($prefix);
+        });
+    }
+
     /**
      * @param  array<string, mixed>  $data
      */

@@ -9,6 +9,7 @@ use Illuminate\Contracts\Validation\Factory as ValidatorFactory;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Str;
 use LaraPkgs\Validation\Concerns\HasFluentRules;
 use LaraPkgs\Validation\Concerns\IsValidatable;
 use LaraPkgs\Validation\Contracts\RuleFactory;
@@ -71,8 +72,11 @@ final class ValidatableBuilder implements Validatable
 
     public function prefix(string $prefix): self
     {
+        $prefix = Str::finish($prefix, '.');
+
         return $this->newInstance(function (self $instance) use ($prefix) {
             $instance->key = $prefix . $instance->key;
+            $instance->rules = $instance->rules->prefix($prefix);
         });
     }
 
