@@ -10,6 +10,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use LaraPkgs\Validation\Concerns\IsValidatable;
+use LaraPkgs\Validation\Contracts\ProvidesValidatableCollection;
 use LaraPkgs\Validation\Contracts\Validatable;
 
 final class ValidatableCollection implements Countable, Validatable
@@ -80,10 +81,15 @@ final class ValidatableCollection implements Countable, Validatable
         return self::make(...$items);
     }
 
-    public function merge(ValidatableCollection ...$validatableCollections): self
+    public function merge(ValidatableCollection|ProvidesValidatableCollection ...$mergeables): self
     {
         /** @var array<int, ValidatableBuilder> $items */
-        $items = new Collection([$this, ...$validatableCollections])
+        $items = new Collection([$this, ...$mergeables])
+            ->map(function (ValidatableCollection|ProvidesValidatableCollection $mergeable) {
+                return $mergeable instanceof ProvidesValidatableCollection
+                    ? $mergeable->getValidatableCollection()
+                    : $mergeable;
+            })
             ->reduce(function (array $carry, ValidatableCollection $collection) {
                 return array_merge($carry, $collection->getItems()->all());
             }, []);

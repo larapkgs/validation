@@ -6,9 +6,10 @@ namespace LaraPkgs\Validation;
 
 use Illuminate\Contracts\Validation\Validator;
 use LaraPkgs\Validation\Concerns\IsValidatable;
+use LaraPkgs\Validation\Contracts\ProvidesValidatableCollection;
 use LaraPkgs\Validation\Contracts\Validatable as ValidatableContract;
 
-abstract class Validatable implements ValidatableContract
+abstract class Validatable implements ProvidesValidatableCollection, ValidatableContract
 {
     use IsValidatable;
 

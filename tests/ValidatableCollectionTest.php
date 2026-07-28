@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
+use LaraPkgs\Validation\Contracts\ProvidesValidatableCollection;
 use LaraPkgs\Validation\ValidatableBuilder;
 use LaraPkgs\Validation\ValidatableCollection;
 
@@ -105,6 +106,31 @@ describe('ValidatableCollection::merge', function () {
         expect($item1)->not->toBe($getItem($merged, 'property1'))
             ->and($item2)->not->toBe($getItem($merged, 'property2'))
             ->and($item3)->not->toBe($getItem($merged, 'property3'));
+    });
+
+    it('allows to merge classes that implement the ProvidesValidatableCollection interface', function () {
+        $classThatProvidesValidatableCollection = new class implements ProvidesValidatableCollection
+        {
+            public function getValidatableCollection(): ValidatableCollection
+            {
+                return ValidatableCollection::make(
+                    ValidatableBuilder::make('merged')->required(),
+                );
+            }
+        };
+
+        $collection = ValidatableCollection::make(
+            ValidatableBuilder::make('property1')->required()
+        );
+
+        expect($collection)
+            ->getItems()->keys()->all()->toBe(['property1']);
+
+        $merged = $collection->merge($classThatProvidesValidatableCollection);
+
+        expect($merged)
+            ->not->toBe($collection)
+            ->getItems()->keys()->all()->toBe(['property1', 'merged']);
     });
 });
 
