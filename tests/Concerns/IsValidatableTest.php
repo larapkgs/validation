@@ -63,6 +63,8 @@ describe('IsValidatable::validate', function () {
         expect($getValidationErrorKeys())->toBe(['property1']);
 
         expect($getValidationErrorKeys('data.'))->toBe(['data.property1']);
+
+        expect($getValidationErrorKeys('data'))->toBe(['data.property1']);
     });
 });
 

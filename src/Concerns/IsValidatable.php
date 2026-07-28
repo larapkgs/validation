@@ -6,6 +6,7 @@ namespace LaraPkgs\Validation\Concerns;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 trait IsValidatable
@@ -44,6 +45,8 @@ trait IsValidatable
     protected function handleValidationExceptions(ValidationException $exception, ?string $errorBagPrefix = null): mixed
     {
         if ($errorBagPrefix !== null) {
+            $errorBagPrefix = Str::of($errorBagPrefix)->replaceEnd('.', '')->append('.')->toString();
+
             $messages = $this->prefixValidationMessages($exception->errors(), $errorBagPrefix);
 
             $exception = ValidationException::withMessages($messages);
