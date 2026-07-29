@@ -161,6 +161,18 @@ final class Generator
         return File::exists($this->resolveFilePath());
     }
 
+    public function getPath(bool $normalize = true): string
+    {
+        $path = Str::of($this->resolveFilePath());
+        $basePath = App::basePath();
+
+        if ($normalize === false || $path->doesntStartWith($basePath)) {
+            return $path->toString();
+        }
+
+        return $path->after($basePath)->trim('/')->toString();
+    }
+
     protected function renderStub(): string
     {
         return Collection::make($this->getStubData())

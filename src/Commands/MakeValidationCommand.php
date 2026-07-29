@@ -27,9 +27,27 @@ final class MakeValidationCommand extends Command
 
     public function handle(): int
     {
-        return (! ($generator = $this->makeGenerator())->isOverwriting() && $generator->exists())
-            ? tap(self::FAILURE, fn () => $this->error('Validation class already exists!'))
-            : tap(self::SUCCESS, fn () => $generator->generate());
+        $generator = $this->makeGenerator();
+
+        return (! $generator->isOverwriting() && $generator->exists())
+            ? $this->handleFailure($generator)
+            : $this->handleSuccess($generator);
+    }
+
+    protected function handleFailure(Generator $generator): int
+    {
+        $this->components->error(sprintf('File [%s] already exists.', $generator->getPath()));
+
+        return self::FAILURE;
+    }
+
+    protected function handleSuccess(Generator $generator): int
+    {
+        $generator->generate();
+
+        $this->components->info(sprintf('File [%s] created successfully', $generator->getPath()));
+
+        return self::SUCCESS;
     }
 
     protected function makeGenerator(): Generator

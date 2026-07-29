@@ -263,3 +263,19 @@ describe('Generator::exists()', function () {
         expect($generator)->exists()->toBeTrue();
     });
 });
+
+describe('Generator::getPath()', function () {
+    it('provides the normalized path where the file is (going to be) stored', function () {
+        $config = getGeneratorConfig();
+        $generator = new Generator('Test', $this->stub)->applyConfig($config);
+
+        expect($generator)->getPath()->toBe('app/Components/Test.php');
+    });
+
+    it('provides the fully qualified path path where the file is (going to be) stored', function () {
+        $config = getGeneratorConfig();
+        $generator = new Generator('Test', $this->stub)->applyConfig($config);
+
+        expect($generator)->getPath(false)->toBe(App::path('Components/Test.php'));
+    });
+});
