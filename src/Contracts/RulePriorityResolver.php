@@ -6,5 +6,5 @@ namespace LaraPkgs\Validation\Contracts;
 
 interface RulePriorityResolver
 {
-    public function resolve(string $rule): int;
+    public function resolve(string $type): int;
 }

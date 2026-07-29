@@ -17,9 +17,9 @@ final class RulePriorityResolver implements RulePriorityResolverContract
         $this->ruleTypeResolver = $ruleTypeResolver;
     }
 
-    public function resolve(string $rule): int
+    public function resolve(string $type): int
     {
-        $type = $this->ruleTypeResolver->resolve($rule);
+        $type = $this->ruleTypeResolver->resolve($type);
 
         return Config::get('validation.type_to_priority_map.' . $type)
             ?? Config::get('validation.default_rule_priority', 100);
