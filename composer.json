@@ -1,7 +1,15 @@
 {
   "name": "larapkgs/validation",
-  "description": "A fluent, object-oriented validation builder for Laravel.",
-  "keywords": ["Laravel", "validation", "validator", "LaraPkgs"],
+  "description": "An immutability-first, strongly typed validation package for Laravel.",
+  "keywords": [
+    "laravel",
+    "validation",
+    "validator",
+    "octane",
+    "strongly-typed",
+    "immutable",
+    "domain-driven"
+  ],
   "license": "MIT",
   "type": "library",
   "authors": [
