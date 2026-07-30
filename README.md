@@ -17,13 +17,13 @@ Full IDE auto-completion for over 70 built-in Laravel validation rules. No more 
 Encapsulate validation logic into dedicated `Validatable` classes and merge them effortlessly across your application.
 
 ### Deep Prefixing
-Automatically prefix nested collections (e.g., `items.*`) while recursively updating relative rule arguments like `required_if`.
+Automatically prefix nested collections (e.g. `items.*`) while recursively updating relative rule arguments like `required_if`.
 
 ### Rule Precedence
 Automatically orders rules by logical execution priority (`modifier` -> `circuit` -> `presence` -> `type` -> `constraint`) to prevent unpredictable behavior.
 
 ### Dynamic Error Wrapping
-Wrap validation error keys on the fly during execution (e.g., `data.name` instead of `name`) without altering your core validatable definitions.
+Wrap validation error keys on the fly during execution (e.g. `data.name` instead of `name`) without altering your core validatable definitions.
 
 ### 100% Immutable
 Thread-safe design ensures that every mutation returns a fresh copy, eliminating unintended side effects across your application.
