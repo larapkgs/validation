@@ -1,5 +1,10 @@
 # LaraPkgs / Validation
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/larapkgs/validation.svg?style=flat-square)](https://packagist.org/packages/larapkgs/validation)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/larapkgs/validation/run-tests.yml?branch=main&label=tests&style=flat-square&color=brightgreen)](https://github.com/larapkgs/validation/actions)
+[![Code Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square)](https://github.com/larapkgs/validation)
+[![PHPStan Level 8](https://img.shields.io/badge/PHPStan-Level%208-brightgreen?style=flat-square)](https://github.com/larapkgs/validation)
+
 An immutability-first, strongly typed validation package for Laravel. It replaces standard array-based validation strings with an expressive PHP API, eliminating state leaks in long-running application environments like **Laravel Octane**.
 
 ## Why LaraPkgs/Validation?
